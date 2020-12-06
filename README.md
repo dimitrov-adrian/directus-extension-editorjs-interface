@@ -1,3 +1,5 @@
+> ### This extension is in development and most probably will have file structure change when Directus 9 official releases
+
 # Editor.js
 
 Block-styled editor for rich media stories, outputs clean data in JSON.
