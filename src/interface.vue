@@ -6,7 +6,7 @@
           {{ $t('interfaces.file.description') }}
         </v-card-title>
         <v-card-text>
-          <v-upload ref="vUploaderComponentRef" @input="fileHandler" :multiple="false" from-library from-url />
+          <v-upload ref="vUploaderComponentRef" @input="fileHandler" :multiple="false" from-library from-url/>
         </v-card-text>
         <v-card-actions>
           <v-button secondary @click="closeFileDialog">
@@ -81,6 +81,8 @@ export default {
     },
   },
 
+  inject: ['system'],
+
   mounted: function () {
     this.editorInstance = new EditorJS({
       logLevel: 'ERROR',
@@ -100,12 +102,13 @@ export default {
     }
   },
 
-  data: function() {
+  data: function () {
+    window.com = this
     return {
       fileDialogState: false,
       className: {
-        [this.$props.font]: true
-      }
+        [this.$props.font]: true,
+      },
     }
   },
 
@@ -127,23 +130,35 @@ export default {
 
   methods: {
 
-    closeFileDialog: function() {
+    closeFileDialog: function () {
       this.fileDialogState = false
       this._fileHandler = null
     },
 
-    openFileDialog: function(handler) {
+    openFileDialog: function (handler) {
       this.fileDialogState = true
       this._fileHandler = handler
     },
 
-    fileHandler: function(event) {
+    fileHandler: function (event) {
       this._fileHandler(event)
       this.closeFileDialog()
     },
 
-    getUploadFieldRef: function() {
+    getUploadFieldRef: function () {
       return this.$refs.vUploaderComponentRef
+    },
+
+    urlSigner: function(url) {
+      if (!url || url.substr(0, 1) !== '/') {
+        return url
+      }
+      const token = this.system.api.defaults.headers.Authorization.substr(7)
+      if (url.indexOf('?') === -1) {
+        return `${url}?access_token=${token}`
+      } else {
+        return `${url}&access_token=${token}`
+      }
     },
 
     getPreparedValue: function (value) {
@@ -235,8 +250,10 @@ export default {
           class: ImageTool,
           config: {
             uploader: {
-              getUploadFieldRef: this.getUploadFieldRef,
+              urlSigner: this.urlSigner,
+              baseURL: this.system.api.defaults.baseURL,
               picker: this.openFileDialog,
+              getUploadFieldRef: this.getUploadFieldRef,
             },
           },
         },
@@ -244,8 +261,10 @@ export default {
           class: AttachesTool,
           config: {
             uploader: {
-              getUploadFieldRef: this.getUploadFieldRef,
+              urlSigner: this.urlSigner,
+              baseURL: this.system.api.defaults.baseURL,
               picker: this.openFileDialog,
+              getUploadFieldRef: this.getUploadFieldRef,
             },
           },
         },
@@ -253,8 +272,10 @@ export default {
           class: PersonalityTool,
           config: {
             uploader: {
-              getUploadFieldRef: this.getUploadFieldRef,
+              urlSigner: this.urlSigner,
+              baseURL: this.system.api.defaults.baseURL,
               picker: this.openFileDialog,
+              getUploadFieldRef: this.getUploadFieldRef,
             },
           },
         },

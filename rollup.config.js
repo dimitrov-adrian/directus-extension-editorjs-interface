@@ -9,5 +9,5 @@ export default {
     format: "es",
     file: "dist/index.js",
   },
-  plugins: [terser(), resolve(), commonjs(), vue()],
+  plugins: [ process.env.NOTERSER ? null : terser(), resolve(), commonjs(), vue()],
 };

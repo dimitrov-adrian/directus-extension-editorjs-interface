@@ -183,7 +183,7 @@
 /* Checklist */
 .codex-editor .cdx-checklist__item-checkbox {
     background: transparent;
-    border-color: var(--background-inverted);
+    border-color: var(--border-normal);
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox {
