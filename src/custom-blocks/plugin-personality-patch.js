@@ -17,17 +17,15 @@ export default class extends Personality {
 			onError: (error) => this.uploadingFailed(error),
 		});
 	}
-	preparePhotoUrl() {
-		let imageUrl = this.uploader.config.uploader.urlSigner(this.data.photo);
-		imageUrl += '&key=system-medium-cover';
-		return imageUrl;
+	setFullImageSource(photo) {
+		let photoSignedUrl = this.uploader.config.uploader.urlSigner(photo);
+		photoSignedUrl += '&key=system-medium-cover';
+		this.nodes.photo.style.background = `url('${photoSignedUrl}') center center / cover no-repeat`;
 	}
 	showFullImage() {
 		setTimeout(() => {
 			this.nodes.photo.classList.remove(this.CSS.loader);
-			this.nodes.photo.style.background = `url('${this.preparePhotoUrl(
-				this.data.photo
-			)}') center center / cover no-repeat`;
+			this.setFullImageSource(this.data.photo);
 		}, 500);
 	}
 	render() {
@@ -50,8 +48,7 @@ export default class extends Personality {
 		this.nodes.photo = this.make('div', this.CSS.photo);
 
 		if (photo) {
-			const preparedPhoto = this.preparePhotoUrl(photo);
-			this.nodes.photo.style.background = `url('${preparedPhoto}') center center / cover no-repeat`;
+			this.setFullImageSource(photo);
 		}
 
 		if (description) {
