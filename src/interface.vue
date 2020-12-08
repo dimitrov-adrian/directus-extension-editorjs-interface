@@ -89,7 +89,8 @@ export default {
       holder: this.$refs.editorElement,
       data: this.getPreparedValue(this.$props.value),
       // readOnly needs support of all blocks, so we should do some workaround.
-      // readOnly: this.$props.disabled,
+      // readOnly: false, // this.$props.disabled,
+      readOnly: this.$props.disabled,
       placeholder: this.$props.placeholder,
       tools: this.buildToolsOptions(),
       minHeight: 24,
@@ -170,7 +171,7 @@ export default {
     },
 
     editorValueEmitter: async function (context) {
-      if (!this.$props.disabled) {
+      if (this.$props.disabled) {
         return
       }
       this.$emit('input', await context.saver.save())
