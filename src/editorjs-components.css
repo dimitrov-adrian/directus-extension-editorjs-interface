@@ -70,11 +70,10 @@
 
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
     color: var(--primary);
-    background: transparent !important;
+    background-color: var(--v-list-item-background-color-hover) !important;
     -webkit-box-shadow: unset;
     box-shadow: unset;
 }
-
 
 .codex-editor .ce-conversion-tool:hover {
     color: var(--v-list-item-color-hover);
@@ -122,7 +121,9 @@
 }
 
 .codex-editor .ce-inline-tool-input {
-    color: var(--foreground-inverted);
+    color: var(--primary);
+    background: var(--background-normal);
+    border-top-color: var(--border-normal);
 }
 
 /* Buttons */
