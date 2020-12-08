@@ -28,7 +28,7 @@
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
 .codex-editor .ce-settings .cdx-settings-button--active svg,
 .codex-editor .ce-toolbar__plus:hover svg {
-    fill: var(--primary);
+    fill: var(--primary) !important;
 }
 
 .codex-editor .ce-toolbar .ce-toolbox__button svg,
@@ -43,6 +43,18 @@
 
 .codex-editor .image-tool--loading .image-tool__image {
     border-color: var(--border-normal);
+}
+
+.codex-editor .ce-inline-toolbar__toggler-and-button-wrapper {
+    padding: 0;
+}
+
+.codex-editor .ce-inline-toolbar__dropdown {
+    margin: 0;
+}
+
+.codex-editor .ce-inline-tool {
+    padding: 0 10px !important;
 }
 
 /* Button balloons */

@@ -16,7 +16,7 @@
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.6.0",
     "@editorjs/delimiter": "^1.2.0",
-    "@editorjs/editorjs": "^2.19.0",
+    "@editorjs/editorjs": "^2.19.1",
     "@editorjs/embed": "^2.4.0",
     "@editorjs/header": "^2.6.1",
     "@editorjs/image": "^2.6.0",
@@ -35,8 +35,8 @@
     "editorjs-alert": "^1.0.2"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.0.3",
-    "rollup": "^2.34.0",
+    "@vue/compiler-sfc": "^3.0.4",
+    "rollup": "^2.34.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2",
