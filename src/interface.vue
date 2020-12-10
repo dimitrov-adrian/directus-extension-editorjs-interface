@@ -89,7 +89,6 @@ export default {
       holder: this.$refs.editorElement,
       data: this.getPreparedValue(this.$props.value),
       // readOnly: this.$props.disabled, // needs support of all blocks
-      readOnly: this.$props.disabled,
       placeholder: this.$props.placeholder,
       tools: this.buildToolsOptions(),
       minHeight: 24,
@@ -169,11 +168,13 @@ export default {
       }
     },
 
-    editorValueEmitter: async function (context) {
-      if (this.$props.disabled) {
+    editorValueEmitter: function (context) {
+      if (this.$props.disabled || !context) {
         return
       }
-      this.$emit('input', await context.saver.save())
+      context.saver.save()
+        .then((result) => this.$emit('input', result))
+        .catch((error) => this.$emit('error', 'Cannot get content'))
     },
 
     buildToolsOptions: function () {
