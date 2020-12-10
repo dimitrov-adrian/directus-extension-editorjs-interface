@@ -88,8 +88,7 @@ export default {
       logLevel: 'ERROR',
       holder: this.$refs.editorElement,
       data: this.getPreparedValue(this.$props.value),
-      // readOnly needs support of all blocks, so we should do some workaround.
-      // readOnly: false, // this.$props.disabled,
+      // readOnly: this.$props.disabled, // needs support of all blocks
       readOnly: this.$props.disabled,
       placeholder: this.$props.placeholder,
       tools: this.buildToolsOptions(),
