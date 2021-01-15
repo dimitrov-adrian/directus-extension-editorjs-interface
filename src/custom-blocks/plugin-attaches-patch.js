@@ -6,8 +6,14 @@ import Uploader from '../editorjs-uploader';
  * https://github.com/editor-js/attaches/blob/master/src/index.js
  */
 export default class extends AttachesTool {
+
+	static get isReadOnlySupported() {
+		return true;
+	}
+
 	constructor(args) {
 		super(args);
+		this.readOnly = !!args.readOnly;
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
@@ -17,6 +23,13 @@ export default class extends AttachesTool {
 			onError: (error) => this.uploadingFailed(error),
 		});
 	}
+
+	prepareUploadButton() {
+		if (!this.readOnly) {
+			super.prepareUploadButton();
+		}
+	}
+
 	showFileData() {
 		super.showFileData();
 		if (this.data.file && this.data.file.url) {
@@ -25,5 +38,9 @@ export default class extends AttachesTool {
 				downloadButton.href = this.uploader.config.uploader.urlSigner(this.data.file.url);
 			}
 		}
+		if (this.readOnly && this.nodes.title) {
+			this.nodes.title.contentEditable = false;
+		}
 	}
+
 }

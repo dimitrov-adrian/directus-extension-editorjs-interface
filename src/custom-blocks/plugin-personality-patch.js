@@ -8,6 +8,7 @@ import Uploader from '../editorjs-uploader';
 export default class extends Personality {
 	constructor(args) {
 		super(args);
+		this.readOnly = !!args.readOnly;
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
@@ -28,21 +29,24 @@ export default class extends Personality {
 			this.setFullImageSource(this.data.photo);
 		}, 500);
 	}
+	static get isReadOnlySupported() {
+		return true;
+	}
 	render() {
 		const { name, description, photo, link } = this.data;
 
 		this.nodes.wrapper = this.make('div', this.CSS.wrapper);
 
 		this.nodes.name = this.make('div', this.CSS.name, {
-			contentEditable: true,
+			contentEditable: !this.readOnly,
 		});
 
 		this.nodes.description = this.make('div', this.CSS.description, {
-			contentEditable: true,
+			contentEditable: !this.readOnly,
 		});
 
 		this.nodes.link = this.make('div', this.CSS.link, {
-			contentEditable: true,
+			contentEditable: !this.readOnly,
 		});
 
 		this.nodes.photo = this.make('div', this.CSS.photo);
@@ -69,13 +73,15 @@ export default class extends Personality {
 			this.nodes.link.dataset.placeholder = this.config.linkPlaceholder;
 		}
 
-		this.nodes.photo.addEventListener('click', () => {
-			this.uploader.uploadSelectedFile({
-				onPreview: () => {
-					this.addLoader();
-				},
+		if (!this.readOnly) {
+			this.nodes.photo.addEventListener('click', () => {
+				this.uploader.uploadSelectedFile({
+					onPreview: () => {
+						this.addLoader();
+					},
+				});
 			});
-		});
+		}
 
 		this.nodes.wrapper.appendChild(this.nodes.photo);
 		this.nodes.wrapper.appendChild(this.nodes.name);
