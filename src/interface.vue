@@ -10,7 +10,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeFileDialog">
-						{{ $t('done') }}
+						{{ $t('cancel') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -31,7 +31,7 @@ import TableTool from '@editorjs/table'
 import CodeTool from '@editorjs/code'
 import HeaderTool from '@editorjs/header'
 import UnderlineTool from '@editorjs/underline'
-import ListTool from 'editorjs-list'
+import ListTool from './custom-plugins/plugin-list-patch'
 import EmbedTool from '@editorjs/embed'
 import MarkerTool from '@editorjs/marker'
 import RawToolTool from '@editorjs/raw'
@@ -39,9 +39,9 @@ import InlineCodeTool from '@editorjs/inline-code'
 import TextAlignTool from '@canburaks/text-align-editorjs'
 import AlertTool from 'editorjs-alert'
 import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough'
-import ImageTool from './custom-blocks/plugin-image-patch'
-import AttachesTool from './custom-blocks/plugin-attaches-patch'
-import PersonalityTool from './custom-blocks/plugin-personality-patch'
+import ImageTool from './custom-plugins/plugin-image-patch'
+import AttachesTool from './custom-plugins/plugin-attaches-patch'
+import PersonalityTool from './custom-plugins/plugin-personality-patch'
 
 export default {
 	props: {
@@ -71,14 +71,14 @@ export default {
 				'underline',
 			],
 		},
-		toolsConfigOverride: {
-			type: Object,
-			default: null,
-		},
 		font: {
 			type: String,
 			default: 'sans-serif',
 		},
+		bordered: {
+			type: Boolean,
+			default: false
+		}
 	},
 
 	inject: ['system'],
@@ -108,6 +108,7 @@ export default {
 			fileDialogState: false,
 			className: {
 				[this.$props.font]: true,
+				bordered: this.$props.bordered,
 			},
 		}
 	},
@@ -304,11 +305,7 @@ export default {
 
 			for (const toolName of this.$props.tools) {
 				if (toolName in defaults) {
-					tools[toolName.toString()] = Object.assign(
-							{},
-							defaults[toolName],
-							this.$props.toolsConfigOverride && this.$props.toolsConfigOverride?.[toolName],
-					);
+					tools[toolName.toString()] = defaults[toolName];
 				}
 			}
 
@@ -319,6 +316,18 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.bordered {
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--border-radius);
+	padding: var(--input-padding);
+}
+.bordered:hover {
+	border-color: var(--border-normal-alt);
+}
+.bordered:focus-within {
+	border-color: var(--primary);
+}
 .monospace {
 	--v-input-font-family: var(--family-monospace);
 }

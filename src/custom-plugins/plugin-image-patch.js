@@ -6,8 +6,10 @@ import Uploader from '../editorjs-uploader';
  * https://github.com/editor-js/image/blob/master/src/index.js
  */
 export default class extends ImageTool {
+
 	constructor(args) {
 		super(args);
+
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
@@ -17,6 +19,7 @@ export default class extends ImageTool {
 			onError: (error) => this.uploadingFailed(error),
 		});
 	}
+
 	set image(file) {
 		this._data.file = file || {};
 
@@ -25,4 +28,5 @@ export default class extends ImageTool {
 			this.ui.fillImage(imageUrl);
 		}
 	}
+
 }

@@ -2,9 +2,8 @@ import Interface from "./interface.vue";
 
 export default {
 	id: "extension-editorjs",
-	name: "Block Editor",
-	description:
-			"Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js",
+	name: "Editor.js",
+	description: "Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js",
 	icon: "add_circle",
 	component: Interface,
 	types: ["json"],
@@ -17,7 +16,6 @@ export default {
 				interface: "text-input",
 			},
 		},
-
 		{
 			field: "font",
 			name: "Font",
@@ -85,25 +83,15 @@ export default {
 			},
 		},
 		{
-			field: "toolsConfigOverride",
-			name: "Override Config",
-			type: "json",
+			field: 'bordered',
+			name: 'Border',
+			type: 'boolean',
 			meta: {
-				interface: "code",
-				options: {
-					language: "json",
-					template: JSON.stringify(
-							{
-								"<tool_name>": {
-									config: {
-										property_to_override: "property_value",
-									},
-								},
-							},
-							null,
-							4
-					),
-				},
+				width: 'half',
+				interface: 'toggle',
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 	],

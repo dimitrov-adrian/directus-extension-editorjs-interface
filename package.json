@@ -32,11 +32,11 @@
     "@editorjs/warning": "^1.2.0",
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "editorjs-alert": "^1.0.3",
-    "editorjs-list": "^2.1.2"
+    "editorjs-list": "^2.1.4"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.5",
-    "rollup": "^2.36.1",
+    "rollup": "^2.37.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2",
