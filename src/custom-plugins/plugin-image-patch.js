@@ -24,7 +24,8 @@ export default class extends ImageTool {
 		this._data.file = file || {};
 
 		if (file && file.url) {
-			const imageUrl = this.config.uploader.urlSigner(file.url) + '&key=system-large-contain';
+			const imageUrl = this.config.uploader.urlWithToken(file.url) + '&key=system-large-contain';
+			console.log(imageUrl);
 			this.ui.fillImage(imageUrl);
 		}
 	}

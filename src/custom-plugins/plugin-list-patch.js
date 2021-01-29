@@ -1,11 +1,10 @@
-import ListTool from 'editorjs-list'
+import ListTool from "editorjs-list";
 
 /**
  * Patch allows readonly mode until get https://github.com/4rw44z/editorJs-list/pull/1
  * https://github.com/4rw44z/editorJs-list/blob/master/src/index.js
  */
 export default class extends ListTool {
-
 	static get isReadOnlySupported() {
 		return true;
 	}
@@ -27,7 +26,7 @@ export default class extends ListTool {
 	_make(...args) {
 		const result = super._make(...args);
 		if (this.readOnly && result.contentEditable) {
-				result.contentEditable = false;
+			result.contentEditable = false;
 		}
 		return result;
 	}

@@ -35,7 +35,7 @@ export default class extends AttachesTool {
 		if (this.data.file && this.data.file.url) {
 			const downloadButton = this.nodes.wrapper.querySelector('a.cdx-attaches__download-button');
 			if (downloadButton) {
-				downloadButton.href = this.uploader.config.uploader.urlSigner(this.data.file.url);
+				downloadButton.href = this.uploader.config.uploader.urlWithToken(this.data.file.url);
 			}
 		}
 		if (this.readOnly && this.nodes.title) {

@@ -3,7 +3,8 @@ import Interface from "./interface.vue";
 export default {
 	id: "extension-editorjs",
 	name: "Editor.js",
-	description: "Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js",
+	description:
+		"Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js",
 	icon: "add_circle",
 	component: Interface,
 	types: ["json"],
@@ -13,8 +14,8 @@ export default {
 			name: "Placeholder",
 			meta: {
 				width: "half",
-				interface: "text-input",
-			},
+				interface: "text-input"
+			}
 		},
 		{
 			field: "font",
@@ -27,13 +28,13 @@ export default {
 					choices: [
 						{ text: "sans-serif", value: "sans-serif" },
 						{ text: "monospace", value: "monospace" },
-						{ text: "serif", value: "serif" },
-					],
-				},
+						{ text: "serif", value: "serif" }
+					]
+				}
 			},
 			schema: {
-				default_value: "sans-serif",
-			},
+				default_value: "sans-serif"
+			}
 		},
 		{
 			field: "tools",
@@ -49,8 +50,8 @@ export default {
 					"delimeter",
 					"checklist",
 					"quote",
-					"underline",
-				],
+					"underline"
+				]
 			},
 			meta: {
 				width: "half",
@@ -77,22 +78,22 @@ export default {
 						{ value: "delimiter", text: "Delimiter" },
 						{ value: "checklist", text: "Checklist" },
 						{ value: "personality", text: "Personality" },
-						{ value: "raw", text: "Raw HTML" },
-					],
-				},
-			},
+						{ value: "raw", text: "Raw HTML" }
+					]
+				}
+			}
 		},
 		{
-			field: 'bordered',
-			name: 'Border',
-			type: 'boolean',
+			field: "bordered",
+			name: "Border",
+			type: "boolean",
 			meta: {
-				width: 'half',
-				interface: 'toggle',
+				width: "half",
+				interface: "toggle"
 			},
 			schema: {
-				default_value: false,
-			},
-		},
-	],
+				default_value: false
+			}
+		}
+	]
 };

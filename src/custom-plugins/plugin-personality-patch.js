@@ -20,10 +20,9 @@ export default class extends Personality {
 		});
 	}
 
-	setFullImageSource(photo) {
-		let photoSignedUrl = this.uploader.config.uploader.urlSigner(photo);
-		photoSignedUrl += '&key=system-medium-cover';
-		this.nodes.photo.style.background = `url('${photoSignedUrl}') center center / cover no-repeat`;
+	setFullImageSource(image) {
+		const imageUrlWithToken = this.uploader.config.uploader.urlWithToken(image) + '&key=system-medium-cover';
+		this.nodes.photo.style.background = `url('${imageUrlWithToken}') center center / cover no-repeat`;
 	}
 
 	showFullImage() {

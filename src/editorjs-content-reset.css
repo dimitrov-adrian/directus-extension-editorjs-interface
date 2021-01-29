@@ -1,149 +1,150 @@
 .ce-toolbar__content,
 .ce-block__content {
-    max-width: unset;
-    margin-left: 34px;
-    margin-right: 34px;
+	max-width: unset;
+	margin-left: 34px;
+	margin-right: 34px;
 }
 
 .codex-editor .ce-block {
-    margin-top: 1em;
-    margin-bottom: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 .codex-editor .ce-block h1 {
-    font-weight: 300;
-    font-size: 44px;
-    line-height: 52px;
+	font-weight: 300;
+	font-size: 44px;
+	line-height: 52px;
 }
 
 .codex-editor .ce-block h2 {
-    font-weight: 600;
-    font-size: 34px;
-    line-height: 38px;
+	font-weight: 600;
+	font-size: 34px;
+	line-height: 38px;
 }
 
 .codex-editor .ce-block h3 {
-    font-weight: 600;
-    font-size: 26px;
-    line-height: 31px;
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 31px;
 }
 
 .codex-editor .ce-block h4 {
-    font-weight: 600;
-    font-size: 22px;
-    line-height: 28px;
+	font-weight: 600;
+	font-size: 22px;
+	line-height: 28px;
 }
 
 .codex-editor .ce-block h5 {
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 26px;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 26px;
 }
 
 .codex-editor .ce-block h6 {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
 }
 
 .codex-editor .ce-block p {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 32px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size: 16px;
+	line-height: 32px;
 }
 
 .codex-editor .ce-block a {
-    color: var(--primary);
+	color: var(--primary);
 }
 
-.codex-editor .ce-block ul, .codex-editor .ce-block ol {
-    margin: 24px 0;
-    font-size: 18px;
-    line-height: 34px;
+.codex-editor .ce-block ul,
+.codex-editor .ce-block ol {
+	margin: 24px 0;
+	font-size: 18px;
+	line-height: 34px;
 }
 
 .codex-editor .ce-block ul ul,
 .codex-editor .ce-block ol ol,
 .codex-editor .ce-block ul ol,
 .codex-editor .ce-block ol ul {
-    margin: 0;
+	margin: 0;
 }
 
-.codex-editor .ce-block b, .codex-editor .ce-block strong {
-    font-weight: 600;
+.codex-editor .ce-block b,
+.codex-editor .ce-block strong {
+	font-weight: 600;
 }
 
 .codex-editor .ce-block code {
-    padding: 2px 4px;
-    font-size: 18px;
-    line-height: 34px;
-    overflow-wrap: break-word;
-    background-color: var(--background-normal-alt);
-    border-radius: 4px;
+	padding: 2px 4px;
+	font-size: 18px;
+	line-height: 34px;
+	overflow-wrap: break-word;
+	background-color: var(--background-normal-alt);
+	border-radius: 4px;
 }
 
 .codex-editor .ce-block pre {
-    padding: 20px;
-    overflow: auto;
-    font-size: 18px;
-    line-height: 24px;
-    background-color: var(--background-normal-alt);
-    border-radius: 4px;
+	padding: 20px;
+	overflow: auto;
+	font-size: 18px;
+	line-height: 24px;
+	background-color: var(--background-normal-alt);
+	border-radius: 4px;
 }
 
 .codex-editor .ce-block blockquote {
-    font-size: 18px;
-    font-style: italic;
-    line-height: 34px;
-    border-left: 2px dashed var(--border-normal);
+	font-size: 18px;
+	font-style: italic;
+	line-height: 34px;
+	border-left: 2px dashed var(--border-normal);
 }
 
 .codex-editor .ce-block video,
 .codex-editor .ce-block iframe,
 .codex-editor .ce-block img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
+	max-width: 100%;
+	height: auto;
+	border-radius: 4px;
 }
 
 .codex-editor .ce-block hr {
-    margin-top: 52px;
-    margin-bottom: 56px;
-    text-align: center;
-    border: 0;
+	margin-top: 52px;
+	margin-bottom: 56px;
+	text-align: center;
+	border: 0;
 }
 
 .codex-editor .ce-block hr::after {
-    font-size: 28px;
-    line-height: 0;
-    letter-spacing: 16px;
-    content: '...';
+	font-size: 28px;
+	line-height: 0;
+	letter-spacing: 16px;
+	content: "...";
 }
 
 .codex-editor .ce-block table {
-    border-collapse: collapse;
+	border-collapse: collapse;
 }
 
 .codex-editor .ce-block table th,
 .codex-editor .ce-block table td {
-    border: 1px solid var(--border-normal);
+	border: 1px solid var(--border-normal);
 }
-
 
 .codex-editor .ce-block .tc-table__wrap,
 .codex-editor .ce-block .tc-table__cell {
-    border-color: var(--border-normal);
+	border-color: var(--border-normal);
 }
 
 .codex-editor .ce-block figure {
-    display: table;
-    margin: 1rem auto;
+	display: table;
+	margin: 1rem auto;
 }
 
 .codex-editor .ce-block figure figcaption {
-    display: block;
-    margin-top: 0.25rem;
-    color: var(--foreground-subdued);
-    text-align: center;
+	display: block;
+	margin-top: 0.25rem;
+	color: var(--foreground-subdued);
+	text-align: center;
 }

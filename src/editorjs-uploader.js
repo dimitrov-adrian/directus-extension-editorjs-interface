@@ -23,8 +23,8 @@ export default class Uploader {
 			try {
 				this.config.uploader.getUploadFieldRef().onBrowseSelect({
 					target: {
-						files: [file],
-					},
+						files: [file]
+					}
 				});
 			} catch (error) {}
 		}, 500);
@@ -34,13 +34,13 @@ export default class Uploader {
 		this.onUpload({
 			success: 1,
 			file: {
-				url: url,
-			},
+				url: url
+			}
 		});
 	}
 
 	uploadSelectedFile({ onPreview }) {
-		this.config.uploader.picker((file) => {
+		this.config.uploader.picker(file => {
 			if (file) {
 				const response = {
 					success: 1,
@@ -48,17 +48,17 @@ export default class Uploader {
 						size: file.filesize,
 						name: file.filename_download,
 						title: file.title,
-						extension: file.filename_download.split('.').pop(),
+						extension: file.filename_download.split(".").pop(),
 						fileId: file.id,
-						fileURL: this.config.uploader.baseURL + 'files/' + file.id,
-						url: this.config.uploader.baseURL + 'assets/' + file.id,
-					},
+						fileURL: this.config.uploader.baseURL + "files/" + file.id,
+						url: this.config.uploader.baseURL + "assets/" + file.id
+					}
 				};
 				this.onUpload(response);
 			} else {
 				this.onError({
 					success: 0,
-					message: 'No file selected',
+					message: "No file selected"
 				});
 			}
 		});

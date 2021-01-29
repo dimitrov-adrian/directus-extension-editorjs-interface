@@ -1,16 +1,26 @@
 <template>
 	<div>
-		<v-dialog :active="fileDialogState" @toggle="closeFileDialog" @esc="closeFileDialog">
+		<v-dialog
+			:active="fileHandler !== null"
+			@toggle="unsetFileHandler"
+			@esc="unsetFileHandler"
+		>
 			<v-card>
 				<v-card-title>
-					{{ $t('interfaces.file.description') }}
+					{{ $t("interfaces.file.description") }}
 				</v-card-title>
 				<v-card-text>
-					<v-upload ref="vUploaderComponentRef" @input="fileHandler" :multiple="false" from-library from-url/>
+					<v-upload
+						ref="vUploaderComponentRef"
+						@input="handleFile"
+						:multiple="false"
+						from-library
+						from-url
+					/>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="closeFileDialog">
-						{{ $t('cancel') }}
+					<v-button secondary @click="unsetFileHandler">
+						{{ $t("cancel") }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -20,60 +30,68 @@
 </template>
 
 <script>
-import EditorJS from '@editorjs/editorjs'
-import SimpleImageTool from '@editorjs/simple-image'
-import ParagraphTool from '@editorjs/paragraph'
-import QuoteTool from '@editorjs/quote'
-import WarningTool from '@editorjs/warning'
-import ChecklistTool from '@editorjs/checklist'
-import DelimiterTool from '@editorjs/delimiter'
-import TableTool from '@editorjs/table'
-import CodeTool from '@editorjs/code'
-import HeaderTool from '@editorjs/header'
-import UnderlineTool from '@editorjs/underline'
-import ListTool from './custom-plugins/plugin-list-patch'
-import EmbedTool from '@editorjs/embed'
-import MarkerTool from '@editorjs/marker'
-import RawToolTool from '@editorjs/raw'
-import InlineCodeTool from '@editorjs/inline-code'
-import TextAlignTool from '@canburaks/text-align-editorjs'
-import AlertTool from 'editorjs-alert'
-import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough'
-import ImageTool from './custom-plugins/plugin-image-patch'
-import AttachesTool from './custom-plugins/plugin-attaches-patch'
-import PersonalityTool from './custom-plugins/plugin-personality-patch'
+import EditorJS from "@editorjs/editorjs";
+import SimpleImageTool from "@editorjs/simple-image";
+import ParagraphTool from "@editorjs/paragraph";
+import QuoteTool from "@editorjs/quote";
+import WarningTool from "@editorjs/warning";
+import ChecklistTool from "@editorjs/checklist";
+import DelimiterTool from "@editorjs/delimiter";
+import TableTool from "@editorjs/table";
+import CodeTool from "@editorjs/code";
+import HeaderTool from "@editorjs/header";
+import UnderlineTool from "@editorjs/underline";
+import EmbedTool from "@editorjs/embed";
+import MarkerTool from "@editorjs/marker";
+import RawToolTool from "@editorjs/raw";
+import InlineCodeTool from "@editorjs/inline-code";
+import TextAlignTool from "@canburaks/text-align-editorjs";
+import AlertTool from "editorjs-alert";
+import StrikethroughTool from "@itech-indrustries/editorjs-strikethrough";
+import ListTool from "./custom-plugins/plugin-list-patch";
+import ImageTool from "./custom-plugins/plugin-image-patch";
+import AttachesTool from "./custom-plugins/plugin-attaches-patch";
+import PersonalityTool from "./custom-plugins/plugin-personality-patch";
+
+function debounce(fn, delay) {
+	let t;
+	return function() {
+		clearTimeout(t);
+		t = setTimeout(fn, delay);
+	};
+}
 
 export default {
 	props: {
 		value: {
 			type: Object,
-			default: null,
+			default: null
 		},
 		disabled: {
 			type: Boolean,
-			default: false,
+			default: false
 		},
 		placeholder: {
 			type: String,
-			default: null,
+			default: null
 		},
 		tools: {
 			type: Array,
 			default: () => [
-				'header',
-				'list',
-				'code',
-				'image',
-				'paragraph',
-				'delimeter',
-				'checklist',
-				'quote',
-				'underline',
-			],
+				"header",
+				"list",
+				"code",
+				"image",
+				"paragraph",
+				"delimeter",
+				"checklist",
+				"quote",
+				"underline"
+			]
 		},
 		font: {
 			type: String,
-			default: 'sans-serif',
+			default: "sans-serif"
 		},
 		bordered: {
 			type: Boolean,
@@ -81,53 +99,58 @@ export default {
 		}
 	},
 
-	inject: ['system'],
+	inject: ["system"],
 
-	mounted: function () {
-		window.eee = this.editorjsInstance = new EditorJS({
-			logLevel: 'ERROR',
+	mounted: function() {
+		this.editorjsInstance = new EditorJS({
+			logLevel: "ERROR",
 			holder: this.$refs.editorElement,
 			data: this.getPreparedValue(this.$props.value),
 			readOnly: this.$props.disabled,
 			placeholder: this.$props.placeholder,
 			tools: this.buildToolsOptions(),
 			minHeight: 24,
-			onChange: this.editorValueEmitter,
+			onChange: this.editorValueEmitter
 		});
 	},
 
-	unmounted: function () {
+	unmounted: function() {
 		if (this.editorjsInstance) {
 			this.editorjsInstance.destroy();
 		}
 	},
 
-	data: function () {
+	data: function() {
 		return {
+			fileHandler: null,
 			editorjsInstance: null,
-			fileDialogState: false,
 			className: {
 				[this.$props.font]: true,
-				bordered: this.$props.bordered,
-			},
-		}
+				bordered: this.$props.bordered
+			}
+		};
 	},
 
 	watch: {
-		value: function (newVal, oldVal) {
-			// @TODO make value property change handling
-
-			if (oldVal || !this.editorjsInstance) {
-				// If already have value, then skip,
-				// this is because render method always touch time property.
-				return
-			}
+		value: function(newVal, oldVal) {
+			if (
+				!this.editorjsInstance ||
+				JSON.stringify(newVal?.blocks) === JSON.stringify(oldVal?.blocks)
+			)
+				return;
 
 			this.editorjsInstance.isReady.then(() => {
-				this.editorjsInstance.render(this.getPreparedValue(newVal))
+				if (
+					this.editorjsInstance.configuration.holder.contains(
+						document.activeElement
+					)
+				)
+					return;
+
+				this.editorjsInstance.render(this.getPreparedValue(newVal));
 			});
 		},
-		disabled: function (newVal, oldVal) {
+		disabled: function(newVal, oldVal) {
 			if (newVal !== oldVal) {
 				this.editorjsInstance.readOnly.toggle(newVal);
 			}
@@ -135,170 +158,174 @@ export default {
 	},
 
 	methods: {
-
-		closeFileDialog: function () {
-			this.fileDialogState = false;
-			this._fileHandler = null;
+		unsetFileHandler: function() {
+			this.fileHandler = null;
 		},
 
-		openFileDialog: function (handler) {
-			this.fileDialogState = true;
-			this._fileHandler = handler;
+		setFileHandler: function(handler) {
+			this.fileHandler = handler;
 		},
 
-		fileHandler: function (event) {
-			this._fileHandler(event);
-			this.closeFileDialog();
+		handleFile: function(event) {
+			this.fileHandler(event);
+			this.unsetFileHandler();
 		},
 
-		getUploadFieldRef: function () {
+		getUploadFieldRef: function() {
 			return this.$refs.vUploaderComponentRef;
 		},
 
-		urlSigner: function(url) {
-			if (!url || url.substr(0, 1) !== '/') {
+		urlWithToken: function(url) {
+			if (!url || url.substr(0, 1) !== "/") {
 				return url;
 			}
 
 			const token = this.system.api.defaults.headers.Authorization.substr(7);
-			if (url.indexOf('?') === -1) {
+			if (url.indexOf("?") === -1) {
 				return `${url}?access_token=${token}`;
 			} else {
 				return `${url}&access_token=${token}`;
 			}
 		},
 
-		getPreparedValue: function (value) {
-			if (typeof value !== 'object') {
+		getPreparedValue: function(value) {
+			if (typeof value !== "object") {
 				return {
 					time: null,
 					version: 0,
-					blocks: [],
+					blocks: []
 				};
 			}
 
 			return {
 				time: value?.time,
 				version: value?.version,
-				blocks: value?.blocks || [],
+				blocks: value?.blocks || []
 			};
 		},
 
-		editorValueEmitter: function (context) {
+		editorValueEmitter: function(context) {
 			if (this.$props.disabled || !context) return;
 
-			context.saver.save()
-			.then((result) => this.$emit('input', result))
-			.catch((error) => this.$emit('error', 'Cannot get content'));
+			context.saver
+				.save()
+				.then(result => {
+					if (!result || result.blocks.length < 1) {
+						this.$emit("input", null);
+					} else {
+						this.$emit("input", result);
+					}
+				})
+				.catch(error => this.$emit("error", "Cannot get content"));
 		},
 
-		buildToolsOptions: function () {
+		buildToolsOptions: function() {
 			const defaults = {
 				header: {
 					class: HeaderTool,
-					shortcut: 'CMD+SHIFT+H',
-					inlineToolbar: true,
+					shortcut: "CMD+SHIFT+H",
+					inlineToolbar: true
 				},
 				list: {
 					class: ListTool,
 					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+O',
+					shortcut: "CMD+SHIFT+O"
 				},
 				embed: {
 					class: EmbedTool,
-					inlineToolbar: true,
+					inlineToolbar: true
 				},
 				paragraph: {
 					class: ParagraphTool,
-					inlineToolbar: true,
+					inlineToolbar: true
 				},
 				code: {
-					class: CodeTool,
+					class: CodeTool
 				},
 				warning: {
 					class: WarningTool,
 					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+W',
+					shortcut: "CMD+SHIFT+W"
 				},
 				underline: {
 					class: UnderlineTool,
-					shortcut: 'CMD+SHIFT+U',
+					shortcut: "CMD+SHIFT+U"
 				},
 				textalign: {
 					class: TextAlignTool,
 					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+A',
+					shortcut: "CMD+SHIFT+A"
 				},
 				strikethrough: {
-					class: StrikethroughTool,
+					class: StrikethroughTool
 				},
 				alert: {
-					class: AlertTool,
+					class: AlertTool
 				},
 				table: {
 					class: TableTool,
-					inlineToolbar: true,
+					inlineToolbar: true
 				},
 				quote: {
 					class: QuoteTool,
 					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+O',
+					shortcut: "CMD+SHIFT+O"
 				},
 				marker: {
 					class: MarkerTool,
-					shortcut: 'CMD+SHIFT+M',
+					shortcut: "CMD+SHIFT+M"
 				},
 				inlinecode: {
 					class: InlineCodeTool,
-					shortcut: 'CMD+SHIFT+I',
+					shortcut: "CMD+SHIFT+I"
 				},
 				delimiter: {
-					class: DelimiterTool,
+					class: DelimiterTool
 				},
 				raw: {
-					class: RawToolTool,
+					class: RawToolTool
 				},
 				checklist: {
 					class: ChecklistTool,
-					inlineToolbar: true,
+					inlineToolbar: true
 				},
 				simpleimage: {
-					class: SimpleImageTool,
+					class: SimpleImageTool
 				},
 				image: {
 					class: ImageTool,
 					config: {
 						uploader: {
-							urlSigner: this.urlSigner,
+							urlWithToken: this.urlWithToken,
 							baseURL: this.system.api.defaults.baseURL,
-							picker: this.openFileDialog,
-							getUploadFieldRef: this.getUploadFieldRef,
-						},
-					},
+							picker: this.setFileHandler,
+							getUploadFieldRef: this.getUploadFieldRef
+						}
+					}
 				},
 				attaches: {
 					class: AttachesTool,
 					config: {
 						uploader: {
-							urlSigner: this.urlSigner,
+							urlWithToken: this.urlWithToken,
 							baseURL: this.system.api.defaults.baseURL,
-							picker: this.openFileDialog,
-							getUploadFieldRef: this.getUploadFieldRef,
-						},
-					},
+							picker: this.setFileHandler,
+							getUploadFieldRef: this.getUploadFieldRef
+						}
+					}
 				},
 				personality: {
 					class: PersonalityTool,
 					config: {
 						uploader: {
-							urlSigner: this.urlSigner,
+							urlWithToken: this.urlWithToken,
 							baseURL: this.system.api.defaults.baseURL,
-							picker: this.openFileDialog,
-							getUploadFieldRef: this.getUploadFieldRef,
-						},
-					},
-				},
-			}
+							picker: this.setFileHandler,
+							getUploadFieldRef: this.getUploadFieldRef
+						}
+					}
+				}
+			};
 
 			// Build current tools config.
 			const tools = {};
@@ -310,9 +337,9 @@ export default {
 			}
 
 			return tools;
-		},
-	},
-}
+		}
+	}
+};
 </script>
 
 <style lang="css" scoped>
