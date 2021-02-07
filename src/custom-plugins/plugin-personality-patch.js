@@ -1,27 +1,28 @@
-import Personality from '@editorjs/personality';
-import Uploader from '../editorjs-uploader';
+import Personality from "@editorjs/personality";
+import Uploader from "../editorjs-uploader";
 
 /**
  * Patch allows custom uploader.
  * https://github.com/editor-js/personality/blob/master/src/index.js
  */
 export default class extends Personality {
-
 	constructor(args) {
 		super(args);
 		this.readOnly = !!args.readOnly;
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
-				...this.config,
+				...this.config
 			},
-			onUpload: (response) => this.onUpload({ body: response }),
-			onError: (error) => this.uploadingFailed(error),
+			onUpload: response => this.onUpload({ body: response }),
+			onError: error => this.uploadingFailed(error)
 		});
 	}
 
 	setFullImageSource(image) {
-		const imageUrlWithToken = this.uploader.config.uploader.urlWithToken(image) + '&key=system-medium-cover';
+		const imageUrlWithToken =
+			this.uploader.config.uploader.urlWithToken(image) +
+			"&key=system-medium-cover";
 		this.nodes.photo.style.background = `url('${imageUrlWithToken}') center center / cover no-repeat`;
 	}
 

@@ -54,6 +54,7 @@ export default class Uploader {
 						url: this.config.uploader.baseURL + "assets/" + file.id
 					}
 				};
+				//onPreview(this.config.uploader.urlWithToken(response.file.fileURL));
 				this.onUpload(response);
 			} else {
 				this.onError({

@@ -6,9 +6,7 @@
 			@esc="unsetFileHandler"
 		>
 			<v-card>
-				<v-card-title>
-					{{ $t("interfaces.file.description") }}
-				</v-card-title>
+				<v-card-title>{{ $t("upload_from_device") }}</v-card-title>
 				<v-card-text>
 					<v-upload
 						ref="vUploaderComponentRef"
@@ -135,6 +133,7 @@ export default {
 		value: function(newVal, oldVal) {
 			if (
 				!this.editorjsInstance ||
+				// @TODO use better method for comparing.
 				JSON.stringify(newVal?.blocks) === JSON.stringify(oldVal?.blocks)
 			)
 				return;
@@ -143,7 +142,8 @@ export default {
 				if (
 					this.editorjsInstance.configuration.holder.contains(
 						document.activeElement
-					)
+					) ||
+					this.fileHandler !== null
 				)
 					return;
 
@@ -152,7 +152,9 @@ export default {
 		},
 		disabled: function(newVal, oldVal) {
 			if (newVal !== oldVal) {
-				this.editorjsInstance.readOnly.toggle(newVal);
+				this.editorjsInstance.isReady.then(() => {
+					this.editorjsInstance.readOnly.toggle(newVal);
+				});
 			}
 		}
 	},
@@ -220,6 +222,13 @@ export default {
 		},
 
 		buildToolsOptions: function() {
+			const uploaderConfig = {
+				urlWithToken: this.urlWithToken,
+				baseURL: this.system.api.defaults.baseURL,
+				picker: this.setFileHandler,
+				getUploadFieldRef: this.getUploadFieldRef
+			};
+
 			const defaults = {
 				header: {
 					class: HeaderTool,
@@ -295,34 +304,19 @@ export default {
 				image: {
 					class: ImageTool,
 					config: {
-						uploader: {
-							urlWithToken: this.urlWithToken,
-							baseURL: this.system.api.defaults.baseURL,
-							picker: this.setFileHandler,
-							getUploadFieldRef: this.getUploadFieldRef
-						}
+						uploader: uploaderConfig
 					}
 				},
 				attaches: {
 					class: AttachesTool,
 					config: {
-						uploader: {
-							urlWithToken: this.urlWithToken,
-							baseURL: this.system.api.defaults.baseURL,
-							picker: this.setFileHandler,
-							getUploadFieldRef: this.getUploadFieldRef
-						}
+						uploader: uploaderConfig
 					}
 				},
 				personality: {
 					class: PersonalityTool,
 					config: {
-						uploader: {
-							urlWithToken: this.urlWithToken,
-							baseURL: this.system.api.defaults.baseURL,
-							picker: this.setFileHandler,
-							getUploadFieldRef: this.getUploadFieldRef
-						}
+						uploader: uploaderConfig
 					}
 				}
 			};
