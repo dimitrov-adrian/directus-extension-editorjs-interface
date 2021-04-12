@@ -51,14 +51,6 @@ import ImageTool from "./custom-plugins/plugin-image-patch";
 import AttachesTool from "./custom-plugins/plugin-attaches-patch";
 import PersonalityTool from "./custom-plugins/plugin-personality-patch";
 
-function debounce(fn, delay) {
-	let t;
-	return function() {
-		clearTimeout(t);
-		t = setTimeout(fn, delay);
-	};
-}
-
 export default {
 	props: {
 		value: {
@@ -352,11 +344,9 @@ export default {
 .monospace {
 	--v-input-font-family: var(--family-monospace);
 }
-
 .serif {
 	--v-input-font-family: var(--family-serif);
 }
-
 .sans-serif {
 	--v-input-font-family: var(--family-sans-serif);
 }
