@@ -7,25 +7,24 @@ More info at https://editorjs.io/
 
 ## Options
 
-| Option                | Description                                   | Default     |
-| --------------------- | --------------------------------------------- | ----------- |
-| `placeholder`         | Set text to appear in the canvas              | `''`        |
-| `tools`               | What tools to include in the editor           | _See below_ |
-| `toolsConfigOverride` | What custom html blocks to show in the editor | `null`      |
+| Option        | Description                          | Default     |
+| ------------- | ------------------------------------ | ----------- |
+| `placeholder` | Set text to appear in the canvas     | `''`        |
+| `tools`       | What tools to include in the editor  | _See below_ |
+| `font`        | Default font family to use in editor | sans-serif  |
+| `bordered`    | Displays border around the editor    | `false`     |
 
 ### Default tools
 
-```
-linktool,
-header,
-list,
-code,
-image,
-paragraph,
-delimeter,
-checklist,
-quote
-```
+- header
+- list
+- code
+- image
+- paragraph
+- delimeter
+- checklist
+- quote
+- underline
 
 ### Output
 
@@ -34,9 +33,14 @@ quote
     "version": "2.19.0", // block editor version,
     "time": 1607174917790, // timestamp of content change>,
     "blocks": [
-        // {
-        // Block data in object
-        // }
+        // ...
+        {
+            "type" : "paragraph",
+            "data" : {
+                "text" : "Paragraph from editorjs interface in Directus."
+            }
+        },
+        // ...
     ]
 }
 ```

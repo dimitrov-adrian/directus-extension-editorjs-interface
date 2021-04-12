@@ -1,4 +1,4 @@
-import Interface from "./interface.vue";
+import InterfaceComponent from "./interface.vue";
 
 export default {
 	id: "extension-editorjs",
@@ -6,7 +6,7 @@ export default {
 	description:
 		"Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js",
 	icon: "add_circle",
-	component: Interface,
+	component: InterfaceComponent,
 	types: ["json"],
 	options: [
 		{
