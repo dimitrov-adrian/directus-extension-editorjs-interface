@@ -228,6 +228,5 @@
 
 /* Marker */
 .codex-editor .cdx-marker {
-	background: var(--secondary-25);
-	color: var(--secondary-150);
+	background: var(--warning-alt);
 }
