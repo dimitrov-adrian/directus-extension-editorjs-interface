@@ -230,7 +230,7 @@ export default {
 				list: {
 					class: ListTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+O"
+					shortcut: "CMD+SHIFT+1"
 				},
 				embed: {
 					class: EmbedTool,
