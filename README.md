@@ -5,6 +5,19 @@
 Block-styled editor for rich media stories, outputs clean data in JSON.
 More info at https://editorjs.io/
 
+## Installation
+
+Create an `editorjs` folder into the `extensions/interfaces` folder of your Directus project and then copy the `dist/extensions/interfaces/editorjs/index.js` of this repository into it.
+
+You can also clone this repository and build it by yourself.
+
+## Usage
+
+To use this custom interface into a data model, you have to:
+- Add a simple field with **JSON** type
+- In the **Interface** section on the left choose **Editor.js**
+- Enjoy ! 🎉
+
 ## Options
 
 | Option        | Description                          | Default     |
