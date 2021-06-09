@@ -73,7 +73,7 @@ export default {
 				"code",
 				"image",
 				"paragraph",
-				"delimeter",
+				"delimiter",
 				"checklist",
 				"quote",
 				"underline"

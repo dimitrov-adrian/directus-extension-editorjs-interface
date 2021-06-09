@@ -23,7 +23,7 @@ export default {
 			type: "string",
 			meta: {
 				width: "half",
-				interface: "dropdown",
+				interface: "select-dropdown",
 				options: {
 					choices: [
 						{ text: "sans-serif", value: "sans-serif" },
@@ -55,7 +55,7 @@ export default {
 			},
 			meta: {
 				width: "half",
-				interface: "dropdown-multiselect",
+				interface: "select-multiple-dropdown",
 				options: {
 					choices: [
 						{ value: "header", text: "Header" },
