@@ -50,6 +50,7 @@ import ListTool from "./custom-plugins/plugin-list-patch";
 import ImageTool from "./custom-plugins/plugin-image-patch";
 import AttachesTool from "./custom-plugins/plugin-attaches-patch";
 import PersonalityTool from "./custom-plugins/plugin-personality-patch";
+import debounce from "debounce";
 
 export default {
 	props: {
@@ -198,7 +199,7 @@ export default {
 			};
 		},
 
-		editorValueEmitter: function(context) {
+		editorValueEmitter: debounce(function saver(context) {
 			if (this.$props.disabled || !context) return;
 
 			context.saver
@@ -211,7 +212,7 @@ export default {
 					}
 				})
 				.catch(error => this.$emit("error", "Cannot get content"));
-		},
+		}, 250),
 
 		buildToolsOptions: function() {
 			const uploaderConfig = {
