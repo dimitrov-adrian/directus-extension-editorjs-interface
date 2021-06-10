@@ -342,13 +342,13 @@ export default {
 	border-color: var(--primary);
 }
 .monospace {
-	--v-input-font-family: var(--family-monospace);
+	font-family: var(--family-monospace);
 }
 .serif {
-	--v-input-font-family: var(--family-serif);
+	font-family: var(--family-serif);
 }
 .sans-serif {
-	--v-input-font-family: var(--family-sans-serif);
+	font-family: var(--family-sans-serif);
 }
 </style>
 
