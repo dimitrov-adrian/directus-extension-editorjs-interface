@@ -7,7 +7,7 @@ export default {
 	input: "src/index.js",
 	output: {
 		format: "es",
-		file: "dist/extensions/editorjs-interface/index.js"
+		file: "dist/extensions/interfaces/editorjs/index.js"
 	},
 	plugins: [
 		process.env.NOTERSER ? null : terser(),
