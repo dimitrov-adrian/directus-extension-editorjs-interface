@@ -11,7 +11,7 @@ export default {
 	options: [
 		{
 			field: "placeholder",
-			name: "Placeholder",
+			name: "$t:placeholder",
 			meta: {
 				width: "half",
 				interface: "text-input"
@@ -19,7 +19,7 @@ export default {
 		},
 		{
 			field: "font",
-			name: "Font",
+			name: "$t:font",
 			type: "string",
 			meta: {
 				width: "half",
@@ -38,7 +38,7 @@ export default {
 		},
 		{
 			field: "tools",
-			name: "Tools",
+			name: "$t:interfaces.input-rich-text-html.toolbar",
 			type: "json",
 			schema: {
 				default_value: [

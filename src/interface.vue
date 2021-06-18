@@ -56,15 +56,15 @@ export default {
 	props: {
 		value: {
 			type: Object,
-			default: null
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		placeholder: {
 			type: String,
-			default: null
+			default: null,
 		},
 		tools: {
 			type: Array,
@@ -77,22 +77,24 @@ export default {
 				"delimiter",
 				"checklist",
 				"quote",
-				"underline"
-			]
+				"underline",
+			],
 		},
 		font: {
 			type: String,
-			default: "sans-serif"
+			default: "sans-serif",
 		},
 		bordered: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
+
+	emits: ["input", "error"],
 
 	inject: ["system"],
 
-	mounted: function() {
+	mounted: function () {
 		this.editorjsInstance = new EditorJS({
 			logLevel: "ERROR",
 			holder: this.$refs.editorElement,
@@ -101,29 +103,29 @@ export default {
 			placeholder: this.$props.placeholder,
 			tools: this.buildToolsOptions(),
 			minHeight: 24,
-			onChange: this.editorValueEmitter
+			onChange: this.editorValueEmitter,
 		});
 	},
 
-	unmounted: function() {
+	unmounted: function () {
 		if (this.editorjsInstance) {
 			this.editorjsInstance.destroy();
 		}
 	},
 
-	data: function() {
+	data: function () {
 		return {
 			fileHandler: null,
 			editorjsInstance: null,
 			className: {
 				[this.$props.font]: true,
-				bordered: this.$props.bordered
-			}
+				bordered: this.$props.bordered,
+			},
 		};
 	},
 
 	watch: {
-		value: function(newVal, oldVal) {
+		value: function (newVal, oldVal) {
 			if (
 				!this.editorjsInstance ||
 				// @TODO use better method for comparing.
@@ -143,34 +145,34 @@ export default {
 				this.editorjsInstance.render(this.getPreparedValue(newVal));
 			});
 		},
-		disabled: function(newVal, oldVal) {
+		disabled: function (newVal, oldVal) {
 			if (newVal !== oldVal) {
 				this.editorjsInstance.isReady.then(() => {
 					this.editorjsInstance.readOnly.toggle(newVal);
 				});
 			}
-		}
+		},
 	},
 
 	methods: {
-		unsetFileHandler: function() {
+		unsetFileHandler: function () {
 			this.fileHandler = null;
 		},
 
-		setFileHandler: function(handler) {
+		setFileHandler: function (handler) {
 			this.fileHandler = handler;
 		},
 
-		handleFile: function(event) {
+		handleFile: function (event) {
 			this.fileHandler(event);
 			this.unsetFileHandler();
 		},
 
-		getUploadFieldRef: function() {
+		getUploadFieldRef: function () {
 			return this.$refs.vUploaderComponentRef;
 		},
 
-		urlWithToken: function(url) {
+		urlWithToken: function (url) {
 			if (!url || url.substr(0, 1) !== "/") {
 				return url;
 			}
@@ -183,19 +185,19 @@ export default {
 			}
 		},
 
-		getPreparedValue: function(value) {
+		getPreparedValue: function (value) {
 			if (typeof value !== "object") {
 				return {
 					time: null,
 					version: 0,
-					blocks: []
+					blocks: [],
 				};
 			}
 
 			return {
 				time: value?.time,
 				version: value?.version,
-				blocks: value?.blocks || []
+				blocks: value?.blocks || [],
 			};
 		},
 
@@ -204,114 +206,114 @@ export default {
 
 			context.saver
 				.save()
-				.then(result => {
+				.then((result) => {
 					if (!result || result.blocks.length < 1) {
 						this.$emit("input", null);
 					} else {
 						this.$emit("input", result);
 					}
 				})
-				.catch(error => this.$emit("error", "Cannot get content"));
+				.catch((error) => this.$emit("error", "Cannot get content"));
 		}, 250),
 
-		buildToolsOptions: function() {
+		buildToolsOptions: function () {
 			const uploaderConfig = {
 				urlWithToken: this.urlWithToken,
 				baseURL: this.system.api.defaults.baseURL,
 				picker: this.setFileHandler,
-				getUploadFieldRef: this.getUploadFieldRef
+				getUploadFieldRef: this.getUploadFieldRef,
 			};
 
 			const defaults = {
 				header: {
 					class: HeaderTool,
 					shortcut: "CMD+SHIFT+H",
-					inlineToolbar: true
+					inlineToolbar: true,
 				},
 				list: {
 					class: ListTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+1"
+					shortcut: "CMD+SHIFT+1",
 				},
 				embed: {
 					class: EmbedTool,
-					inlineToolbar: true
+					inlineToolbar: true,
 				},
 				paragraph: {
 					class: ParagraphTool,
-					inlineToolbar: true
+					inlineToolbar: true,
 				},
 				code: {
-					class: CodeTool
+					class: CodeTool,
 				},
 				warning: {
 					class: WarningTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+W"
+					shortcut: "CMD+SHIFT+W",
 				},
 				underline: {
 					class: UnderlineTool,
-					shortcut: "CMD+SHIFT+U"
+					shortcut: "CMD+SHIFT+U",
 				},
 				textalign: {
 					class: TextAlignTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+A"
+					shortcut: "CMD+SHIFT+A",
 				},
 				strikethrough: {
-					class: StrikethroughTool
+					class: StrikethroughTool,
 				},
 				alert: {
-					class: AlertTool
+					class: AlertTool,
 				},
 				table: {
 					class: TableTool,
-					inlineToolbar: true
+					inlineToolbar: true,
 				},
 				quote: {
 					class: QuoteTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+O"
+					shortcut: "CMD+SHIFT+O",
 				},
 				marker: {
 					class: MarkerTool,
-					shortcut: "CMD+SHIFT+M"
+					shortcut: "CMD+SHIFT+M",
 				},
 				inlinecode: {
 					class: InlineCodeTool,
-					shortcut: "CMD+SHIFT+I"
+					shortcut: "CMD+SHIFT+I",
 				},
 				delimiter: {
-					class: DelimiterTool
+					class: DelimiterTool,
 				},
 				raw: {
-					class: RawToolTool
+					class: RawToolTool,
 				},
 				checklist: {
 					class: ChecklistTool,
-					inlineToolbar: true
+					inlineToolbar: true,
 				},
 				simpleimage: {
-					class: SimpleImageTool
+					class: SimpleImageTool,
 				},
 				image: {
 					class: ImageTool,
 					config: {
-						uploader: uploaderConfig
-					}
+						uploader: uploaderConfig,
+					},
 				},
 				attaches: {
 					class: AttachesTool,
 					config: {
-						uploader: uploaderConfig
-					}
+						uploader: uploaderConfig,
+					},
 				},
 				personality: {
 					class: PersonalityTool,
 					config: {
-						uploader: uploaderConfig
-					}
-				}
+						uploader: uploaderConfig,
+					},
+				},
 			};
 
 			// Build current tools config.
@@ -324,8 +326,8 @@ export default {
 			}
 
 			return tools;
-		}
-	}
+		},
+	},
 };
 </script>
 
