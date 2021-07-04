@@ -12,10 +12,10 @@ export default class extends ImageTool {
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
-				...this.config
+				...this.config,
 			},
-			onUpload: response => this.onUpload(response),
-			onError: error => this.uploadingFailed(error)
+			onUpload: (response) => this.onUpload(response),
+			onError: (error) => this.uploadingFailed(error),
 		});
 	}
 
@@ -23,7 +23,7 @@ export default class extends ImageTool {
 		this._data.file = file || {};
 		if (file && file.url) {
 			const imageUrl =
-				this.config.uploader.urlWithToken(file.url) +
+				this.config.uploader.addTokenToURL(file.url) +
 				"&key=system-large-contain";
 			this.ui.fillImage(imageUrl);
 		}

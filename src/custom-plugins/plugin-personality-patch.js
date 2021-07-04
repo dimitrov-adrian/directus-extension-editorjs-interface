@@ -12,16 +12,16 @@ export default class extends Personality {
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
-				...this.config
+				...this.config,
 			},
-			onUpload: response => this.onUpload({ body: response }),
-			onError: error => this.uploadingFailed(error)
+			onUpload: (response) => this.onUpload({ body: response }),
+			onError: (error) => this.uploadingFailed(error),
 		});
 	}
 
 	setFullImageSource(image) {
 		const imageUrlWithToken =
-			this.uploader.config.uploader.urlWithToken(image) +
+			this.uploader.config.uploader.addTokenToURL(image) +
 			"&key=system-medium-cover";
 		this.nodes.photo.style.background = `url('${imageUrlWithToken}') center center / cover no-repeat`;
 	}

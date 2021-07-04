@@ -16,10 +16,10 @@ export default class extends AttachesTool {
 		this.uploader = new Uploader({
 			config: {
 				...args.config,
-				...this.config
+				...this.config,
 			},
-			onUpload: response => this.onUpload({ body: response }),
-			onError: error => this.uploadingFailed(error)
+			onUpload: (response) => this.onUpload({ body: response }),
+			onError: (error) => this.uploadingFailed(error),
 		});
 	}
 
@@ -36,7 +36,7 @@ export default class extends AttachesTool {
 				"a.cdx-attaches__download-button"
 			);
 			if (downloadButton) {
-				downloadButton.href = this.uploader.config.uploader.urlWithToken(
+				downloadButton.href = this.uploader.config.uploader.addTokenToURL(
 					this.data.file.url
 				);
 			}

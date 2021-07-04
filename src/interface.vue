@@ -1,34 +1,45 @@
 <template>
-	<div>
-		<v-dialog
-			:active="fileHandler !== null"
-			@toggle="unsetFileHandler"
-			@esc="unsetFileHandler"
-		>
-			<v-card>
-				<v-card-title>{{ $t("upload_from_device") }}</v-card-title>
-				<v-card-text>
-					<v-upload
-						ref="vUploaderComponentRef"
-						@input="handleFile"
-						:multiple="false"
-						from-library
-						from-url
-					/>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="unsetFileHandler">
-						{{ $t("cancel") }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-		<div :class="className" ref="editorElement"></div>
-	</div>
+	<v-dialog
+		:model-value="fileHandler !== null"
+		@update:model-value="unsetFileHandler"
+		@esc="unsetFileHandler"
+	>
+		<v-card>
+			<v-card-title>
+				<i18n-t keypath="upload_from_device" />
+			</v-card-title>
+			<v-card-text>
+				<v-upload
+					:ref="uploaderComponentElement"
+					@input="handleFile"
+					:multiple="false"
+					from-library
+					from-url
+				/>
+			</v-card-text>
+			<v-card-actions>
+				<v-button secondary @click="unsetFileHandler">
+					<i18n-t keypath="cancel" />
+				</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+	<div :class="className" ref="editorElement"></div>
 </template>
 
 <script>
+import {
+	defineComponent,
+	ref,
+	onMounted,
+	onUnmounted,
+	watch,
+	inject,
+} from "vue";
+import debounce from "debounce";
 import EditorJS from "@editorjs/editorjs";
+
+// Plugins
 import SimpleImageTool from "@editorjs/simple-image";
 import ParagraphTool from "@editorjs/paragraph";
 import QuoteTool from "@editorjs/quote";
@@ -50,9 +61,9 @@ import ListTool from "./custom-plugins/plugin-list-patch";
 import ImageTool from "./custom-plugins/plugin-image-patch";
 import AttachesTool from "./custom-plugins/plugin-attaches-patch";
 import PersonalityTool from "./custom-plugins/plugin-personality-patch";
-import debounce from "debounce";
 
-export default {
+export default defineComponent({
+	emits: ["input", "error"],
 	props: {
 		value: {
 			type: Object,
@@ -68,17 +79,7 @@ export default {
 		},
 		tools: {
 			type: Array,
-			default: () => [
-				"header",
-				"list",
-				"code",
-				"image",
-				"paragraph",
-				"delimiter",
-				"checklist",
-				"quote",
-				"underline",
-			],
+			default: () => [],
 		},
 		font: {
 			type: String,
@@ -89,103 +90,123 @@ export default {
 			default: false,
 		},
 	},
+	setup(props, { emit, attrs }) {
+		const { addTokenToURL, api } = inject("system");
+		const editorjsInstance = ref(null);
+		const uploaderComponentElement = ref(null);
+		const editorElement = ref(null);
+		const fileHandler = ref(null);
 
-	emits: ["input", "error"],
+		const editorValueEmitter = debounce(function saver(context) {
+			if (props.disabled || !context) return;
 
-	inject: ["system"],
+			context.saver
+				.save()
+				.then((result) => {
+					if (!result || result.blocks.length < 1) {
+						emit("input", null);
+					} else {
+						emit("input", result);
+					}
+				})
+				.catch(() => emit("error", "Cannot get content"));
+		}, 250);
 
-	mounted: function () {
-		this.editorjsInstance = new EditorJS({
-			logLevel: "ERROR",
-			holder: this.$refs.editorElement,
-			data: this.getPreparedValue(this.$props.value),
-			readOnly: this.$props.disabled,
-			placeholder: this.$props.placeholder,
-			tools: this.buildToolsOptions(),
-			minHeight: 24,
-			onChange: this.editorValueEmitter,
+		onMounted(() => {
+			editorjsInstance.value = new EditorJS({
+				// @ts-ignore
+				logLevel: "ERROR",
+				holder: editorElement.value,
+				data: getPreparedValue(props.value),
+				readOnly: props.disabled,
+				placeholder: props.placeholder,
+				tools: buildToolsOptions(),
+				minHeight: 24,
+				onChange: editorValueEmitter,
+			});
+
+			if (attrs.autofocus) {
+				editorjsInstance.value.focus();
+			}
 		});
-	},
 
-	unmounted: function () {
-		if (this.editorjsInstance) {
-			this.editorjsInstance.destroy();
-		}
-	},
+		onUnmounted(() => {
+			if (!editorjsInstance.value) return;
+			editorjsInstance.value.destroy();
+		});
 
-	data: function () {
-		return {
-			fileHandler: null,
-			editorjsInstance: null,
-			className: {
-				[this.$props.font]: true,
-				bordered: this.$props.bordered,
-			},
-		};
-	},
+		watch(
+			() => props.disabled,
+			(newVal, oldVal) => {
+				if (newVal === oldVal || !editorjsInstance.value) return;
+				editorjsInstance.value.isReady.then(() => {
+					editorjsInstance.value.readOnly.toggle(newVal);
+				});
+			}
+		);
 
-	watch: {
-		value: function (newVal, oldVal) {
-			if (
-				!this.editorjsInstance ||
-				// @TODO use better method for comparing.
-				JSON.stringify(newVal?.blocks) === JSON.stringify(oldVal?.blocks)
-			)
-				return;
-
-			this.editorjsInstance.isReady.then(() => {
+		watch(
+			() => props.value,
+			(newVal, oldVal) => {
 				if (
-					this.editorjsInstance.configuration.holder.contains(
-						document.activeElement
-					) ||
-					this.fileHandler !== null
+					!editorjsInstance.value ||
+					// @TODO use better method for comparing.
+					JSON.stringify(newVal?.blocks) === JSON.stringify(oldVal?.blocks)
 				)
 					return;
 
-				this.editorjsInstance.render(this.getPreparedValue(newVal));
-			});
-		},
-		disabled: function (newVal, oldVal) {
-			if (newVal !== oldVal) {
-				this.editorjsInstance.isReady.then(() => {
-					this.editorjsInstance.readOnly.toggle(newVal);
+				editorjsInstance.value.isReady.then(() => {
+					if (
+						editorjsInstance.value.configuration.holder.contains(
+							document.activeElement
+						) ||
+						fileHandler.value !== null
+					)
+						return;
+					editorjsInstance.value.render(getPreparedValue(newVal));
 				});
 			}
-		},
-	},
+		);
 
-	methods: {
-		unsetFileHandler: function () {
-			this.fileHandler = null;
-		},
+		return {
+			editorjsInstance,
+			editorElement,
+			uploaderComponentElement,
+			fileHandler,
+			className: {
+				[props.font]: true,
+				bordered: props.bordered,
+			},
 
-		setFileHandler: function (handler) {
-			this.fileHandler = handler;
-		},
+			// Methods
+			editorValueEmitter,
+			unsetFileHandler,
+			setFileHandler,
+			handleFile,
+			getUploadFieldElement,
+			addTokenToURL,
+			getPreparedValue,
+			buildToolsOptions,
+		};
 
-		handleFile: function (event) {
-			this.fileHandler(event);
-			this.unsetFileHandler();
-		},
+		function unsetFileHandler() {
+			fileHandler.value = null;
+		}
 
-		getUploadFieldRef: function () {
-			return this.$refs.vUploaderComponentRef;
-		},
+		function setFileHandler(handler) {
+			fileHandler.value = handler;
+		}
 
-		urlWithToken: function (url) {
-			if (!url || url.substr(0, 1) !== "/") {
-				return url;
-			}
+		function handleFile(event) {
+			fileHandler.value(event);
+			unsetFileHandler();
+		}
 
-			const token = this.system.api.defaults.headers.Authorization.substr(7);
-			if (url.indexOf("?") === -1) {
-				return `${url}?access_token=${token}`;
-			} else {
-				return `${url}&access_token=${token}`;
-			}
-		},
+		function getUploadFieldElement() {
+			return uploaderComponentElement;
+		}
 
-		getPreparedValue: function (value) {
+		function getPreparedValue(value) {
 			if (typeof value !== "object") {
 				return {
 					time: null,
@@ -199,29 +220,17 @@ export default {
 				version: value?.version,
 				blocks: value?.blocks || [],
 			};
-		},
+		}
 
-		editorValueEmitter: debounce(function saver(context) {
-			if (this.$props.disabled || !context) return;
-
-			context.saver
-				.save()
-				.then((result) => {
-					if (!result || result.blocks.length < 1) {
-						this.$emit("input", null);
-					} else {
-						this.$emit("input", result);
-					}
-				})
-				.catch((error) => this.$emit("error", "Cannot get content"));
-		}, 250),
-
-		buildToolsOptions: function () {
+		/**
+		 * @returns {{}}
+		 */
+		function buildToolsOptions() {
 			const uploaderConfig = {
-				urlWithToken: this.urlWithToken,
-				baseURL: this.system.api.defaults.baseURL,
-				picker: this.setFileHandler,
-				getUploadFieldRef: this.getUploadFieldRef,
+				addTokenToURL,
+				baseURL: api.defaults.baseURL,
+				picker: setFileHandler,
+				getUploadFieldElement,
 			};
 
 			const defaults = {
@@ -319,16 +328,17 @@ export default {
 			// Build current tools config.
 			const tools = {};
 
-			for (const toolName of this.$props.tools) {
-				if (toolName in defaults) {
+			for (const toolName of props.tools) {
+				// @ts-ignore
+				if (defaults.hasOwnProperty(toolName)) {
 					tools[toolName.toString()] = defaults[toolName];
 				}
 			}
 
 			return tools;
-		},
+		}
 	},
-};
+});
 </script>
 
 <style lang="css" scoped>

@@ -16,15 +16,15 @@ export default class Uploader {
 
 		// @TODO Very ugly, but until found better way.
 		setTimeout(() => {
-			if (!this.config.uploader.getUploadFieldRef) {
+			if (!this.config.uploader.getUploadFieldElement) {
 				return;
 			}
 
 			try {
-				this.config.uploader.getUploadFieldRef().onBrowseSelect({
+				this.config.uploader.getUploadFieldElement().onBrowseSelect({
 					target: {
-						files: [file]
-					}
+						files: [file],
+					},
 				});
 			} catch (error) {}
 		}, 500);
@@ -34,13 +34,13 @@ export default class Uploader {
 		this.onUpload({
 			success: 1,
 			file: {
-				url: url
-			}
+				url: url,
+			},
 		});
 	}
 
 	uploadSelectedFile({ onPreview }) {
-		this.config.uploader.picker(file => {
+		this.config.uploader.picker((file) => {
 			if (file) {
 				const response = {
 					success: 1,
@@ -51,15 +51,15 @@ export default class Uploader {
 						extension: file.filename_download.split(".").pop(),
 						fileId: file.id,
 						fileURL: this.config.uploader.baseURL + "files/" + file.id,
-						url: this.config.uploader.baseURL + "assets/" + file.id
-					}
+						url: this.config.uploader.baseURL + "assets/" + file.id,
+					},
 				};
-				//onPreview(this.config.uploader.urlWithToken(response.file.fileURL));
+				onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
 				this.onUpload(response);
 			} else {
 				this.onError({
 					success: 0,
-					message: "No file selected"
+					message: "No file selected",
 				});
 			}
 		});

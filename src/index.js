@@ -14,8 +14,8 @@ export default {
 			name: "$t:placeholder",
 			meta: {
 				width: "half",
-				interface: "text-input"
-			}
+				interface: "text-input",
+			},
 		},
 		{
 			field: "font",
@@ -26,15 +26,15 @@ export default {
 				interface: "select-dropdown",
 				options: {
 					choices: [
-						{ text: "sans-serif", value: "sans-serif" },
-						{ text: "monospace", value: "monospace" },
-						{ text: "serif", value: "serif" }
-					]
-				}
+						{ text: "$t:sans_serif", value: "sans-serif" },
+						{ text: "$t:monospace", value: "monospace" },
+						{ text: "$t:serif", value: "serif" },
+					],
+				},
 			},
 			schema: {
-				default_value: "sans-serif"
-			}
+				default_value: "sans-serif",
+			},
 		},
 		{
 			field: "tools",
@@ -50,8 +50,8 @@ export default {
 					"delimiter",
 					"checklist",
 					"quote",
-					"underline"
-				]
+					"underline",
+				],
 			},
 			meta: {
 				width: "half",
@@ -78,10 +78,10 @@ export default {
 						{ value: "delimiter", text: "Delimiter" },
 						{ value: "checklist", text: "Checklist" },
 						{ value: "personality", text: "Personality" },
-						{ value: "raw", text: "Raw HTML" }
-					]
-				}
-			}
+						{ value: "raw", text: "Raw HTML" },
+					],
+				},
+			},
 		},
 		{
 			field: "bordered",
@@ -89,11 +89,11 @@ export default {
 			type: "boolean",
 			meta: {
 				width: "half",
-				interface: "toggle"
+				interface: "toggle",
 			},
 			schema: {
-				default_value: false
-			}
-		}
-	]
+				default_value: false,
+			},
+		},
+	],
 };
