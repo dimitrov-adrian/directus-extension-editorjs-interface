@@ -15,7 +15,7 @@
   ],
   "directus:extension": {
     "type": "interface",
-    "path": "dist/index.js",
+    "path": "index.js",
     "source": "src/index.js",
     "host": "v9.0.0-rc.85",
     "hidden": false

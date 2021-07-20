@@ -7,37 +7,39 @@ More info at https://editorjs.io/
 
 ## Installation
 
-Create an `editorjs` folder into the `extensions/interfaces` folder of your Directus project and then copy the `dist/extensions/interfaces/editorjs/index.js` of this repository into it.
+### Directus as npm package
+
+If using Directus as npm package, you can include the extension as package in your `package.json` file as:
+
+```json
+	"dependencies": {
+		"directus-extension-editorjs": "latest"
+	}
+```
+
+### Docker installation / extensions directory
+
+If you want to use in docker container or into the extension directory, you need to add it
+manualy from the package tar
+
+```bash
+cd <your directus extensions directory>/interfaces
+curl -LO directus-extension-editorjs-interface.tgz
+tar xvf directus-extension-editorjs*.tgz
+mv package editorjs
+```
+
+### Build by yourself
 
 You can also clone this repository and build it by yourself.
 
 ## Usage
 
 To use this custom interface into a data model, you have to:
+
 - Add a simple field with **JSON** type
 - In the **Interface** section on the left choose **Editor.js**
 - Enjoy ! 🎉
-
-## Options
-
-| Option        | Description                          | Default     |
-| ------------- | ------------------------------------ | ----------- |
-| `placeholder` | Set text to appear in the canvas     | `''`        |
-| `tools`       | What tools to include in the editor  | _See below_ |
-| `font`        | Default font family to use in editor | sans-serif  |
-| `bordered`    | Displays border around the editor    | `false`     |
-
-### Default tools
-
-- header
-- list
-- code
-- image
-- paragraph
-- delimeter
-- checklist
-- quote
-- underline
 
 ### Output
 
