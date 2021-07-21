@@ -92,7 +92,7 @@ export default {
 				interface: "toggle",
 			},
 			schema: {
-				default_value: false,
+				default_value: true,
 			},
 		},
 	],
