@@ -15,17 +15,18 @@
   ],
   "directus:extension": {
     "type": "interface",
-    "path": "index.js",
+    "path": "dist/index.js",
     "source": "src/index.js",
     "host": "v9.0.0-rc.85",
     "hidden": false
   },
   "scripts": {
-    "build": "directus-extension build",
-    "prepack": "npm run build"
+    "dist": "directus-extension build && mv dist editorjs && zip -r editorjs.zip editorjs",
+    "prepack": "directus-extension build"
   },
   "devDependencies": {
     "@canburaks/text-align-editorjs": "^1.0.4",
+    "@directus/extension-sdk": "^9.0.0-rc.85",
     "@editorjs/attaches": "^1.1.0",
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.7.0",
@@ -47,7 +48,6 @@
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "debounce": "^1.2.1",
     "editorjs-alert": "^1.0.3",
-    "editorjs-list": "^2.1.4",
-    "@directus/extension-sdk": "*"
+    "editorjs-list": "^2.1.4"
   }
 }

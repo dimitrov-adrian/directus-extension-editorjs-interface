@@ -1,3 +1,5 @@
 node_modules
+/editorjs
+/dist
 /*.tgz
-/index.js
+/*.zip

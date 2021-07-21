@@ -12,9 +12,9 @@ More info at https://editorjs.io/
 If using Directus as npm package, you can include the extension as package in your `package.json` file as:
 
 ```json
-	"dependencies": {
-		"directus-extension-editorjs": "latest"
-	}
+"dependencies": {
+	"directus-extension-editorjs": "latest"
+}
 ```
 
 ### Docker installation / extensions directory
@@ -24,9 +24,8 @@ manualy from the package tar
 
 ```bash
 cd <your directus extensions directory>/interfaces
-curl -LO directus-extension-editorjs-interface.tgz
-tar xvf directus-extension-editorjs*.tgz
-mv package editorjs
+curl -LO https://github.com/dimitrov-adrian/directus-extension-editorjs-interface/releases/latest/download/editorjs.zip
+unzip editorjs.zip
 ```
 
 ### Build by yourself
@@ -41,21 +40,21 @@ To use this custom interface into a data model, you have to:
 - In the **Interface** section on the left choose **Editor.js**
 - Enjoy ! 🎉
 
-### Output
+### Example output of the interface
 
-```javascript
+```json
 {
-    "version": "2.19.0", // block editor version,
-    "time": 1607174917790, // timestamp of content change>,
-    "blocks": [
-        // ...
-        {
-            "type" : "paragraph",
-            "data" : {
-                "text" : "Paragraph from editorjs interface in Directus."
-            }
-        },
-        // ...
-    ]
+	"version": "2.19.0",
+	"time": 1607174917790,
+	"blocks": [
+		{
+			"type": "paragraph",
+			"data": {
+				"text": "Paragraph from editorjs interface in Directus."
+			}
+		}
+	]
 }
 ```
+
+For more info check https://editorjs.io/base-concepts#what-is-clean-data
