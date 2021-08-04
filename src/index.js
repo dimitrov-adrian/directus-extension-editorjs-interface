@@ -95,5 +95,18 @@ export default {
 				default_value: true,
 			},
 		},
+		{
+			field: "folder",
+			name: "$t:interfaces.system-folder.folder",
+			type: "uuid",
+			meta: {
+				width: "full",
+				interface: "system-folder",
+				note: "$t:interfaces.system-folder.field_hint",
+			},
+			schema: {
+				default_value: undefined,
+			},
+		},
 	],
 };

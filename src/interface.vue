@@ -13,6 +13,7 @@
 					:ref="uploaderComponentElement"
 					@input="handleFile"
 					:multiple="false"
+					:folder="folder"
 					from-library
 					from-url
 				/>
@@ -79,7 +80,17 @@ export default defineComponent({
 		},
 		tools: {
 			type: Array,
-			default: () => [],
+			default: () => [
+				"header",
+				"list",
+				"code",
+				"image",
+				"paragraph",
+				"delimiter",
+				"checklist",
+				"quote",
+				"underline",
+			],
 		},
 		font: {
 			type: String,
@@ -87,7 +98,11 @@ export default defineComponent({
 		},
 		bordered: {
 			type: Boolean,
-			default: false,
+			default: true,
+		},
+		folder: {
+			type: String,
+			default: undefined,
 		},
 	},
 	setup(props, { emit, attrs }) {
@@ -177,6 +192,7 @@ export default defineComponent({
 				[props.font]: true,
 				bordered: props.bordered,
 			},
+			file: props.file,
 
 			// Methods
 			editorValueEmitter,
