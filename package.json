@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-editorjs",
-  "version": "v1.0.0-rc.85",
+  "version": "v1.0.0-rc.88",
   "author": {
     "email": "dimitrov.adrian@gmail.com",
     "name": "Adrian Dimitrov"
@@ -17,7 +17,7 @@
     "type": "interface",
     "path": "dist/index.js",
     "source": "src/index.js",
-    "host": "v9.0.0-rc.85",
+    "host": "^v9.0.0-rc.88",
     "hidden": false
   },
   "scripts": {
