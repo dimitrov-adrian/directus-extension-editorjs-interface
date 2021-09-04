@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@canburaks/text-align-editorjs": "^1.0.4",
-    "@directus/extension-sdk": "^9.0.0-rc.85",
+    "@directus/extensions-sdk": "^9.0.0-rc.92",
     "@editorjs/attaches": "^1.1.0",
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.7.0",
