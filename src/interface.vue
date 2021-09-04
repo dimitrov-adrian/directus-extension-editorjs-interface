@@ -106,7 +106,28 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit, attrs }) {
-		const { addTokenToURL, api } = inject("system");
+		const api = inject("api");
+
+		function addQueryToPath(path, query) {
+			const queryParams = [];
+
+			for (const [key, value] of Object.entries(query)) {
+				queryParams.push(`${key}=${value}`);
+			}
+
+			return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
+		}
+
+		function getToken() {
+			return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+		}
+
+		function addTokenToURL(url, token) {
+			const accessToken = token || getToken();
+			if (!accessToken) return url;
+			return addQueryToPath(url, { access_token: accessToken });
+		}
+
 		const editorjsInstance = ref(null);
 		const uploaderComponentElement = ref(null);
 		const editorElement = ref(null);
