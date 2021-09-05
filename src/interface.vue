@@ -154,7 +154,7 @@ export default defineComponent({
 				logLevel: "ERROR",
 				holder: editorElement.value,
 				data: getPreparedValue(props.value),
-				readOnly: props.disabled,
+				readOnly: false,
 				placeholder: props.placeholder,
 				tools: buildToolsOptions(),
 				minHeight: 24,
@@ -174,10 +174,9 @@ export default defineComponent({
 		watch(
 			() => props.disabled,
 			(newVal, oldVal) => {
-				if (newVal === oldVal || !editorjsInstance.value) return;
-				editorjsInstance.value.isReady.then(() => {
-					editorjsInstance.value.readOnly.toggle(newVal);
-				});
+				if (newVal === oldVal || !editorjsInstance.value) {
+					return;
+				}
 			}
 		);
 
@@ -188,8 +187,9 @@ export default defineComponent({
 					!editorjsInstance.value ||
 					// @TODO use better method for comparing.
 					JSON.stringify(newVal?.blocks) === JSON.stringify(oldVal?.blocks)
-				)
+				) {
 					return;
+				}
 
 				editorjsInstance.value.isReady.then(() => {
 					if (
@@ -197,8 +197,9 @@ export default defineComponent({
 							document.activeElement
 						) ||
 						fileHandler.value !== null
-					)
+					) {
 						return;
+					}
 					editorjsInstance.value.render(getPreparedValue(newVal));
 				});
 			}
