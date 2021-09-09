@@ -115,11 +115,13 @@ export default defineComponent({
 				queryParams.push(`${key}=${value}`);
 			}
 
-			return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
+			return path.includes("?")
+				? `${path}&${queryParams.join("&")}`
+				: `${path}?${queryParams.join("&")}`;
 		}
 
 		function getToken() {
-			return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+			return api.defaults.headers?.["Authorization"]?.split(" ")[1] || null;
 		}
 
 		function addTokenToURL(url, token) {
@@ -154,6 +156,8 @@ export default defineComponent({
 				logLevel: "ERROR",
 				holder: editorElement.value,
 				data: getPreparedValue(props.value),
+				// Readonly makes troubles in some cases, also requires all plugins to implement it.
+				// https://github.com/codex-team/editor.js/issues/1669
 				readOnly: false,
 				placeholder: props.placeholder,
 				tools: buildToolsOptions(),
@@ -170,15 +174,6 @@ export default defineComponent({
 			if (!editorjsInstance.value) return;
 			editorjsInstance.value.destroy();
 		});
-
-		watch(
-			() => props.disabled,
-			(newVal, oldVal) => {
-				if (newVal === oldVal || !editorjsInstance.value) {
-					return;
-				}
-			}
-		);
 
 		watch(
 			() => props.value,
@@ -200,6 +195,7 @@ export default defineComponent({
 					) {
 						return;
 					}
+
 					editorjsInstance.value.render(getPreparedValue(newVal));
 				});
 			}
@@ -214,7 +210,6 @@ export default defineComponent({
 				[props.font]: true,
 				bordered: props.bordered,
 			},
-			file: props.file,
 
 			// Methods
 			editorValueEmitter,

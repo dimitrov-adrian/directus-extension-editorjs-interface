@@ -230,3 +230,30 @@
 .codex-editor .cdx-marker {
 	background: var(--warning-alt);
 }
+
+/* tc module */
+.codex-editor .tc-popover {
+	--color-background: var(--background-normal);
+	--color-border: var(--background-normal);
+	--color-background-hover: var(--v-list-item-background-color-hover);
+	--color-background: var(--v-list-item-color-hover);
+}
+.tc-wrap {
+	--color-background-hover: var(--v-list-item-background-color-hover);
+	--color-background: var(--v-list-item-color-hover);
+	--color-border: var(--border-normal);
+}
+.tc-cell--selected {
+	background: var(--background-highlight);
+}
+.codex-editor .tc-toolbox__toggler svg rect:first-child {
+	/* This is very ugly, but there no other way to set background of the element */
+	fill: var(--background-normal-alt) !important;
+}
+.tc-add-column:hover,
+.tc-add-row:hover {
+	background-color: var(--primary-alt);
+}
+.tc-add-row:hover:before {
+	background-color: var(--v-list-item-background-color-hover);
+}

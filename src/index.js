@@ -1,6 +1,7 @@
+import { defineInterface } from "@directus/shared/utils";
 import InterfaceComponent from "./interface.vue";
 
-export default {
+export default defineInterface({
 	id: "extension-editorjs",
 	name: "Editor.js",
 	description:
@@ -109,4 +110,4 @@ export default {
 			},
 		},
 	],
-};
+});

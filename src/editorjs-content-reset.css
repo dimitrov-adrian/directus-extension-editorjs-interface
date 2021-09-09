@@ -1,3 +1,7 @@
+.interface.subdued .codex-editor {
+	pointer-events: none !important;
+}
+
 .ce-toolbar__content,
 .ce-block__content {
 	max-width: unset;
