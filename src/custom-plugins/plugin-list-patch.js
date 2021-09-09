@@ -1,4 +1,4 @@
-import ListTool from "editorjs-list";
+import ListTool from 'editorjs-list';
 
 /**
  * Patch allows readonly mode until get https://github.com/4rw44z/editorJs-list/pull/1

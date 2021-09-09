@@ -48,10 +48,10 @@ export default class Uploader {
 						size: file.filesize,
 						name: file.filename_download,
 						title: file.title,
-						extension: file.filename_download.split(".").pop(),
+						extension: file.filename_download.split('.').pop(),
 						fileId: file.id,
-						fileURL: this.config.uploader.baseURL + "files/" + file.id,
-						url: this.config.uploader.baseURL + "assets/" + file.id,
+						fileURL: this.config.uploader.baseURL + 'files/' + file.id,
+						url: this.config.uploader.baseURL + 'assets/' + file.id,
 					},
 				};
 				onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
@@ -59,7 +59,7 @@ export default class Uploader {
 			} else {
 				this.onError({
 					success: 0,
-					message: "No file selected",
+					message: 'No file selected',
 				});
 			}
 		});

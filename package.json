@@ -48,6 +48,12 @@
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "debounce": "^1.2.1",
     "editorjs-alert": "^1.0.3",
-    "editorjs-list": "^2.1.4"
+    "editorjs-list": "^2.1.4",
+    "prettier": "^2.4.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.20.1"
   }
 }

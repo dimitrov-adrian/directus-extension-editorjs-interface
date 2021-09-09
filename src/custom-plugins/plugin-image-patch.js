@@ -1,5 +1,5 @@
-import ImageTool from "@editorjs/image";
-import Uploader from "../editorjs-uploader";
+import ImageTool from '@editorjs/image';
+import Uploader from '../editorjs-uploader';
 
 /**
  * Patch allows custom uploader.
@@ -22,9 +22,7 @@ export default class extends ImageTool {
 	set image(file) {
 		this._data.file = file || {};
 		if (file && file.url) {
-			const imageUrl =
-				this.config.uploader.addTokenToURL(file.url) +
-				"&key=system-large-contain";
+			const imageUrl = this.config.uploader.addTokenToURL(file.url) + '&key=system-large-contain';
 			this.ui.fillImage(imageUrl);
 		}
 	}

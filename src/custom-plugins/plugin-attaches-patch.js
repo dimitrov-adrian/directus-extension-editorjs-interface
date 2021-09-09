@@ -1,5 +1,5 @@
-import AttachesTool from "@editorjs/attaches";
-import Uploader from "../editorjs-uploader";
+import AttachesTool from '@editorjs/attaches';
+import Uploader from '../editorjs-uploader';
 
 /**
  * Patch allows custom uploader.
@@ -32,13 +32,9 @@ export default class extends AttachesTool {
 	showFileData() {
 		super.showFileData();
 		if (this.data.file && this.data.file.url) {
-			const downloadButton = this.nodes.wrapper.querySelector(
-				"a.cdx-attaches__download-button"
-			);
+			const downloadButton = this.nodes.wrapper.querySelector('a.cdx-attaches__download-button');
 			if (downloadButton) {
-				downloadButton.href = this.uploader.config.uploader.addTokenToURL(
-					this.data.file.url
-				);
+				downloadButton.href = this.uploader.config.uploader.addTokenToURL(this.data.file.url);
 			}
 		}
 		if (this.readOnly && this.nodes.title) {

@@ -1,9 +1,5 @@
 <template>
-	<v-dialog
-		:model-value="fileHandler !== null"
-		@update:model-value="unsetFileHandler"
-		@esc="unsetFileHandler"
-	>
+	<v-dialog :model-value="fileHandler !== null" @update:model-value="unsetFileHandler" @esc="unsetFileHandler">
 		<v-card>
 			<v-card-title>
 				<i18n-t keypath="upload_from_device" />
@@ -29,42 +25,35 @@
 </template>
 
 <script>
-import {
-	defineComponent,
-	ref,
-	onMounted,
-	onUnmounted,
-	watch,
-	inject,
-} from "vue";
-import debounce from "debounce";
-import EditorJS from "@editorjs/editorjs";
+import { defineComponent, ref, onMounted, onUnmounted, watch, inject } from 'vue';
+import debounce from 'debounce';
+import EditorJS from '@editorjs/editorjs';
 
 // Plugins
-import SimpleImageTool from "@editorjs/simple-image";
-import ParagraphTool from "@editorjs/paragraph";
-import QuoteTool from "@editorjs/quote";
-import WarningTool from "@editorjs/warning";
-import ChecklistTool from "@editorjs/checklist";
-import DelimiterTool from "@editorjs/delimiter";
-import TableTool from "@editorjs/table";
-import CodeTool from "@editorjs/code";
-import HeaderTool from "@editorjs/header";
-import UnderlineTool from "@editorjs/underline";
-import EmbedTool from "@editorjs/embed";
-import MarkerTool from "@editorjs/marker";
-import RawToolTool from "@editorjs/raw";
-import InlineCodeTool from "@editorjs/inline-code";
-import TextAlignTool from "@canburaks/text-align-editorjs";
-import AlertTool from "editorjs-alert";
-import StrikethroughTool from "@itech-indrustries/editorjs-strikethrough";
-import ListTool from "./custom-plugins/plugin-list-patch";
-import ImageTool from "./custom-plugins/plugin-image-patch";
-import AttachesTool from "./custom-plugins/plugin-attaches-patch";
-import PersonalityTool from "./custom-plugins/plugin-personality-patch";
+import SimpleImageTool from '@editorjs/simple-image';
+import ParagraphTool from '@editorjs/paragraph';
+import QuoteTool from '@editorjs/quote';
+import WarningTool from '@editorjs/warning';
+import ChecklistTool from '@editorjs/checklist';
+import DelimiterTool from '@editorjs/delimiter';
+import TableTool from '@editorjs/table';
+import CodeTool from '@editorjs/code';
+import HeaderTool from '@editorjs/header';
+import UnderlineTool from '@editorjs/underline';
+import EmbedTool from '@editorjs/embed';
+import MarkerTool from '@editorjs/marker';
+import RawToolTool from '@editorjs/raw';
+import InlineCodeTool from '@editorjs/inline-code';
+import TextAlignTool from '@canburaks/text-align-editorjs';
+import AlertTool from 'editorjs-alert';
+import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough';
+import ListTool from './custom-plugins/plugin-list-patch';
+import ImageTool from './custom-plugins/plugin-image-patch';
+import AttachesTool from './custom-plugins/plugin-attaches-patch';
+import PersonalityTool from './custom-plugins/plugin-personality-patch';
 
 export default defineComponent({
-	emits: ["input", "error"],
+	emits: ['input', 'error'],
 	props: {
 		value: {
 			type: Object,
@@ -80,21 +69,11 @@ export default defineComponent({
 		},
 		tools: {
 			type: Array,
-			default: () => [
-				"header",
-				"list",
-				"code",
-				"image",
-				"paragraph",
-				"delimiter",
-				"checklist",
-				"quote",
-				"underline",
-			],
+			default: () => ['header', 'list', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
 		},
 		font: {
 			type: String,
-			default: "sans-serif",
+			default: 'sans-serif',
 		},
 		bordered: {
 			type: Boolean,
@@ -105,8 +84,9 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
+
 	setup(props, { emit, attrs }) {
-		const api = inject("api");
+		const api = inject('api');
 
 		function addQueryToPath(path, query) {
 			const queryParams = [];
@@ -115,13 +95,11 @@ export default defineComponent({
 				queryParams.push(`${key}=${value}`);
 			}
 
-			return path.includes("?")
-				? `${path}&${queryParams.join("&")}`
-				: `${path}?${queryParams.join("&")}`;
+			return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
 		}
 
 		function getToken() {
-			return api.defaults.headers?.["Authorization"]?.split(" ")[1] || null;
+			return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
 		}
 
 		function addTokenToURL(url, token) {
@@ -142,18 +120,18 @@ export default defineComponent({
 				.save()
 				.then((result) => {
 					if (!result || result.blocks.length < 1) {
-						emit("input", null);
+						emit('input', null);
 					} else {
-						emit("input", result);
+						emit('input', result);
 					}
 				})
-				.catch(() => emit("error", "Cannot get content"));
+				.catch(() => emit('error', 'Cannot get content'));
 		}, 250);
 
 		onMounted(() => {
 			editorjsInstance.value = new EditorJS({
 				// @ts-ignore
-				logLevel: "ERROR",
+				logLevel: 'ERROR',
 				holder: editorElement.value,
 				data: getPreparedValue(props.value),
 				// Readonly makes troubles in some cases, also requires all plugins to implement it.
@@ -188,9 +166,7 @@ export default defineComponent({
 
 				editorjsInstance.value.isReady.then(() => {
 					if (
-						editorjsInstance.value.configuration.holder.contains(
-							document.activeElement
-						) ||
+						editorjsInstance.value.configuration.holder.contains(document.activeElement) ||
 						fileHandler.value !== null
 					) {
 						return;
@@ -240,7 +216,7 @@ export default defineComponent({
 		}
 
 		function getPreparedValue(value) {
-			if (typeof value !== "object") {
+			if (typeof value !== 'object') {
 				return {
 					time: null,
 					version: 0,
@@ -269,13 +245,13 @@ export default defineComponent({
 			const defaults = {
 				header: {
 					class: HeaderTool,
-					shortcut: "CMD+SHIFT+H",
+					shortcut: 'CMD+SHIFT+H',
 					inlineToolbar: true,
 				},
 				list: {
 					class: ListTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+1",
+					shortcut: 'CMD+SHIFT+1',
 				},
 				embed: {
 					class: EmbedTool,
@@ -291,16 +267,16 @@ export default defineComponent({
 				warning: {
 					class: WarningTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+W",
+					shortcut: 'CMD+SHIFT+W',
 				},
 				underline: {
 					class: UnderlineTool,
-					shortcut: "CMD+SHIFT+U",
+					shortcut: 'CMD+SHIFT+U',
 				},
 				textalign: {
 					class: TextAlignTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+A",
+					shortcut: 'CMD+SHIFT+A',
 				},
 				strikethrough: {
 					class: StrikethroughTool,
@@ -315,15 +291,15 @@ export default defineComponent({
 				quote: {
 					class: QuoteTool,
 					inlineToolbar: true,
-					shortcut: "CMD+SHIFT+O",
+					shortcut: 'CMD+SHIFT+O',
 				},
 				marker: {
 					class: MarkerTool,
-					shortcut: "CMD+SHIFT+M",
+					shortcut: 'CMD+SHIFT+M',
 				},
 				inlinecode: {
 					class: InlineCodeTool,
-					shortcut: "CMD+SHIFT+I",
+					shortcut: 'CMD+SHIFT+I',
 				},
 				delimiter: {
 					class: DelimiterTool,
@@ -376,23 +352,28 @@ export default defineComponent({
 
 <style lang="css" scoped>
 .bordered {
+	padding: var(--input-padding);
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
-	padding: var(--input-padding);
 }
+
 .bordered:hover {
 	border-color: var(--border-normal-alt);
 }
+
 .bordered:focus-within {
 	border-color: var(--primary);
 }
+
 .monospace {
 	font-family: var(--family-monospace);
 }
+
 .serif {
 	font-family: var(--family-serif);
 }
+
 .sans-serif {
 	font-family: var(--family-sans-serif);
 }

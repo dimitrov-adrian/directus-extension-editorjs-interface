@@ -1,5 +1,5 @@
-import Personality from "@editorjs/personality";
-import Uploader from "../editorjs-uploader";
+import Personality from '@editorjs/personality';
+import Uploader from '../editorjs-uploader';
 
 /**
  * Patch allows custom uploader.
@@ -20,9 +20,7 @@ export default class extends Personality {
 	}
 
 	setFullImageSource(image) {
-		const imageUrlWithToken =
-			this.uploader.config.uploader.addTokenToURL(image) +
-			"&key=system-medium-cover";
+		const imageUrlWithToken = this.uploader.config.uploader.addTokenToURL(image) + '&key=system-medium-cover';
 		this.nodes.photo.style.background = `url('${imageUrlWithToken}') center center / cover no-repeat`;
 	}
 

@@ -14,15 +14,15 @@
 	fill: var(--background-inverted) !important;
 }
 
+.codex-editor .ce-inline-tool--align-text svg {
+	stroke: var(--v-list-color) !important;
+}
+
 .codex-editor .cdx-settings-button svg,
 .codex-editor .ce-inline-toolbar__dropdown svg,
 .codex-editor .ce-inline-toolbar .ce-inline-tool svg,
 .codex-editor .ce-settings .ce-settings__button svg {
 	fill: var(--v-list-color) !important;
-}
-
-.codex-editor .ce-inline-tool--align-text svg {
-	stroke: var(--v-list-color) !important;
 }
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
@@ -51,6 +51,7 @@
 
 .codex-editor .ce-inline-toolbar__dropdown {
 	margin: 0;
+	border-color: var(--border-normal);
 }
 
 .codex-editor .ce-inline-tool {
@@ -58,10 +59,6 @@
 }
 
 /* Button balloons */
-
-.codex-editor .ce-inline-toolbar__dropdown {
-	border-color: var(--border-normal);
-}
 
 .codex-editor .ce-conversion-toolbar,
 .codex-editor .ce-inline-toolbar,
@@ -104,7 +101,7 @@
 
 /* Textarea and inputs */
 
-.codex-editor [contentEditable="true"][data-placeholder]::before {
+.codex-editor [contentEditable='true'][data-placeholder]::before {
 	font-weight: unset;
 }
 
@@ -139,6 +136,7 @@
 }
 
 /* Buttons */
+
 .codex-editor .cdx-button {
 	color: var(--v-button-color);
 	font-weight: var(--v-button-font-weight);
@@ -157,6 +155,7 @@
 }
 
 /* General components re-style */
+
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
 	color: var(--foreground-normal);
@@ -166,11 +165,13 @@
 }
 
 /* Quote block */
+
 .codex-editor .cdx-block.cdx-quote {
 	padding-left: 22px;
 }
 
 /* Image Tool */
+
 .codex-editor .image-tool {
 	--bg-color: var(--background-normal-alt);
 	--front-color: var(--primary);
@@ -178,6 +179,7 @@
 }
 
 /* Personality */
+
 .codex-editor .cdx-personality__description {
 	font-weight: unset;
 	font-size: 0.9em;
@@ -194,6 +196,7 @@
 }
 
 /* Checklist */
+
 .codex-editor .cdx-checklist__item-checkbox {
 	background: transparent;
 	border-color: var(--border-normal);
@@ -205,12 +208,14 @@
 }
 
 /* Lists */
+
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {
 	font-size: inherit;
 }
 
 /* Attaches */
+
 .codex-editor .cdx-attaches__size {
 	color: var(--foreground-subdued);
 }
@@ -220,40 +225,47 @@
 }
 
 /* InlineCode */
+
 .codex-editor .ce-block code {
-	font-size: inherit;
 	color: var(--warning-10);
+	font-size: inherit;
 	background: var(--warning-175);
 }
 
 /* Marker */
+
 .codex-editor .cdx-marker {
 	background: var(--warning-alt);
 }
 
 /* tc module */
+
+.codex-editor .tc-wrap {
+	--color-background: var(--v-list-item-color-hover);
+	--color-border: var(--border-normal);
+	--color-background-hover: var(--v-list-item-background-color-hover);
+}
+
 .codex-editor .tc-popover {
 	--color-background: var(--background-normal);
 	--color-border: var(--background-normal);
-	--color-background-hover: var(--v-list-item-background-color-hover);
-	--color-background: var(--v-list-item-color-hover);
+	--color-background-hover: var(--background-normal-alt);
 }
-.tc-wrap {
-	--color-background-hover: var(--v-list-item-background-color-hover);
-	--color-background: var(--v-list-item-color-hover);
-	--color-border: var(--border-normal);
-}
+
 .tc-cell--selected {
 	background: var(--background-highlight);
 }
+
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
 	fill: var(--background-normal-alt) !important;
 }
+
 .tc-add-column:hover,
 .tc-add-row:hover {
 	background-color: var(--primary-alt);
 }
-.tc-add-row:hover:before {
+
+.tc-add-row:hover::before {
 	background-color: var(--v-list-item-background-color-hover);
 }
