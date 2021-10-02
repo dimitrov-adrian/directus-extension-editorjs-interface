@@ -252,8 +252,15 @@
 	--color-background-hover: var(--background-normal-alt);
 }
 
-.tc-cell--selected {
+.tc-cell--selected,
+.tc-cell--selected::after,
+.tc-row--selected,
+.tc-row--selected::after {
 	background: var(--background-highlight);
+}
+
+.tc-toolbox__toggler:hover {
+	fill: var(--background-normal-alt) !important;
 }
 
 .codex-editor .tc-toolbox__toggler svg rect:first-child {

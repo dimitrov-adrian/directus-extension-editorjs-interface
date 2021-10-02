@@ -15,6 +15,9 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				interface: 'text-input',
+				options: {
+					placeholder: '$t:enter_a_placeholder',
+				},
 			},
 		},
 		{
@@ -79,7 +82,10 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				interface: 'toggle',
+				interface: 'boolean',
+				options: {
+					label: '$t:enabled',
+				},
 			},
 			schema: {
 				default_value: true,

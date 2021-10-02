@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-editorjs",
-  "version": "v1.0.0-rc.92",
+  "version": "v1.0.0-rc.95",
   "author": {
     "email": "dimitrov.adrian@gmail.com",
     "name": "Adrian Dimitrov"
@@ -17,7 +17,7 @@
     "type": "interface",
     "path": "dist/index.js",
     "source": "src/index.js",
-    "host": "^v9.0.0-rc.92",
+    "host": "^v9.0.0-rc.94",
     "hidden": false
   },
   "scripts": {
@@ -26,12 +26,12 @@
   },
   "devDependencies": {
     "@canburaks/text-align-editorjs": "^1.0.4",
-    "@directus/extensions-sdk": "^9.0.0-rc.92",
+    "@directus/extensions-sdk": "^9.0.0-rc.95",
     "@editorjs/attaches": "^1.1.1",
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.7.0",
     "@editorjs/delimiter": "^1.2.0",
-    "@editorjs/editorjs": "^2.22.1",
+    "@editorjs/editorjs": "^2.22.2",
     "@editorjs/embed": "^2.4.6",
     "@editorjs/header": "^2.6.1",
     "@editorjs/image": "^2.6.1",
@@ -49,11 +49,11 @@
     "debounce": "^1.2.1",
     "editorjs-alert": "^1.0.3",
     "editorjs-list": "^2.1.4",
-    "prettier": "^2.4.0",
+    "prettier": "^2.4.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^22.0.0",
     "stylelint-order": "^4.1.0",
-    "stylelint-scss": "^3.20.1"
+    "stylelint-scss": "^3.21.0"
   }
 }
