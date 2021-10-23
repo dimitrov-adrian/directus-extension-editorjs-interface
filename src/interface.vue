@@ -342,7 +342,9 @@ export default defineComponent({
 		}
 
 		function getToken() {
-			return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+			return api.defaults.headers?.['Authorization']?.split(' ')[1]
+				|| api.defaults.headers?.common?.['Authorization']?.split(' ')[1]
+				|| null;
 		}
 
 		function addTokenToURL(url, token) {
