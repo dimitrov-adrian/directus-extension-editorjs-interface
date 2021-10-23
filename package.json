@@ -1,8 +1,8 @@
 {
   "name": "directus-extension-editorjs",
-  "version": "v1.0.0-rc.95",
+  "version": "1.0.0-rc.97",
   "author": {
-    "email": "dimitrov.adrian@gmail.com",
+    "email": "dimitrov.adrian+gh@gmail.com",
     "name": "Adrian Dimitrov"
   },
   "license": "gpl-3.0",
@@ -24,7 +24,15 @@
     "dist": "directus-extension build && mv dist editorjs && zip -r editorjs.zip editorjs",
     "prepack": "directus-extension build"
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^7.19.1",
+    "prettier": "^2.4.1",
+    "stylelint": "^13.13.1",
     "@canburaks/text-align-editorjs": "^1.0.4",
     "@directus/extensions-sdk": "^9.0.0-rc.95",
     "@editorjs/attaches": "^1.1.1",
@@ -48,12 +56,6 @@
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "debounce": "^1.2.1",
     "editorjs-alert": "^1.0.3",
-    "editorjs-list": "^2.1.4",
-    "prettier": "^2.4.1",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-config-standard": "^22.0.0",
-    "stylelint-order": "^4.1.0",
-    "stylelint-scss": "^3.21.0"
+    "editorjs-list": "^2.1.4"
   }
 }

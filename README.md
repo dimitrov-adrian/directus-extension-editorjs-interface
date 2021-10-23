@@ -2,8 +2,7 @@
 
 # Editor.js
 
-Block-styled editor for rich media stories, outputs clean data in JSON.
-More info at https://editorjs.io/
+Block-styled editor for rich media stories, outputs clean data in JSON. More info at https://editorjs.io/
 
 ## Installation
 
@@ -19,8 +18,7 @@ If using Directus as npm package, you can include the extension as package in yo
 
 ### Docker installation / extensions directory
 
-If you want to use in docker container or into the extension directory, you need to add it
-manualy from the package tar
+If you want to use in docker container or into the extension directory, you need to add it manualy from the package tar
 
 ```bash
 cd <your directus extensions directory>/interfaces
