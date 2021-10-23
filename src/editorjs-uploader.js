@@ -26,7 +26,9 @@ export default class Uploader {
 						files: [file],
 					},
 				});
-			} catch (error) {}
+			} catch (error) {
+				window.console.log('editorjs-interface: Cannot get browsing component', error.toString());
+			}
 		}, 500);
 	}
 

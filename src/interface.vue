@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :model-value="fileHandler !== null" @update:model-value="unsetFileHandler" @esc="unsetFileHandler">
+	<v-dialog v-if="haveFilesAccess" :model-value="fileHandler !== null" @update:model-value="unsetFileHandler" @esc="unsetFileHandler">
 		<v-card>
 			<v-card-title>
 				<i18n-t keypath="upload_from_device" />
@@ -7,11 +7,11 @@
 			<v-card-text>
 				<v-upload
 					:ref="uploaderComponentElement"
-					@input="handleFile"
 					:multiple="false"
 					:folder="folder"
 					from-library
 					from-url
+					@input="handleFile"
 				/>
 			</v-card-text>
 			<v-card-actions>
@@ -21,10 +21,10 @@
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
-	<div :class="className" ref="editorElement"></div>
+	<div ref="editorElement" :class="className"></div>
 </template>
 
-<script>
+<script language="js">
 import { defineComponent, ref, onMounted, onUnmounted, watch, inject } from 'vue';
 import debounce from 'debounce';
 import EditorJS from '@editorjs/editorjs';
@@ -53,7 +53,6 @@ import AttachesTool from './custom-plugins/plugin-attaches-patch';
 import PersonalityTool from './custom-plugins/plugin-personality-patch';
 
 export default defineComponent({
-	emits: ['input', 'error'],
 	props: {
 		value: {
 			type: Object,
@@ -84,36 +83,19 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
-
+	emits: ['input', 'error'],
 	setup(props, { emit, attrs }) {
 		const api = inject('api');
-
-		function addQueryToPath(path, query) {
-			const queryParams = [];
-
-			for (const [key, value] of Object.entries(query)) {
-				queryParams.push(`${key}=${value}`);
-			}
-
-			return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
-		}
-
-		function getToken() {
-			return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
-		}
-
-		function addTokenToURL(url, token) {
-			const accessToken = token || getToken();
-			if (!accessToken) return url;
-			return addQueryToPath(url, { access_token: accessToken });
-		}
+		const { useCollectionsStore } = inject('stores');
+		const collectionStore = useCollectionsStore();
 
 		const editorjsInstance = ref(null);
 		const uploaderComponentElement = ref(null);
 		const editorElement = ref(null);
 		const fileHandler = ref(null);
+		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 
-		const editorValueEmitter = debounce(function saver(context) {
+		const editorValueEmitter = debounce((context) => {
 			if (props.disabled || !context) return;
 
 			context.saver
@@ -186,6 +168,7 @@ export default defineComponent({
 				[props.font]: true,
 				bordered: props.bordered,
 			},
+			haveFilesAccess,
 
 			// Methods
 			editorValueEmitter,
@@ -336,15 +319,38 @@ export default defineComponent({
 
 			// Build current tools config.
 			const tools = {};
-
+			const fileRequiresTools = ['attaches', 'personality', 'image'];
 			for (const toolName of props.tools) {
+				if (!haveFilesAccess && fileRequiresTools.includes(toolName)) continue;
 				// @ts-ignore
-				if (defaults.hasOwnProperty(toolName)) {
+				if (toolName in defaults) {
 					tools[toolName.toString()] = defaults[toolName];
 				}
 			}
 
 			return tools;
+		}
+
+		function addQueryToPath(path, query) {
+			const queryParams = [];
+
+			for (const [key, value] of Object.entries(query)) {
+				queryParams.push(`${key}=${value}`);
+			}
+
+			return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
+		}
+
+		function getToken() {
+			return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+		}
+
+		function addTokenToURL(url, token) {
+			const accessToken = token || getToken();
+			if (!accessToken) return url;
+			return addQueryToPath(url, {
+				access_token: accessToken,
+			});
 		}
 	},
 });
