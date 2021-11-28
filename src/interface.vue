@@ -1,5 +1,10 @@
 <template>
-	<v-dialog v-if="haveFilesAccess" :model-value="fileHandler !== null" @update:model-value="unsetFileHandler" @esc="unsetFileHandler">
+	<v-dialog
+		v-if="haveFilesAccess"
+		:model-value="fileHandler !== null"
+		@update:model-value="unsetFileHandler"
+		@esc="unsetFileHandler"
+	>
 		<v-card>
 			<v-card-title>
 				<i18n-t keypath="upload_from_device" />
@@ -24,10 +29,12 @@
 	<div ref="editorElement" :class="className"></div>
 </template>
 
-<script language="js">
-import { defineComponent, ref, onMounted, onUnmounted, watch, inject } from 'vue';
-import debounce from 'debounce';
+<script lang="ts">
+import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'vue';
+import { useApi, useStores } from '@directus/extensions-sdk';
+import debounce from 'lodash/debounce';
 import EditorJS from '@editorjs/editorjs';
+import useDirectusUrl from './directus-url';
 
 // Plugins
 import SimpleImageTool from '@editorjs/simple-image';
@@ -67,7 +74,7 @@ export default defineComponent({
 			default: null,
 		},
 		tools: {
-			type: Array,
+			type: Array as PropType<string[]>,
 			default: () => ['header', 'list', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
 		},
 		font: {
@@ -83,37 +90,25 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
-	emits: ['input', 'error'],
+
+	emits: ['input'],
+
 	setup(props, { emit, attrs }) {
-		const api = inject('api');
-		const { useCollectionsStore } = inject('stores');
+		const api = useApi();
+		const { addTokenToURL } = useDirectusUrl(api);
+		const { useCollectionsStore } = useStores();
 		const collectionStore = useCollectionsStore();
 
-		const editorjsInstance = ref(null);
+		const editorjsInstance = ref<EditorJS>();
 		const uploaderComponentElement = ref(null);
-		const editorElement = ref(null);
-		const fileHandler = ref(null);
+		const editorElement = ref<HTMLElement>();
+		const fileHandler = ref<Function | null>(null);
 		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
-
-		const editorValueEmitter = debounce((context) => {
-			if (props.disabled || !context) return;
-
-			context.saver
-				.save()
-				.then((result) => {
-					if (!result || result.blocks.length < 1) {
-						emit('input', null);
-					} else {
-						emit('input', result);
-					}
-				})
-				.catch(() => emit('error', 'Cannot get content'));
-		}, 250);
+		const editorValueEmitter = debounce(emitValue, 250);
 
 		onMounted(() => {
 			editorjsInstance.value = new EditorJS({
-				// @ts-ignore
-				logLevel: 'ERROR',
+				logLevel: 'ERROR' as EditorJS.LogLevels,
 				holder: editorElement.value,
 				data: getPreparedValue(props.value),
 				// Readonly makes troubles in some cases, also requires all plugins to implement it.
@@ -132,6 +127,7 @@ export default defineComponent({
 
 		onUnmounted(() => {
 			if (!editorjsInstance.value) return;
+
 			editorjsInstance.value.destroy();
 		});
 
@@ -154,7 +150,9 @@ export default defineComponent({
 						return;
 					}
 
-					editorjsInstance.value.render(getPreparedValue(newVal));
+					if (editorjsInstance.value) {
+						editorjsInstance.value.render(getPreparedValue(newVal));
+					}
 				});
 			}
 		);
@@ -181,16 +179,36 @@ export default defineComponent({
 			buildToolsOptions,
 		};
 
+		async function emitValue(context: EditorJS): Promise<void> {
+			if (props.disabled || !context) return;
+
+			let result: EditorJS.OutputData | null = null;
+			try {
+				result = await context.saver.save();
+			} catch (error) {
+				console.warn('editorjs-extension: %s', error);
+			}
+
+			if (!result || result.blocks.length < 1) {
+				emit('input', null);
+			} else {
+				emit('input', result);
+			}
+		}
+
 		function unsetFileHandler() {
 			fileHandler.value = null;
 		}
 
-		function setFileHandler(handler) {
+		function setFileHandler(handler: Function) {
 			fileHandler.value = handler;
 		}
 
-		function handleFile(event) {
-			fileHandler.value(event);
+		function handleFile(event: InputEvent) {
+			if (fileHandler.value) {
+				fileHandler.value(event);
+			}
+
 			unsetFileHandler();
 		}
 
@@ -198,11 +216,11 @@ export default defineComponent({
 			return uploaderComponentElement;
 		}
 
-		function getPreparedValue(value) {
+		function getPreparedValue(value: any): EditorJS.OutputData {
 			if (typeof value !== 'object') {
 				return {
-					time: null,
-					version: 0,
+					time: 0,
+					version: '0.0.0',
 					blocks: [],
 				};
 			}
@@ -225,7 +243,7 @@ export default defineComponent({
 				getUploadFieldElement,
 			};
 
-			const defaults = {
+			const defaults: Record<string, object> = {
 				header: {
 					class: HeaderTool,
 					shortcut: 'CMD+SHIFT+H',
@@ -318,41 +336,17 @@ export default defineComponent({
 			};
 
 			// Build current tools config.
-			const tools = {};
+			const tools: Record<string, object> = {};
 			const fileRequiresTools = ['attaches', 'personality', 'image'];
 			for (const toolName of props.tools) {
 				if (!haveFilesAccess && fileRequiresTools.includes(toolName)) continue;
-				// @ts-ignore
+
 				if (toolName in defaults) {
 					tools[toolName.toString()] = defaults[toolName];
 				}
 			}
 
 			return tools;
-		}
-
-		function addQueryToPath(path, query) {
-			const queryParams = [];
-
-			for (const [key, value] of Object.entries(query)) {
-				queryParams.push(`${key}=${value}`);
-			}
-
-			return path.includes('?') ? `${path}&${queryParams.join('&')}` : `${path}?${queryParams.join('&')}`;
-		}
-
-		function getToken() {
-			return api.defaults.headers?.['Authorization']?.split(' ')[1]
-				|| api.defaults.headers?.common?.['Authorization']?.split(' ')[1]
-				|| null;
-		}
-
-		function addTokenToURL(url, token) {
-			const accessToken = token || getToken();
-			if (!accessToken) return url;
-			return addQueryToPath(url, {
-				access_token: accessToken,
-			});
 		}
 	},
 });
