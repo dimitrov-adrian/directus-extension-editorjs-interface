@@ -1,34 +1,14 @@
-> ### This extension is in development and most probably will have file structure change when Directus 9 official releases. Meanwhile breaking changes are possible in anytime.
-
-# Editor.js
+# Editor.js - Directus extension
 
 Block-styled editor for rich media stories, outputs clean data in JSON. More info at https://editorjs.io/
 
 ## Installation
 
-### Directus as npm package
+In your Directus installation root
 
-If using Directus as npm package, you can include the extension as package in your `package.json` file as:
-
-```json
-"dependencies": {
-	"directus-extension-editorjs": "latest"
-}
 ```
-
-### Docker installation / extensions directory
-
-If you want to use in docker container or into the extension directory, you need to add it manualy from the package tar
-
-```bash
-cd <your directus extensions directory>/interfaces
-curl -LO https://github.com/dimitrov-adrian/directus-extension-editorjs-interface/releases/latest/download/editorjs.zip
-unzip editorjs.zip
+npm install directus-extension-editorjs
 ```
-
-### Build by yourself
-
-You can also clone this repository and build it by yourself.
 
 ## Usage
 
@@ -54,5 +34,16 @@ To use this custom interface into a data model, you have to:
 	]
 }
 ```
+
+## Build by yourself and custom usage
+
+You can also clone this repository and build it by yourself.
+
+```
+npm ci
+npm run build
+```
+
+Then use `dist/index.js` in your custom `/extensions/interfaces` directory or in whatever you want.
 
 For more info check https://editorjs.io/base-concepts#what-is-clean-data
