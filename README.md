@@ -2,6 +2,8 @@
 
 Block-styled editor for rich media stories, outputs clean data in JSON. More info at https://editorjs.io/
 
+![](https://raw.githubusercontent.com/dimitrov-adrian/directus-extension-editorjs-interface/main/screenshot.png)
+
 ## Installation
 
 In your Directus installation root
