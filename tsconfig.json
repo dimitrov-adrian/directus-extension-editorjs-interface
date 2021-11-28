@@ -4,6 +4,8 @@
 		"module": "esnext",
 		"strict": true,
 		"jsx": "preserve",
+		"checkJs": true,
+		"importHelpers": true,
 		"skipLibCheck": true,
 		"moduleResolution": "node",
 		"esModuleInterop": true,
@@ -11,6 +13,11 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"baseUrl": ".",
+		"paths": {
+			"@/*": [
+				"src/*"
+			]
+		},
 		"lib": [
 			"esnext",
 			"dom",
