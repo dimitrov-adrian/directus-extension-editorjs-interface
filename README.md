@@ -12,6 +12,8 @@ In your Directus installation root
 npm install directus-extension-editorjs
 ```
 
+Restart directus
+
 ## Usage
 
 To use this custom interface into a data model, you have to:
@@ -37,7 +39,11 @@ To use this custom interface into a data model, you have to:
 }
 ```
 
-## Build by yourself and custom usage
+
+For more info check https://editorjs.io/base-concepts#what-is-clean-data
+
+
+## Building locally and contributing
 
 You can also clone this repository and build it by yourself.
 
@@ -48,4 +54,3 @@ npm run build
 
 Then use `dist/index.js` in your custom `/extensions/interfaces` directory or in whatever you want.
 
-For more info check https://editorjs.io/base-concepts#what-is-clean-data
