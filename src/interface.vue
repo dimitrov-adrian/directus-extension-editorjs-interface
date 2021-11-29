@@ -143,16 +143,15 @@ export default defineComponent({
 				}
 
 				editorjsInstance.value.isReady.then(() => {
-					if (
-						editorjsInstance.value.configuration.holder.contains(document.activeElement) ||
-						fileHandler.value !== null
-					) {
-						return;
-					}
+					if (!editorjsInstance.value) return;
 
-					if (editorjsInstance.value) {
-						editorjsInstance.value.render(getPreparedValue(newVal));
-					}
+					// Do not render if in current file operation.
+					if (fileHandler.value !== null) return;
+
+					// Do not render if in current focus.
+					if (editorjsInstance.value.configuration?.holder.contains(document.activeElement)) return;
+
+					editorjsInstance.value.render(getPreparedValue(newVal));
 				});
 			}
 		);

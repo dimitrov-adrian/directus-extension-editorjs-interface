@@ -1,5 +1,5 @@
 import ImageTool from '@editorjs/image';
-import Uploader from '../editorjs-uploader';
+import Uploader from './editorjs-uploader';
 
 /**
  * Patch allows custom uploader.

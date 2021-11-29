@@ -1,5 +1,5 @@
 import Personality from '@editorjs/personality';
-import Uploader from '../editorjs-uploader';
+import Uploader from './editorjs-uploader';
 
 /**
  * Patch allows custom uploader.

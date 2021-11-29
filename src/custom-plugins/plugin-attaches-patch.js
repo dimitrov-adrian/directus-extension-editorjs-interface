@@ -1,5 +1,5 @@
 import AttachesTool from '@editorjs/attaches';
-import Uploader from '../editorjs-uploader';
+import Uploader from './editorjs-uploader';
 
 /**
  * Patch allows custom uploader.
