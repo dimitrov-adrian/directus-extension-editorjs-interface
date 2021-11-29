@@ -56,6 +56,7 @@
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "lodash": "^4.17.21",
     "editorjs-alert": "^1.0.3",
-    "editorjs-list": "^2.1.4"
+    "editorjs-list": "^2.1.4",
+    "typescript": "^4.5.2"
   }
 }
