@@ -8,6 +8,7 @@ export default {
 	icon: 'add_circle',
 	component: InterfaceComponent,
 	types: ['json'],
+	group: 'standard',
 	options: [
 		{
 			field: 'placeholder',
