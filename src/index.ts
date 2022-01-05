@@ -151,13 +151,13 @@ export default {
 		},
 		{
 			field: 'bordered',
-			name: 'Border',
+			name: '$t:displays.formatted-value.border',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'boolean',
 				options: {
-					label: '$t:enabled',
+					label: '$t:displays.formatted-value.border_label',
 				},
 			},
 			schema: {
