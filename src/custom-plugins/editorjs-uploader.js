@@ -47,6 +47,8 @@ export default class Uploader {
 				const response = {
 					success: 1,
 					file: {
+						width: file.width,
+						height: file.height,
 						size: file.filesize,
 						name: file.filename_download,
 						title: file.title,
