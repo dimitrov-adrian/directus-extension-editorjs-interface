@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-editorjs",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": {
     "email": "dimitrov.adrian+gh@gmail.com",
     "name": "Adrian Dimitrov"
@@ -28,11 +28,6 @@
     "dist"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-vue": "^8.1.1",
-    "prettier": "^2.5.0",
-    "stylelint": "^14.1.0",
     "@canburaks/text-align-editorjs": "^1.1.0",
     "@directus/extensions-sdk": "^9.1.2",
     "@editorjs/attaches": "^1.2.1",
@@ -57,6 +52,17 @@
     "lodash": "^4.17.21",
     "editorjs-alert": "^1.0.3",
     "editorjs-list": "^2.1.4",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "directus-codestyle": "github:dimitrov-adrian/directus-codestyle"
+  },
+  "prettier": "directus-codestyle/prettier",
+  "stylelint": {
+    "extends": "directus-codestyle/stylelint"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/directus-codestyle/.eslintrc.js",
+    "parserOptions": {
+      "sourceType": "module"
+    }
   }
 }

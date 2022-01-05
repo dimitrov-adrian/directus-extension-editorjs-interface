@@ -7,7 +7,7 @@ export default function useDirectusUrl(directusApi: AxiosInstance) {
 		addTokenToURL,
 	};
 
-	function addQueryToPath(path: String, query: Record<string, any>) {
+	function addQueryToPath(path: string, query: Record<string, any>) {
 		const queryParams = [];
 
 		for (const [key, value] of Object.entries(query)) {
@@ -25,7 +25,7 @@ export default function useDirectusUrl(directusApi: AxiosInstance) {
 		);
 	}
 
-	function addTokenToURL(url: String, token: String) {
+	function addTokenToURL(url: string, token: string) {
 		const accessToken = token || getToken();
 		if (!accessToken) return url;
 		return addQueryToPath(url, {
