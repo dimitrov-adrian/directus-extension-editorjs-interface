@@ -33,6 +33,7 @@
 import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
+import useDirectusUrl from './directus-url.js';
 
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
@@ -40,7 +41,7 @@ import EditorJS from '@editorjs/editorjs';
 
 // Plugins
 import SimpleImageTool from '@editorjs/simple-image';
-import ParagraphTool from 'editorjs-paragraph-with-alignment';
+import ParagraphTool from '@editorjs/paragraph';
 import QuoteTool from '@editorjs/quote';
 import WarningTool from '@editorjs/warning';
 import ChecklistTool from '@editorjs/checklist';
@@ -55,11 +56,11 @@ import RawToolTool from '@editorjs/raw';
 import InlineCodeTool from '@editorjs/inline-code';
 import AlertTool from 'editorjs-alert';
 import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough';
+import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
 import ListTool from './custom-plugins/plugin-list-patch.js';
 import ImageTool from './custom-plugins/plugin-image-patch.js';
 import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
 import PersonalityTool from './custom-plugins/plugin-personality-patch.js';
-import useDirectusUrl from './directus-url.js';
 
 type UploaderHandler = (file: Record<string, any>) => void;
 
@@ -123,9 +124,9 @@ export default defineComponent({
 				// https://github.com/codex-team/editor.js/issues/1669
 				readOnly: false,
 				placeholder: props.placeholder,
-				tools: buildToolsOptions(),
 				minHeight: 72,
 				onChange: emitValue,
+				tools: buildToolsOptions(),
 			});
 
 			if (attrs.autofocus) {
@@ -272,7 +273,7 @@ export default defineComponent({
 				},
 			};
 
-			const defaults: Record<string, object> = {
+			const defaults: Record<string, { class: any } & Record<string, any>> = {
 				header: {
 					class: HeaderTool,
 					shortcut: 'CMD+SHIFT+H',
@@ -357,6 +358,9 @@ export default defineComponent({
 						uploader: uploaderConfig,
 					},
 				},
+				alignmentTune: {
+					class: AlignmentTuneTool,
+				},
 			};
 
 			// Build current tools config.
@@ -368,6 +372,12 @@ export default defineComponent({
 				if (toolName in defaults) {
 					tools[toolName.toString()] = defaults[toolName];
 				}
+			}
+
+			if ('alignmentTune' in tools) {
+				tools.paragraph.tunes = ['alignmentTune'];
+				tools.header.tunes = ['alignmentTune'];
+				tools.quote.tunes = ['alignmentTune'];
 			}
 
 			return tools;

@@ -130,6 +130,10 @@ export default {
 							text: 'Delimiter',
 						},
 						{
+							value: 'alignmentTune',
+							text: 'Alignment',
+						},
+						{
 							value: 'checklist',
 							text: 'Checklist',
 						},
