@@ -150,10 +150,10 @@ export default defineComponent({
 
 				if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
 
-				if (isDocEqual(newVal, oldVal)) return;
-
 				// Do not render if in current file operation.
 				if (fileHandler.value !== null) return;
+
+				if (isDocEqual(newVal, oldVal)) return;
 
 				editorjsInstance.value.isReady
 					.then(() => {
@@ -196,7 +196,6 @@ export default defineComponent({
 				.save()
 				.then((result: EditorJS.OutputData) => {
 					skipWatch.value = true;
-					if (isDocEqual(props.value, result)) return;
 
 					if (!result || result.blocks.length < 1) {
 						emit('input', null);
