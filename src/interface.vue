@@ -21,7 +21,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="unsetFileHandler">
-					<i18n-t keypath="cancel" />
+					{{ t('cancel') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -31,15 +31,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
+
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
 import EditorJS from '@editorjs/editorjs';
-import useDirectusUrl from './directus-url';
 
 // Plugins
 import SimpleImageTool from '@editorjs/simple-image';
-//import ParagraphTool from '@editorjs/paragraph';
 import ParagraphTool from 'editorjs-paragraph-with-alignment';
 import QuoteTool from '@editorjs/quote';
 import WarningTool from '@editorjs/warning';
@@ -53,13 +53,15 @@ import EmbedTool from '@editorjs/embed';
 import MarkerTool from '@editorjs/marker';
 import RawToolTool from '@editorjs/raw';
 import InlineCodeTool from '@editorjs/inline-code';
-import TextAlignTool from '@canburaks/text-align-editorjs';
 import AlertTool from 'editorjs-alert';
 import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough';
-import ListTool from './custom-plugins/plugin-list-patch';
-import ImageTool from './custom-plugins/plugin-image-patch';
-import AttachesTool from './custom-plugins/plugin-attaches-patch';
-import PersonalityTool from './custom-plugins/plugin-personality-patch';
+import ListTool from './custom-plugins/plugin-list-patch.js';
+import ImageTool from './custom-plugins/plugin-image-patch.js';
+import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
+import PersonalityTool from './custom-plugins/plugin-personality-patch.js';
+import useDirectusUrl from './directus-url.js';
+
+type UploaderHandler = (file: Record<string, any>) => void;
 
 export default defineComponent({
 	props: {
@@ -96,6 +98,8 @@ export default defineComponent({
 	emits: ['input'],
 
 	setup(props, { emit, attrs }) {
+		const { t } = useI18n();
+
 		const api = useApi();
 		const { addTokenToURL } = useDirectusUrl(api);
 		const { useCollectionsStore } = useStores();
@@ -104,7 +108,7 @@ export default defineComponent({
 		const editorjsInstance = ref<EditorJS>();
 		const uploaderComponentElement = ref(null);
 		const editorElement = ref<HTMLElement>();
-		const fileHandler = ref<Function | null>(null);
+		const fileHandler = ref<UploaderHandler | null>(null);
 		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 
 		const skipEmit = ref<boolean>(false);
@@ -121,7 +125,7 @@ export default defineComponent({
 				placeholder: props.placeholder,
 				tools: buildToolsOptions(),
 				minHeight: 72,
-				onChange: debounce(emitValue, 150),
+				onChange: emitValue,
 			});
 
 			if (attrs.autofocus) {
@@ -158,12 +162,13 @@ export default defineComponent({
 						editorjsInstance.value.render(getPreparedValue(newVal));
 					})
 					.catch((error) => {
-						console.warn('editorjs-extension: %s', error);
+						window.console.warn('editorjs-extension: %s', error);
 					});
 			}, 150)
 		);
 
 		return {
+			t,
 			editorjsInstance,
 			editorElement,
 			uploaderComponentElement,
@@ -174,14 +179,8 @@ export default defineComponent({
 			},
 			haveFilesAccess,
 
-			// Methods
 			unsetFileHandler,
-			setFileHandler,
 			handleFile,
-			getUploadFieldElement,
-			addTokenToURL,
-			getPreparedValue,
-			buildToolsOptions,
 		};
 
 		function emitValue(context: EditorJS.API): void {
@@ -205,7 +204,7 @@ export default defineComponent({
 					}
 				})
 				.catch((error) => {
-					console.warn('editorjs-extension: %s', error);
+					window.console.warn('editorjs-extension: %s', error);
 				});
 		}
 
@@ -213,7 +212,7 @@ export default defineComponent({
 			fileHandler.value = null;
 		}
 
-		function setFileHandler(handler: Function) {
+		function setFileHandler(handler: UploaderHandler) {
 			fileHandler.value = handler;
 		}
 
@@ -252,21 +251,25 @@ export default defineComponent({
 			if (object1.blocks.length !== object2.blocks.length) return false;
 
 			for (let i = 0; i < object1.blocks.length; i++) {
-				if (!isEqual({ ...object1.blocks[i], id: '' }, { ...object2.blocks[i], id: '' })) return false;
+				try {
+					if (!isEqual({ ...object1.blocks[i], id: '' }, { ...object2.blocks[i], id: '' })) return false;
+				} catch {
+					return false;
+				}
 			}
 
 			return true;
 		}
 
-		/**
-		 * @returns {{}}
-		 */
-		function buildToolsOptions() {
+		function buildToolsOptions(): Record<string, object> {
 			const uploaderConfig = {
 				addTokenToURL,
 				baseURL: api.defaults.baseURL,
-				picker: setFileHandler,
+				setFileHandler,
 				getUploadFieldElement,
+				t: {
+					no_file_selected: t('no_file_selected'),
+				},
 			};
 
 			const defaults: Record<string, object> = {
@@ -299,11 +302,6 @@ export default defineComponent({
 				underline: {
 					class: UnderlineTool,
 					shortcut: 'CMD+SHIFT+U',
-				},
-				textalign: {
-					class: TextAlignTool,
-					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+A',
 				},
 				strikethrough: {
 					class: StrikethroughTool,
