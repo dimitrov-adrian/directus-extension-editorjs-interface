@@ -28,7 +28,6 @@
     "dist"
   ],
   "devDependencies": {
-    "@canburaks/text-align-editorjs": "^1.1.0",
     "@directus/extensions-sdk": "^9.1.2",
     "@editorjs/attaches": "^1.2.1",
     "@editorjs/checklist": "^1.3.0",
