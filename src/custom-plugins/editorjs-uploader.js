@@ -16,9 +16,7 @@ export default class Uploader {
 
 		// @TODO Very ugly, but until found better way.
 		setTimeout(() => {
-			if (!this.config.uploader.getUploadFieldElement) {
-				return;
-			}
+			if (!this.config.uploader.getUploadFieldElement) return;
 
 			try {
 				this.config.uploader.getUploadFieldElement().onBrowseSelect({
@@ -27,7 +25,7 @@ export default class Uploader {
 					},
 				});
 			} catch (error) {
-				window.console.log('editorjs-interface: Cannot get browsing component', error.toString());
+				window.console.warn('editorjs-interface: Cannot get browsing component - %s', error);
 			}
 		}, 500);
 	}
@@ -42,7 +40,7 @@ export default class Uploader {
 	}
 
 	uploadSelectedFile({ onPreview }) {
-		this.config.uploader.picker((file) => {
+		this.config.uploader.setFileHandler((file) => {
 			if (file) {
 				const response = {
 					success: 1,
@@ -64,7 +62,7 @@ export default class Uploader {
 			} else {
 				this.onError({
 					success: 0,
-					message: 'No file selected',
+					message: this.config.t.no_file_selected,
 				});
 			}
 		});

@@ -1,19 +1,17 @@
 import Personality from '@editorjs/personality';
-import Uploader from './editorjs-uploader';
+import Uploader from './editorjs-uploader.js';
 
 /**
  * Patch allows custom uploader.
  * https://github.com/editor-js/personality/blob/master/src/index.js
  */
 export default class extends Personality {
-	constructor(args) {
-		super(args);
-		this.readOnly = !!args.readOnly;
+	constructor({ data, config, api, readOnly }) {
+		super({ data, config, api });
+		this.readOnly = !!readOnly;
+		this.config.uploader = config.uploader;
 		this.uploader = new Uploader({
-			config: {
-				...args.config,
-				...this.config,
-			},
+			config: this.config,
 			onUpload: (response) => this.onUpload({ body: response }),
 			onError: (error) => this.uploadingFailed(error),
 		});
@@ -55,6 +53,7 @@ export default class extends Personality {
 		if (this.readOnly && result.contentEditable) {
 			result.contentEditable = false;
 		}
+
 		return result;
 	}
 }

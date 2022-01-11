@@ -9,9 +9,9 @@ export default class extends ListTool {
 		return true;
 	}
 
-	constructor(args) {
-		super(args);
-		this.readOnly = !!args.readOnly;
+	constructor({ data, config, api, readOnly }) {
+		super({ data, config, api });
+		this.readOnly = !!readOnly;
 	}
 
 	render() {
@@ -28,6 +28,7 @@ export default class extends ListTool {
 		if (this.readOnly && result.contentEditable) {
 			result.contentEditable = false;
 		}
+
 		return result;
 	}
 }

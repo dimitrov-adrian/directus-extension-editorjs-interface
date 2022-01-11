@@ -1,19 +1,16 @@
 import ImageTool from '@editorjs/image';
-import Uploader from './editorjs-uploader';
+import Uploader from './editorjs-uploader.js';
 
 /**
  * Patch allows custom uploader.
  * https://github.com/editor-js/image/blob/master/src/index.js
  */
 export default class extends ImageTool {
-	constructor(args) {
-		super(args);
+	constructor({ data, config, api, readOnly }) {
+		super({ data, config, api, readOnly });
 
 		this.uploader = new Uploader({
-			config: {
-				...args.config,
-				...this.config,
-			},
+			config: this.config,
 			onUpload: (response) => this.onUpload(response),
 			onError: (error) => this.uploadingFailed(error),
 		});

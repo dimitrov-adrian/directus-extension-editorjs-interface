@@ -1,5 +1,5 @@
 import AttachesTool from '@editorjs/attaches';
-import Uploader from './editorjs-uploader';
+import Uploader from './editorjs-uploader.js';
 
 /**
  * Patch allows custom uploader.
@@ -10,15 +10,12 @@ export default class extends AttachesTool {
 		return true;
 	}
 
-	constructor(args) {
-		super(args);
-		this.readOnly = !!args.readOnly;
+	constructor({ data, config, api, readOnly }) {
+		super({ data, config, api });
+		this.readOnly = !!readOnly;
 		this.uploader = new Uploader({
-			config: {
-				...args.config,
-				...this.config,
-			},
-			onUpload: (response) => this.onUpload({ body: response }),
+			config: this.config,
+			onUpload: (response) => this.onUpload(response),
 			onError: (error) => this.uploadingFailed(error),
 		});
 	}
