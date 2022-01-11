@@ -14,10 +14,6 @@
 	fill: var(--background-inverted) !important;
 }
 
-.codex-editor .ce-inline-tool--align-text svg {
-	stroke: var(--v-list-color) !important;
-}
-
 .codex-editor .cdx-settings-button svg,
 .codex-editor .ce-inline-toolbar__dropdown svg,
 .codex-editor .ce-inline-toolbar .ce-inline-tool svg,

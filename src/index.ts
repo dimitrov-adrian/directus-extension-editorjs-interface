@@ -118,10 +118,6 @@ export default {
 							text: 'Inline Code',
 						},
 						{
-							value: 'textalign',
-							text: 'Align',
-						},
-						{
 							value: 'alert',
 							text: 'Alert',
 						},
