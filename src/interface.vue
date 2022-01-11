@@ -33,12 +33,14 @@
 import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'vue';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 import EditorJS from '@editorjs/editorjs';
 import useDirectusUrl from './directus-url';
 
 // Plugins
 import SimpleImageTool from '@editorjs/simple-image';
-import ParagraphTool from '@editorjs/paragraph';
+//import ParagraphTool from '@editorjs/paragraph';
+import ParagraphTool from 'editorjs-paragraph-with-alignment';
 import QuoteTool from '@editorjs/quote';
 import WarningTool from '@editorjs/warning';
 import ChecklistTool from '@editorjs/checklist';
@@ -104,7 +106,9 @@ export default defineComponent({
 		const editorElement = ref<HTMLElement>();
 		const fileHandler = ref<Function | null>(null);
 		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
-		const editorValueEmitter = debounce(emitValue, 250);
+
+		const skipEmit = ref<boolean>(false);
+		const skipWatch = ref<boolean>(false);
 
 		onMounted(() => {
 			editorjsInstance.value = new EditorJS({
@@ -116,8 +120,8 @@ export default defineComponent({
 				readOnly: false,
 				placeholder: props.placeholder,
 				tools: buildToolsOptions(),
-				minHeight: 24,
-				onChange: editorValueEmitter,
+				minHeight: 72,
+				onChange: debounce(emitValue, 150),
 			});
 
 			if (attrs.autofocus) {
@@ -133,27 +137,30 @@ export default defineComponent({
 
 		watch(
 			() => props.value,
-			(newVal, oldVal) => {
-				if (
-					!editorjsInstance.value ||
-					// @TODO use better method for comparing.
-					JSON.stringify(newVal?.blocks) === JSON.stringify(oldVal?.blocks)
-				) {
+			debounce((newVal: any, oldVal: any) => {
+				if (skipWatch.value) {
+					skipWatch.value = false;
 					return;
 				}
 
-				editorjsInstance.value.isReady.then(() => {
-					if (!editorjsInstance.value) return;
+				if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
 
-					// Do not render if in current file operation.
-					if (fileHandler.value !== null) return;
+				if (isDocEqual(newVal, oldVal)) return;
 
-					// Do not render if in current focus.
-					if (editorjsInstance.value.configuration?.holder.contains(document.activeElement)) return;
+				// Do not render if in current file operation.
+				if (fileHandler.value !== null) return;
 
-					editorjsInstance.value.render(getPreparedValue(newVal));
-				});
-			}
+				editorjsInstance.value.isReady
+					.then(() => {
+						if (!editorjsInstance.value) return;
+
+						skipEmit.value = true;
+						editorjsInstance.value.render(getPreparedValue(newVal));
+					})
+					.catch((error) => {
+						console.warn('editorjs-extension: %s', error);
+					});
+			}, 150)
 		);
 
 		return {
@@ -168,7 +175,6 @@ export default defineComponent({
 			haveFilesAccess,
 
 			// Methods
-			editorValueEmitter,
 			unsetFileHandler,
 			setFileHandler,
 			handleFile,
@@ -178,21 +184,29 @@ export default defineComponent({
 			buildToolsOptions,
 		};
 
-		async function emitValue(context: EditorJS): Promise<void> {
-			if (props.disabled || !context) return;
-
-			let result: EditorJS.OutputData | null = null;
-			try {
-				result = await context.saver.save();
-			} catch (error) {
-				console.warn('editorjs-extension: %s', error);
+		function emitValue(context: EditorJS.API): void {
+			if (skipEmit.value) {
+				skipEmit.value = false;
+				return;
 			}
 
-			if (!result || result.blocks.length < 1) {
-				emit('input', null);
-			} else {
-				emit('input', result);
-			}
+			if (props.disabled || !context || !context.saver) return;
+
+			context.saver
+				.save()
+				.then((result: EditorJS.OutputData) => {
+					skipWatch.value = true;
+					if (isDocEqual(props.value, result)) return;
+
+					if (!result || result.blocks.length < 1) {
+						emit('input', null);
+					} else {
+						emit('input', result);
+					}
+				})
+				.catch((error) => {
+					console.warn('editorjs-extension: %s', error);
+				});
 		}
 
 		function unsetFileHandler() {
@@ -229,6 +243,19 @@ export default defineComponent({
 				version: value?.version,
 				blocks: value?.blocks || [],
 			};
+		}
+
+		function isDocEqual(object1: any, object2: any) {
+			if (!object1 && !object2) return true;
+			if ((object1 === null && object2) || (object1 && object2 === null)) return false;
+			if ((!object1.blocks && object2.blocks) || (object1.blocks && !object2.blocks)) return false;
+			if (object1.blocks.length !== object2.blocks.length) return false;
+
+			for (let i = 0; i < object1.blocks.length; i++) {
+				if (!isEqual({ ...object1.blocks[i], id: '' }, { ...object2.blocks[i], id: '' })) return false;
+			}
+
+			return true;
 		}
 
 		/**
