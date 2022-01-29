@@ -1,32 +1,26 @@
 <template>
-	<v-dialog
+	<div ref="editorElement" :class="className"></div>
+
+	<v-drawer
 		v-if="haveFilesAccess"
 		:model-value="fileHandler !== null"
+		icon="image"
+		:title="t('upload_from_device')"
+		:cancelable="true"
 		@update:model-value="unsetFileHandler"
-		@esc="unsetFileHandler"
+		@cancel="unsetFileHandler"
 	>
-		<v-card>
-			<v-card-title>
-				<i18n-t keypath="upload_from_device" />
-			</v-card-title>
-			<v-card-text>
-				<v-upload
-					:ref="uploaderComponentElement"
-					:multiple="false"
-					:folder="folder"
-					from-library
-					from-url
-					@input="handleFile"
-				/>
-			</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="unsetFileHandler">
-					{{ t('cancel') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
-	<div ref="editorElement" :class="className"></div>
+		<div class="drawer-content">
+			<v-upload
+				:ref="uploaderComponentElement"
+				:multiple="false"
+				:folder="folder"
+				from-library
+				from-url
+				@input="handleFile"
+			/>
+		</div>
+	</v-drawer>
 </template>
 
 <script lang="ts">
@@ -411,6 +405,12 @@ export default defineComponent({
 
 .sans-serif {
 	font-family: var(--family-sans-serif);
+}
+
+.drawer-content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
 }
 </style>
 
