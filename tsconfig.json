@@ -1,22 +1,29 @@
 {
 	"compilerOptions": {
-		"target": "esnext",
-		"module": "esnext",
-		"strict": true,
-		"jsx": "preserve",
-		"importHelpers": true,
-		"skipLibCheck": true,
+		"target": "ES2019",
+		"lib": ["ES2019", "DOM"],
 		"moduleResolution": "node",
+		"strict": true,
+		"allowJs": true,
+		"noFallthroughCasesInSwitch": true,
 		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedParameters": true,
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"resolveJsonModule": false,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"sourceMap": true,
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		},
-		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+		"isolatedModules": true,
+		"rootDir": "./src"
 	},
-	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.vue"],
-	"exclude": ["node_modules"]
+	"include": ["./src/**/*.ts"]
 }
