@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 
-export default function useDirectusUrl(directusApi: AxiosInstance) {
+export default function useDirectusToken(directusApi: AxiosInstance) {
 	return {
 		addQueryToPath,
 		getToken,

@@ -15,7 +15,9 @@ export default class extends AttachesTool {
 		this.readOnly = !!readOnly;
 		this.uploader = new Uploader({
 			config: this.config,
-			onUpload: (response) => this.onUpload(response),
+			onUpload: (response) => {
+				this.onUpload(response);
+			},
 			onError: (error) => this.uploadingFailed(error),
 		});
 	}
@@ -34,6 +36,7 @@ export default class extends AttachesTool {
 				downloadButton.href = this.uploader.config.uploader.addTokenToURL(this.data.file.url);
 			}
 		}
+
 		if (this.readOnly && this.nodes.title) {
 			this.nodes.title.contentEditable = false;
 		}

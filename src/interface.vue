@@ -27,36 +27,11 @@
 import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import useDirectusUrl from './directus-url.js';
-
-import debounce from 'lodash/debounce';
-import isEqual from 'lodash/isEqual';
 import EditorJS from '@editorjs/editorjs';
 
-// Plugins
-import SimpleImageTool from '@editorjs/simple-image';
-import ParagraphTool from '@editorjs/paragraph';
-import QuoteTool from '@editorjs/quote';
-import WarningTool from '@editorjs/warning';
-import ChecklistTool from '@editorjs/checklist';
-import DelimiterTool from '@editorjs/delimiter';
-import TableTool from '@editorjs/table';
-import CodeTool from '@editorjs/code';
-import HeaderTool from '@editorjs/header';
-import UnderlineTool from '@editorjs/underline';
-import EmbedTool from '@editorjs/embed';
-import MarkerTool from '@editorjs/marker';
-import RawToolTool from '@editorjs/raw';
-import InlineCodeTool from '@editorjs/inline-code';
-import AlertTool from 'editorjs-alert';
-import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough';
-import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
-import ListTool from './custom-plugins/plugin-list-patch.js';
-import ImageTool from './custom-plugins/plugin-image-patch.js';
-import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
-import PersonalityTool from './custom-plugins/plugin-personality-patch.js';
-
-type UploaderHandler = (file: Record<string, any>) => void;
+import useDirectusToken from './use-directus-token';
+import useFileHandler from './use-filehandler';
+import useTools from './use-tools';
 
 export default defineComponent({
 	props: {
@@ -96,18 +71,31 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const api = useApi();
-		const { addTokenToURL } = useDirectusUrl(api);
+		const { addTokenToURL } = useDirectusToken(api);
 		const { useCollectionsStore } = useStores();
 		const collectionStore = useCollectionsStore();
 
 		const editorjsInstance = ref<EditorJS>();
-		const uploaderComponentElement = ref(null);
+		const uploaderComponentElement = ref<HTMLElement>();
 		const editorElement = ref<HTMLElement>();
-		const fileHandler = ref<UploaderHandler | null>(null);
 		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
+		const isInternalChange = ref<boolean>(false);
 
-		const skipEmit = ref<boolean>(false);
-		const skipWatch = ref<boolean>(false);
+		const { fileHandler, setFileHandler, unsetFileHandler, handleFile } = useFileHandler();
+
+		const tools = useTools(
+			{
+				addTokenToURL,
+				baseURL: api.defaults.baseURL,
+				setFileHandler,
+				getUploadFieldElement: () => uploaderComponentElement,
+				t: {
+					no_file_selected: t('no_file_selected'),
+				},
+			},
+			props.tools,
+			haveFilesAccess
+		);
 
 		onMounted(() => {
 			editorjsInstance.value = new EditorJS({
@@ -119,8 +107,8 @@ export default defineComponent({
 				readOnly: false,
 				placeholder: props.placeholder,
 				minHeight: 72,
-				onChange: emitValue,
-				tools: buildToolsOptions(),
+				onChange: (a) => emitValue(a),
+				tools: tools,
 			});
 
 			if (attrs.autofocus) {
@@ -136,30 +124,24 @@ export default defineComponent({
 
 		watch(
 			() => props.value,
-			debounce((newVal: any, oldVal: any) => {
-				if (skipWatch.value) {
-					skipWatch.value = false;
-					return;
-				}
-
-				if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
+			async (newVal: any) => {
+				if (isInternalChange.value || !editorjsInstance.value || !editorjsInstance.value.isReady) return;
 
 				// Do not render if in current file operation.
 				if (fileHandler.value !== null) return;
 
-				if (isDocEqual(newVal, oldVal)) return;
+				// Cannot rely on deep equeal because of constantly changed time and IDs,
+				// also some tools does not emmits change event properly.
+				// if (isDocEqual(newVal, oldVal)) return;
 
-				editorjsInstance.value.isReady
-					.then(() => {
-						if (!editorjsInstance.value) return;
-
-						skipEmit.value = true;
-						editorjsInstance.value.render(getPreparedValue(newVal));
-					})
-					.catch((error) => {
-						window.console.warn('editorjs-extension: %s', error);
-					});
-			}, 150)
+				try {
+					await editorjsInstance.value.isReady;
+					editorjsInstance.value.render(getPreparedValue(newVal));
+					isInternalChange.value = false;
+				} catch (error) {
+					window.console.warn('editorjs-extension: %s', error);
+				}
+			}
 		);
 
 		return {
@@ -173,53 +155,26 @@ export default defineComponent({
 				bordered: props.bordered,
 			},
 			haveFilesAccess,
-
 			unsetFileHandler,
 			handleFile,
 		};
 
-		function emitValue(context: EditorJS.API): void {
-			if (skipEmit.value) {
-				skipEmit.value = false;
-				return;
-			}
-
+		async function emitValue(context: EditorJS.API) {
 			if (props.disabled || !context || !context.saver) return;
 
-			context.saver
-				.save()
-				.then((result: EditorJS.OutputData) => {
-					skipWatch.value = true;
+			isInternalChange.value = true;
 
-					if (!result || result.blocks.length < 1) {
-						emit('input', null);
-					} else {
-						emit('input', result);
-					}
-				})
-				.catch((error) => {
-					window.console.warn('editorjs-extension: %s', error);
-				});
-		}
+			try {
+				const result: EditorJS.OutputData = await context.saver.save();
 
-		function unsetFileHandler() {
-			fileHandler.value = null;
-		}
-
-		function setFileHandler(handler: UploaderHandler) {
-			fileHandler.value = handler;
-		}
-
-		function handleFile(event: InputEvent) {
-			if (fileHandler.value) {
-				fileHandler.value(event);
+				if (!result || result.blocks.length < 1) {
+					emit('input', null);
+				} else {
+					emit('input', result);
+				}
+			} catch (error) {
+				window.console.warn('editorjs-extension: %s', error);
 			}
-
-			unsetFileHandler();
-		}
-
-		function getUploadFieldElement() {
-			return uploaderComponentElement;
 		}
 
 		function getPreparedValue(value: any): EditorJS.OutputData {
@@ -236,144 +191,6 @@ export default defineComponent({
 				version: value?.version,
 				blocks: value?.blocks || [],
 			};
-		}
-
-		function isDocEqual(object1: any, object2: any) {
-			if (!object1 && !object2) return true;
-			if ((object1 === null && object2) || (object1 && object2 === null)) return false;
-			if ((!object1.blocks && object2.blocks) || (object1.blocks && !object2.blocks)) return false;
-			if (object1.blocks.length !== object2.blocks.length) return false;
-
-			for (let i = 0; i < object1.blocks.length; i++) {
-				try {
-					if (!isEqual({ ...object1.blocks[i], id: '' }, { ...object2.blocks[i], id: '' })) return false;
-				} catch {
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		function buildToolsOptions(): Record<string, object> {
-			const uploaderConfig = {
-				addTokenToURL,
-				baseURL: api.defaults.baseURL,
-				setFileHandler,
-				getUploadFieldElement,
-				t: {
-					no_file_selected: t('no_file_selected'),
-				},
-			};
-
-			const defaults: Record<string, { class: any } & Record<string, any>> = {
-				header: {
-					class: HeaderTool,
-					shortcut: 'CMD+SHIFT+H',
-					inlineToolbar: true,
-				},
-				list: {
-					class: ListTool,
-					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+1',
-				},
-				embed: {
-					class: EmbedTool,
-					inlineToolbar: true,
-				},
-				paragraph: {
-					class: ParagraphTool,
-					inlineToolbar: true,
-				},
-				code: {
-					class: CodeTool,
-				},
-				warning: {
-					class: WarningTool,
-					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+W',
-				},
-				underline: {
-					class: UnderlineTool,
-					shortcut: 'CMD+SHIFT+U',
-				},
-				strikethrough: {
-					class: StrikethroughTool,
-				},
-				alert: {
-					class: AlertTool,
-				},
-				table: {
-					class: TableTool,
-					inlineToolbar: true,
-				},
-				quote: {
-					class: QuoteTool,
-					inlineToolbar: true,
-					shortcut: 'CMD+SHIFT+O',
-				},
-				marker: {
-					class: MarkerTool,
-					shortcut: 'CMD+SHIFT+M',
-				},
-				inlinecode: {
-					class: InlineCodeTool,
-					shortcut: 'CMD+SHIFT+I',
-				},
-				delimiter: {
-					class: DelimiterTool,
-				},
-				raw: {
-					class: RawToolTool,
-				},
-				checklist: {
-					class: ChecklistTool,
-					inlineToolbar: true,
-				},
-				simpleimage: {
-					class: SimpleImageTool,
-				},
-				image: {
-					class: ImageTool,
-					config: {
-						uploader: uploaderConfig,
-					},
-				},
-				attaches: {
-					class: AttachesTool,
-					config: {
-						uploader: uploaderConfig,
-					},
-				},
-				personality: {
-					class: PersonalityTool,
-					config: {
-						uploader: uploaderConfig,
-					},
-				},
-				alignmentTune: {
-					class: AlignmentTuneTool,
-				},
-			};
-
-			// Build current tools config.
-			const tools: Record<string, object> = {};
-			const fileRequiresTools = ['attaches', 'personality', 'image'];
-			for (const toolName of props.tools) {
-				if (!haveFilesAccess && fileRequiresTools.includes(toolName)) continue;
-
-				if (toolName in defaults) {
-					tools[toolName.toString()] = defaults[toolName];
-				}
-			}
-
-			if ('alignmentTune' in tools) {
-				tools.paragraph.tunes = ['alignmentTune'];
-				tools.header.tunes = ['alignmentTune'];
-				tools.quote.tunes = ['alignmentTune'];
-			}
-
-			return tools;
 		}
 	},
 });

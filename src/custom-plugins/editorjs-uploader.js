@@ -41,30 +41,31 @@ export default class Uploader {
 
 	uploadSelectedFile({ onPreview }) {
 		this.config.uploader.setFileHandler((file) => {
-			if (file) {
-				const response = {
-					success: 1,
-					file: {
-						width: file.width,
-						height: file.height,
-						size: file.filesize,
-						name: file.filename_download,
-						title: file.title,
-						extension: file.filename_download.split('.').pop(),
-						fileId: file.id,
-						fileURL: this.config.uploader.baseURL + 'files/' + file.id,
-						url: this.config.uploader.baseURL + 'assets/' + file.id,
-					},
-				};
-
-				onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
-				this.onUpload(response);
-			} else {
+			if (!file) {
 				this.onError({
 					success: 0,
 					message: this.config.t.no_file_selected,
 				});
+				return;
 			}
+
+			const response = {
+				success: 1,
+				file: {
+					width: file.width,
+					height: file.height,
+					size: file.filesize,
+					name: file.filename_download,
+					title: file.title,
+					extension: file.filename_download.split('.').pop(),
+					fileId: file.id,
+					fileURL: this.config.uploader.baseURL + 'files/' + file.id,
+					url: this.config.uploader.baseURL + 'assets/' + file.id,
+				},
+			};
+
+			onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
+			this.onUpload(response);
 		});
 	}
 }
