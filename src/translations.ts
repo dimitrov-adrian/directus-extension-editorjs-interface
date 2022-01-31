@@ -42,7 +42,6 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				},
 				image: {
 					Caption: t('title'),
-					// 'Couldn’t upload image. Please try another.': t(''),
 				},
 				warning: {
 					Title: t('title'),
