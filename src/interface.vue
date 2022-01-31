@@ -28,10 +28,11 @@ import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'v
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import EditorJS from '@editorjs/editorjs';
-
+import isEqual from 'lodash/isEqual';
 import useDirectusToken from './use-directus-token';
 import useFileHandler from './use-filehandler';
 import useTools from './use-tools';
+import getTranslations from './translations';
 
 export default defineComponent({
 	props: {
@@ -52,7 +53,7 @@ export default defineComponent({
 			default: () => ['header', 'list', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
 		},
 		font: {
-			type: String,
+			type: String as PropType<'sans-serif' | 'monospace' | 'serif'>,
 			default: 'sans-serif',
 		},
 		bordered: {
@@ -99,6 +100,7 @@ export default defineComponent({
 
 		onMounted(() => {
 			editorjsInstance.value = new EditorJS({
+				i18n: getTranslations(t),
 				logLevel: 'ERROR' as EditorJS.LogLevels,
 				holder: editorElement.value,
 				data: getPreparedValue(props.value),
@@ -107,7 +109,7 @@ export default defineComponent({
 				readOnly: false,
 				placeholder: props.placeholder,
 				minHeight: 72,
-				onChange: (a) => emitValue(a),
+				onChange: (a, b) => emitValue(a, b),
 				tools: tools,
 			});
 
@@ -124,20 +126,22 @@ export default defineComponent({
 
 		watch(
 			() => props.value,
-			async (newVal: any) => {
-				if (isInternalChange.value || !editorjsInstance.value || !editorjsInstance.value.isReady) return;
+			async (newVal: any, oldVal: any) => {
+				if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
+
+				if (isInternalChange.value) {
+					isInternalChange.value = false;
+					return;
+				}
 
 				// Do not render if in current file operation.
 				if (fileHandler.value !== null) return;
 
-				// Cannot rely on deep equeal because of constantly changed time and IDs,
-				// also some tools does not emmits change event properly.
-				// if (isDocEqual(newVal, oldVal)) return;
+				if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
 
 				try {
 					await editorjsInstance.value.isReady;
 					editorjsInstance.value.render(getPreparedValue(newVal));
-					isInternalChange.value = false;
 				} catch (error) {
 					window.console.warn('editorjs-extension: %s', error);
 				}
@@ -146,7 +150,6 @@ export default defineComponent({
 
 		return {
 			t,
-			editorjsInstance,
 			editorElement,
 			uploaderComponentElement,
 			fileHandler,
@@ -159,13 +162,14 @@ export default defineComponent({
 			handleFile,
 		};
 
-		async function emitValue(context: EditorJS.API) {
+		async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) {
 			if (props.disabled || !context || !context.saver) return;
-
 			isInternalChange.value = true;
 
 			try {
 				const result: EditorJS.OutputData = await context.saver.save();
+
+				if (isEqual(getBlockData(targetBlock.id, props.value), getBlockData(targetBlock.id, result))) return;
 
 				if (!result || result.blocks.length < 1) {
 					emit('input', null);
@@ -191,6 +195,10 @@ export default defineComponent({
 				version: value?.version,
 				blocks: value?.blocks || [],
 			};
+		}
+
+		function getBlockData(blockId: string, context: any) {
+			return context?.blocks?.find((block: any) => blockId === block?.id)?.data;
 		}
 	},
 });

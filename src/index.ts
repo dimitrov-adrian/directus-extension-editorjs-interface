@@ -67,7 +67,11 @@ export default defineInterface({
 						},
 						{
 							value: 'list',
-							text: 'List',
+							text: 'List (legacy)',
+						},
+						{
+							value: 'nestedlist',
+							text: 'Nested List',
 						},
 						{
 							value: 'embed',
