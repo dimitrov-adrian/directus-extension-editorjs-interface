@@ -109,7 +109,7 @@ export default defineComponent({
 				readOnly: false,
 				placeholder: props.placeholder,
 				minHeight: 72,
-				onChange: (a, b) => emitValue(a, b),
+				onChange: (a) => emitValue(a),
 				tools: tools,
 			});
 
@@ -162,14 +162,12 @@ export default defineComponent({
 			handleFile,
 		};
 
-		async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) {
+		async function emitValue(context: EditorJS.API) {
 			if (props.disabled || !context || !context.saver) return;
 			isInternalChange.value = true;
 
 			try {
 				const result: EditorJS.OutputData = await context.saver.save();
-
-				if (isEqual(getBlockData(targetBlock.id, props.value), getBlockData(targetBlock.id, result))) return;
 
 				if (!result || result.blocks.length < 1) {
 					emit('input', null);
@@ -195,10 +193,6 @@ export default defineComponent({
 				version: value?.version,
 				blocks: value?.blocks || [],
 			};
-		}
-
-		function getBlockData(blockId: string, context: any) {
-			return context?.blocks?.find((block: any) => blockId === block?.id)?.data;
 		}
 	},
 });

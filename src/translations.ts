@@ -26,28 +26,37 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				Image: t('interfaces.file-image.image'),
 				Attaches: t('file'),
 				Delimiter: t('wysiwyg_options.hr'),
-				'Raw HTML': t('wysiwyg_options.codeblock'),
+				'Raw HTML': t('raw_value'),
 				Table: t('wysiwyg_options.table'),
 				Link: t('wysiwyg_options.link'),
 				Bold: t('wysiwyg_options.bold'),
 				Underline: t('wysiwyg_options.underline'),
 				Italic: t('wysiwyg_options.italic'),
-				Inlinecode: t('inline'),
+				Inlinecode: t('interfaces.input-code.code'),
 				Strikethrough: t('wysiwyg_options.strikethrough'),
 			},
 			tools: {
+				header: {
+					Header: t('wysiwyg_options.heading'),
+				},
 				link: {
 					Link: t('wysiwyg_options.link'),
 					'Add a link': t('field_options.directus_roles.fields.link_placeholder'),
 				},
 				image: {
 					Caption: t('title'),
+					'Select an Image': t('interfaces.file-image.description'),
+					'With border': t('displays.formatted-value.border_label'),
+					'Stretch image': t('full_width'),
 				},
 				warning: {
 					Title: t('title'),
 					Message: t('note'),
 				},
 				code: {
+					'Enter a code': t('interfaces.input-code.placeholder'),
+				},
+				quote: {
 					'Enter a quote': t('wysiwyg_options.blockquote'),
 				},
 				nestedlist: {
@@ -56,6 +65,9 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				},
 				embed: {
 					'Enter a caption': t('field_options.directus_roles.fields.name_placeholder'),
+				},
+				raw: {
+					'Enter a code': t('enter_raw_value'),
 				},
 			},
 			blockTunes: {
