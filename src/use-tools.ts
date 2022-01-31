@@ -15,6 +15,7 @@ import InlineCodeTool from '@editorjs/inline-code';
 import AlertTool from 'editorjs-alert';
 import StrikethroughTool from '@itech-indrustries/editorjs-strikethrough';
 import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
+import NestedListTool from '@editorjs/nested-list';
 import ListTool from './custom-plugins/plugin-list-patch.js';
 import ImageTool from './custom-plugins/plugin-image-patch.js';
 import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
@@ -33,6 +34,9 @@ export default function useTools(
 	selection: Array<string>,
 	haveFilesAccess: boolean
 ): Record<string, object> {
+	const tools: Record<string, any> = {};
+	const fileRequiresTools = ['attaches', 'personality', 'image'];
+
 	const defaults: Record<string, any> = {
 		header: {
 			class: HeaderTool,
@@ -41,8 +45,13 @@ export default function useTools(
 		},
 		list: {
 			class: ListTool,
-			inlineToolbar: true,
+			inlineToolbar: false,
 			shortcut: 'CMD+SHIFT+1',
+		},
+		nestedlist: {
+			class: NestedListTool,
+			inlineToolbar: true,
+			shortcut: 'CMD+SHIFT+L',
 		},
 		embed: {
 			class: EmbedTool,
@@ -123,9 +132,6 @@ export default function useTools(
 		},
 	};
 
-	// Build current tools config.
-	const tools: Record<string, any> = {};
-	const fileRequiresTools = ['attaches', 'personality', 'image'];
 	for (const toolName of selection) {
 		if (!haveFilesAccess && fileRequiresTools.includes(toolName)) continue;
 
