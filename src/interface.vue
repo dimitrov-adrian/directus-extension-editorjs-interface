@@ -28,7 +28,7 @@ import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'v
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import EditorJS from '@editorjs/editorjs';
-import isEqual from 'lodash/isEqual';
+import { isEqual, cloneDeep } from 'lodash';
 import useDirectusToken from './use-directus-token';
 import useFileHandler from './use-filehandler';
 import useTools from './use-tools';
@@ -70,19 +70,17 @@ export default defineComponent({
 
 	setup(props, { emit, attrs }) {
 		const { t } = useI18n();
-
 		const api = useApi();
 		const { addTokenToURL } = useDirectusToken(api);
 		const { useCollectionsStore } = useStores();
 		const collectionStore = useCollectionsStore();
+		const { fileHandler, setFileHandler, unsetFileHandler, handleFile } = useFileHandler();
 
 		const editorjsInstance = ref<EditorJS>();
 		const uploaderComponentElement = ref<HTMLElement>();
 		const editorElement = ref<HTMLElement>();
 		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 		const isInternalChange = ref<boolean>(false);
-
-		const { fileHandler, setFileHandler, unsetFileHandler, handleFile } = useFileHandler();
 
 		const tools = useTools(
 			{
@@ -109,7 +107,7 @@ export default defineComponent({
 				readOnly: false,
 				placeholder: props.placeholder,
 				minHeight: 72,
-				onChange: (a) => emitValue(a),
+				onChange: (a, b) => emitValue(a, b),
 				tools: tools,
 			});
 
@@ -162,7 +160,7 @@ export default defineComponent({
 			handleFile,
 		};
 
-		async function emitValue(context: EditorJS.API) {
+		async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) {
 			if (props.disabled || !context || !context.saver) return;
 			isInternalChange.value = true;
 
@@ -171,9 +169,12 @@ export default defineComponent({
 
 				if (!result || result.blocks.length < 1) {
 					emit('input', null);
-				} else {
-					emit('input', result);
+					return;
 				}
+
+				if (isEqual(getBlockData(targetBlock.id, props.value), getBlockData(targetBlock.id, result))) return;
+
+				emit('input', result);
 			} catch (error) {
 				window.console.warn('editorjs-extension: %s', error);
 			}
@@ -188,11 +189,15 @@ export default defineComponent({
 				};
 			}
 
-			return {
+			return cloneDeep({
 				time: value?.time,
 				version: value?.version,
 				blocks: value?.blocks || [],
-			};
+			});
+		}
+
+		function getBlockData(blockId: string, context: any) {
+			return context?.blocks?.find((block: any) => blockId === block?.id)?.data;
 		}
 	},
 });
