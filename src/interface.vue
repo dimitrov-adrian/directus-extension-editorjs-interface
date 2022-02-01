@@ -97,11 +97,13 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
+			const initialValue = getPreparedValue(props.value);
+
 			editorjsInstance.value = new EditorJS({
 				i18n: getTranslations(t),
 				logLevel: 'ERROR' as EditorJS.LogLevels,
 				holder: editorElement.value,
-				data: getPreparedValue(props.value),
+				data: initialValue,
 				// Readonly makes troubles in some cases, also requires all plugins to implement it.
 				// https://github.com/codex-team/editor.js/issues/1669
 				readOnly: false,
@@ -132,7 +134,7 @@ export default defineComponent({
 					return;
 				}
 
-				// Do not render if in current file operation.
+				// Do not render if there is uploader active operation.
 				if (fileHandler.value !== null) return;
 
 				if (isEqual(newVal?.blocks, oldVal?.blocks)) return;

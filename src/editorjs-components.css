@@ -74,16 +74,18 @@
 }
 
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
+	--webkit-box-shadow: unset;
+
 	color: var(--primary);
 	background-color: var(--v-list-item-background-color-hover) !important;
-	-webkit-box-shadow: unset;
 	box-shadow: unset;
 }
 
 .codex-editor .ce-conversion-tool:hover {
+	--webkit-box-shadow: unset;
+
 	color: var(--v-list-item-color-hover);
 	background-color: var(--v-list-item-background-color-hover) !important;
-	-webkit-box-shadow: unset;
 	box-shadow: unset;
 }
 
@@ -158,6 +160,13 @@
 	background: var(--background-normal-alt);
 	border-color: var(--border-normal);
 	box-shadow: unset;
+}
+
+/* Paragraph */
+
+.codex-editor .ce-paragraph {
+	padding: 0;
+	line-height: inherit;
 }
 
 /* Quote block */
