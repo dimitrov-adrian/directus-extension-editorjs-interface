@@ -56,6 +56,7 @@
     "@editorjs/table": "^2.0.1",
     "@editorjs/underline": "^1.0.0",
     "@editorjs/warning": "^1.2.0",
+    "editorjs-undo": "^1.0.0",
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "directus-codestyle": "dimitrov-adrian/directus-codestyle",
     "editorjs-alert": "^1.0.3",
