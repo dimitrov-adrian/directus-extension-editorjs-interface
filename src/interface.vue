@@ -2,7 +2,7 @@
 	<div ref="editorElement" :class="className"></div>
 
 	<v-drawer
-		v-if="haveFilesAccess"
+		v-if="haveFilesAccess && !disabled"
 		:model-value="fileHandler !== null"
 		icon="image"
 		:title="t('upload_from_device')"
@@ -162,6 +162,7 @@ export default defineComponent({
 			className: {
 				[props.font]: true,
 				bordered: props.bordered,
+				disabled: props.disabled,
 			},
 			haveFilesAccess,
 			unsetFileHandler,
@@ -212,6 +213,13 @@ export default defineComponent({
 </script>
 
 <style lang="css" scoped>
+.disabled {
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+	border-color: var(--border-normal);
+	pointer-events: none;
+}
+
 .bordered {
 	padding: var(--input-padding);
 	background-color: var(--background-page);
