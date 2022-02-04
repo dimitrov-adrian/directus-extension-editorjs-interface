@@ -1,5 +1,5 @@
 <template>
-	<div ref="editorElement" :class="className"></div>
+	<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
 
 	<v-drawer
 		v-if="haveFilesAccess && !disabled"
@@ -102,13 +102,13 @@ export default defineComponent({
 		);
 
 		onMounted(() => {
-			const initialValue = getPreparedValue(props.value);
+			const initialValue = getSanitizedValue(props.value);
 
 			editorjsInstance.value = new EditorJS({
 				i18n: getTranslations(t),
 				logLevel: 'ERROR' as EditorJS.LogLevels,
 				holder: editorElement.value,
-				data: initialValue,
+				data: initialValue || undefined,
 				// Readonly makes troubles in some cases, also requires all plugins to implement it.
 				// https://github.com/codex-team/editor.js/issues/1669
 				readOnly: false,
@@ -146,7 +146,12 @@ export default defineComponent({
 
 				try {
 					await editorjsInstance.value.isReady;
-					editorjsInstance.value.render(getPreparedValue(newVal));
+					const value = getSanitizedValue(newVal);
+					if (value) {
+						editorjsInstance.value.render(value);
+					} else {
+						editorjsInstance.value.clear();
+					}
 				} catch (error) {
 					window.console.warn('editorjs-extension: %s', error);
 				}
@@ -159,11 +164,6 @@ export default defineComponent({
 			uploaderComponentElement,
 			fileHandler,
 			currentPreview,
-			className: {
-				[props.font]: true,
-				bordered: props.bordered,
-				disabled: props.disabled,
-			},
 			haveFilesAccess,
 			unsetFileHandler,
 			handleFile,
@@ -189,19 +189,13 @@ export default defineComponent({
 			}
 		}
 
-		function getPreparedValue(value: any): EditorJS.OutputData {
-			if (typeof value !== 'object') {
-				return {
-					time: 0,
-					version: '0.0.0',
-					blocks: [],
-				};
-			}
+		function getSanitizedValue(value: any): EditorJS.OutputData | null {
+			if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
 
 			return cloneDeep({
-				time: value?.time,
-				version: value?.version,
-				blocks: value?.blocks || [],
+				time: value?.time || Date.now(),
+				version: value?.version || '0.0.0',
+				blocks: value.blocks,
 			});
 		}
 
