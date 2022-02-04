@@ -5,16 +5,28 @@ import Uploader from './editorjs-uploader.js';
  * Patch allows custom uploader.
  * https://github.com/editor-js/personality/blob/master/src/index.js
  */
+
+const LOADER_DELAY = 500;
+
 export default class extends Personality {
-	constructor({ data, config, api, readOnly }) {
-		super({ data, config, api });
-		this.readOnly = !!readOnly;
-		this.config.uploader = config.uploader;
+	constructor(params) {
+		super(params);
+
+		this.config.uploader = params.config.uploader;
 		this.uploader = new Uploader({
 			config: this.config,
+			getCurrentFile: () => this.data.photo,
 			onUpload: (response) => this.onUpload({ body: response }),
 			onError: (error) => this.uploadingFailed(error),
 		});
+
+		// Until get https://github.com/editor-js/attaches/issues/50 solved, this is required.
+		this.onUpload = (response) => {
+			super.onUpload(response);
+			params.block.save().then((state) => {
+				params.api.blocks.update(state.id, state.data);
+			});
+		};
 	}
 
 	setFullImageSource(image) {
@@ -26,32 +38,13 @@ export default class extends Personality {
 		setTimeout(() => {
 			this.nodes.photo.classList.remove(this.CSS.loader);
 			this.setFullImageSource(this.data.photo);
-		}, 500);
-	}
-
-	static get isReadOnlySupported() {
-		return true;
+		}, LOADER_DELAY);
 	}
 
 	render() {
 		const result = super.render();
-
-		// Clear events.
-		if (this.readOnly) {
-			this.nodes.photo.replaceWith(this.nodes.photo.cloneNode(true));
-		}
-
 		if (this.data.photo) {
 			this.setFullImageSource(this.data.photo);
-		}
-
-		return result;
-	}
-
-	make(...args) {
-		const result = super.make(...args);
-		if (this.readOnly && result.contentEditable) {
-			result.contentEditable = false;
 		}
 
 		return result;

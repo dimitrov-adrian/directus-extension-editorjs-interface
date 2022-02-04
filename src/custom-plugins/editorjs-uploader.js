@@ -2,7 +2,8 @@
  * Modified version of https://github.com/editor-js/image/blob/master/src/uploader.js
  */
 export default class Uploader {
-	constructor({ config, onUpload, onError }) {
+	constructor({ config, getCurrentFile, onUpload, onError }) {
+		this.getCurrentFile = getCurrentFile;
 		this.config = config;
 		this.onUpload = onUpload;
 		this.onError = onError;
@@ -40,31 +41,41 @@ export default class Uploader {
 	}
 
 	uploadSelectedFile({ onPreview }) {
-		this.config.uploader.setFileHandler((file) => {
-			if (file) {
-				const response = {
-					success: 1,
-					file: {
-						width: file.width,
-						height: file.height,
-						size: file.filesize,
-						name: file.filename_download,
-						title: file.title,
-						extension: file.filename_download.split('.').pop(),
-						fileId: file.id,
-						fileURL: this.config.uploader.baseURL + 'files/' + file.id,
-						url: this.config.uploader.baseURL + 'assets/' + file.id,
-					},
-				};
+		if (this.getCurrentFile) {
+			const currentPreview = this.getCurrentFile();
+			if (currentPreview) {
+				this.config.uploader.setCurrentPreview(
+					this.config.uploader.addTokenToURL(currentPreview) + '&key=system-large-contain'
+				);
+			}
+		}
 
-				onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
-				this.onUpload(response);
-			} else {
+		this.config.uploader.setFileHandler((file) => {
+			if (!file) {
 				this.onError({
 					success: 0,
 					message: this.config.t.no_file_selected,
 				});
+				return;
 			}
+
+			const response = {
+				success: 1,
+				file: {
+					width: file.width,
+					height: file.height,
+					size: file.filesize,
+					name: file.filename_download,
+					title: file.title,
+					extension: file.filename_download.split('.').pop(),
+					fileId: file.id,
+					fileURL: this.config.uploader.baseURL + 'files/' + file.id,
+					url: this.config.uploader.baseURL + 'assets/' + file.id,
+				},
+			};
+
+			onPreview(this.config.uploader.addTokenToURL(response.file.fileURL));
+			this.onUpload(response);
 		});
 	}
 }

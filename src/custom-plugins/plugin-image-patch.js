@@ -6,11 +6,12 @@ import Uploader from './editorjs-uploader.js';
  * https://github.com/editor-js/image/blob/master/src/index.js
  */
 export default class extends ImageTool {
-	constructor({ data, config, api, readOnly }) {
-		super({ data, config, api, readOnly });
+	constructor(params) {
+		super(params);
 
 		this.uploader = new Uploader({
 			config: this.config,
+			getCurrentFile: () => this.data?.file?.url,
 			onUpload: (response) => this.onUpload(response),
 			onError: (error) => this.uploadingFailed(error),
 		});

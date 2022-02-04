@@ -10,9 +10,9 @@
 }
 
 .codex-editor .ce-block {
-	margin-top: 1em;
-	margin-bottom: 1em;
-	font-weight: normal;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	font-weight: inherit;
 	font-family: inherit;
 }
 
@@ -80,16 +80,8 @@
 
 .codex-editor .ce-block b,
 .codex-editor .ce-block strong {
+	color: var(--foreground-normal-alt);
 	font-weight: 600;
-}
-
-.codex-editor .ce-block code {
-	padding: 2px 4px;
-	font-size: 18px;
-	line-height: 34px;
-	overflow-wrap: break-word;
-	background-color: var(--background-normal-alt);
-	border-radius: 4px;
 }
 
 .codex-editor .ce-block pre {
