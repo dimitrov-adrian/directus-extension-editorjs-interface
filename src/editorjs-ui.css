@@ -4,6 +4,10 @@
 	--border-color: var(--border-normal) !important;
 }
 
+.codex-editor .ce-toolbar__plus {
+	color: var(--foreground-normal);
+}
+
 .codex-editor .ce-toolbar__settings-btn,
 .codex-editor .ce-toolbar .ce-toolbox__button:hover {
 	background: var(--background-normal-alt);
@@ -32,6 +36,11 @@
 	fill: var(--foreground-normal);
 }
 
+.codex-editor .cdx-loader::before {
+	border: 3px solid var(--background-normal-alt);
+	border-left-color: var(--primary);
+}
+
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
 	background: var(--module-background-alt);
@@ -56,6 +65,14 @@
 
 /* Button balloons */
 
+.codex-editor .ce-toolbox__button.ce-toolbox__button--active {
+	background: var(--background-normal-alt);
+}
+
+.codex-editor .ce-toolbox__button.ce-toolbox__button--active svg {
+	fill: var(--primary);
+}
+
 .codex-editor .ce-conversion-toolbar,
 .codex-editor .ce-inline-toolbar,
 .codex-editor .ce-settings {
@@ -70,7 +87,7 @@
 .codex-editor .ce-inline-toolbar__dropdown:hover,
 .codex-editor .ce-inline-toolbar .ce-inline-tool:hover,
 .codex-editor .ce-settings .ce-settings__button:hover {
-	background: var(--v-list-item-background-color-active);
+	background: var(--background-normal-alt);
 }
 
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {

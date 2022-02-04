@@ -51,6 +51,11 @@
 .codex-editor .cdx-checklist__item-checkbox {
 	background: transparent;
 	border-color: var(--border-normal);
+	border-radius: 4px;
+}
+
+.codex-editor .cdx-checklist__item-text {
+	padding: 3px 0;
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox {
@@ -62,13 +67,27 @@
 
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {
-	font-size: inherit;
+	font-size: inherit !important;
 }
 
 /* Attaches */
 
+.cdx-attaches--with-file .cdx-attaches__file-icon {
+	padding: 5px;
+	background: var(--background-normal-alt);
+	border-radius: var(--border-radius);
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__title {
+	color: var(--foreground-normal);
+}
+
 .codex-editor .cdx-attaches__size {
 	color: var(--foreground-subdued);
+}
+
+.cdx-attaches--with-file .cdx-attaches__download-button svg {
+	fill: var(--v-button-background-color);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon::before {
@@ -77,16 +96,20 @@
 
 /* InlineCode */
 
-.codex-editor .ce-block code {
-	color: var(--warning-10);
-	font-size: inherit;
-	background: var(--warning-175);
+.codex-editor .ce-block .inline-code {
+	padding: 4px;
+	color: var(--v-chip-background-color);
+	font-family: monospace;
+	background-color: var(--v-chip-color);
+	border-radius: 4px;
 }
 
 /* Marker */
 
 .codex-editor .cdx-marker {
+	color: var(--warning-175);
 	background: var(--warning-alt);
+	outline:2px solid var(--warning-alt)
 }
 
 /* tc module */
@@ -127,3 +150,4 @@
 .tc-add-row:hover::before {
 	background-color: var(--v-list-item-background-color-hover);
 }
+
