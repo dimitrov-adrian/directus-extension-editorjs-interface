@@ -12,11 +12,10 @@ export default class extends Personality {
 	constructor(params) {
 		super(params);
 
-		this.readOnly = !!params.readOnly;
-
 		this.config.uploader = params.config.uploader;
 		this.uploader = new Uploader({
 			config: this.config,
+			getCurrentFile: () => this.data.photo,
 			onUpload: (response) => this.onUpload({ body: response }),
 			onError: (error) => this.uploadingFailed(error),
 		});
@@ -31,10 +30,8 @@ export default class extends Personality {
 	}
 
 	setFullImageSource(image) {
-		setTimeout(() => {
-			const imageUrlWithToken = this.uploader.config.uploader.addTokenToURL(image) + '&key=system-medium-cover';
-			this.nodes.photo.style.background = `url('${imageUrlWithToken}') center center / cover no-repeat`;
-		}, LOADER_DELAY);
+		const imageUrlWithToken = this.uploader.config.uploader.addTokenToURL(image) + '&key=system-medium-cover';
+		this.nodes.photo.style.background = `url('${imageUrlWithToken}') center center / cover no-repeat`;
 	}
 
 	showFullImage() {
@@ -44,29 +41,10 @@ export default class extends Personality {
 		}, LOADER_DELAY);
 	}
 
-	static get isReadOnlySupported() {
-		return true;
-	}
-
 	render() {
 		const result = super.render();
-
-		// Clear events.
-		if (this.readOnly) {
-			this.nodes.photo.replaceWith(this.nodes.photo.cloneNode(true));
-		}
-
 		if (this.data.photo) {
 			this.setFullImageSource(this.data.photo);
-		}
-
-		return result;
-	}
-
-	make(...args) {
-		const result = super.make(...args);
-		if (this.readOnly && result.contentEditable) {
-			result.contentEditable = false;
 		}
 
 		return result;

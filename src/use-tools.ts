@@ -25,6 +25,7 @@ export type UploaderConfig = {
 	addTokenToURL: (url: string, token: string) => string;
 	baseURL: string | undefined;
 	setFileHandler: (handler: any) => void;
+	setCurrentPreview?: (url: string) => void;
 	getUploadFieldElement: () => any;
 	t: Record<string, string>;
 };

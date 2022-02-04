@@ -11,6 +11,7 @@ export default class extends ImageTool {
 
 		this.uploader = new Uploader({
 			config: this.config,
+			getCurrentFile: () => this.data?.file?.url,
 			onUpload: (response) => this.onUpload(response),
 			onError: (error) => this.uploadingFailed(error),
 		});

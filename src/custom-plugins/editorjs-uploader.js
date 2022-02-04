@@ -2,7 +2,8 @@
  * Modified version of https://github.com/editor-js/image/blob/master/src/uploader.js
  */
 export default class Uploader {
-	constructor({ config, onUpload, onError }) {
+	constructor({ config, getCurrentFile, onUpload, onError }) {
+		this.getCurrentFile = getCurrentFile;
 		this.config = config;
 		this.onUpload = onUpload;
 		this.onError = onError;
@@ -40,6 +41,15 @@ export default class Uploader {
 	}
 
 	uploadSelectedFile({ onPreview }) {
+		if (this.getCurrentFile) {
+			const currentPreview = this.getCurrentFile();
+			if (currentPreview) {
+				this.config.uploader.setCurrentPreview(
+					this.config.uploader.addTokenToURL(currentPreview) + '&key=system-large-contain'
+				);
+			}
+		}
+
 		this.config.uploader.setFileHandler((file) => {
 			if (!file) {
 				this.onError({

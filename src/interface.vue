@@ -10,7 +10,10 @@
 		@update:model-value="unsetFileHandler"
 		@cancel="unsetFileHandler"
 	>
-		<div class="drawer-content">
+		<div class="uploader-drawer-content">
+			<div v-if="currentPreview" class="uploader-preview-image">
+				<img :src="currentPreview" />
+			</div>
 			<v-upload
 				:ref="uploaderComponentElement"
 				:multiple="false"
@@ -74,7 +77,8 @@ export default defineComponent({
 		const { addTokenToURL } = useDirectusToken(api);
 		const { useCollectionsStore } = useStores();
 		const collectionStore = useCollectionsStore();
-		const { fileHandler, setFileHandler, unsetFileHandler, handleFile } = useFileHandler();
+		const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
+			useFileHandler();
 
 		const editorjsInstance = ref<EditorJS>();
 		const uploaderComponentElement = ref<HTMLElement>();
@@ -87,6 +91,7 @@ export default defineComponent({
 				addTokenToURL,
 				baseURL: api.defaults.baseURL,
 				setFileHandler,
+				setCurrentPreview,
 				getUploadFieldElement: () => uploaderComponentElement,
 				t: {
 					no_file_selected: t('no_file_selected'),
@@ -153,6 +158,7 @@ export default defineComponent({
 			editorElement,
 			uploaderComponentElement,
 			fileHandler,
+			currentPreview,
 			className: {
 				[props.font]: true,
 				bordered: props.bordered,
@@ -233,12 +239,29 @@ export default defineComponent({
 	font-family: var(--family-sans-serif);
 }
 
-.drawer-content {
+.uploader-drawer-content {
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding);
 }
+
+.uploader-preview-image {
+	margin-bottom: var(--form-vertical-gap);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+}
+
+.uploader-preview-image img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 40vh;
+	margin: 0 auto;
+	object-fit: contain;
+}
 </style>
 
-<style src="./editorjs-content-reset.css"></style>
+<style src="./editorjs-ui.css"></style>
 <style src="./editorjs-components.css"></style>
+<style src="./editorjs-content-reset.css"></style>
