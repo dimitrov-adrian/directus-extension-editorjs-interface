@@ -36,6 +36,7 @@ import useDirectusToken from './use-directus-token';
 import useFileHandler from './use-filehandler';
 import useTools from './use-tools';
 import getTranslations from './translations';
+import { wait } from './wait';
 
 export default defineComponent({
 	props: {
@@ -174,6 +175,8 @@ export default defineComponent({
 			isInternalChange.value = true;
 
 			try {
+				// Fixes deleting multiple blocks bug https://github.com/codex-team/editor.js/issues/1755#issuecomment-929550729
+				await wait(200);
 				const result: EditorJS.OutputData = await context.saver.save();
 
 				if (!result || result.blocks.length < 1) {
