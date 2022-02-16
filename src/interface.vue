@@ -31,7 +31,8 @@ import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'v
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import EditorJS from '@editorjs/editorjs';
-import { isEqual, cloneDeep } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
 import useDirectusToken from './use-directus-token';
 import useFileHandler from './use-filehandler';
 import useTools from './use-tools';
@@ -188,6 +189,7 @@ export default defineComponent({
 
 				emit('input', result);
 			} catch (error) {
+				isInternalChange.value = false;
 				window.console.warn('editorjs-extension: %s', error);
 			}
 		}
