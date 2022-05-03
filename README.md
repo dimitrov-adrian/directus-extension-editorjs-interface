@@ -26,16 +26,16 @@ To use this custom interface into a data model, you have to:
 
 ```json
 {
-	"version": "2.19.0",
-	"time": 1607174917790,
-	"blocks": [
-		{
-			"type": "paragraph",
-			"data": {
-				"text": "Paragraph from editorjs interface in Directus."
-			}
-		}
-	]
+  "version": "2.19.0",
+  "time": 1607174917790,
+  "blocks": [
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Paragraph from editorjs interface in Directus."
+      }
+    }
+  ]
 }
 ```
 
@@ -53,4 +53,3 @@ npm run build
 ```
 
 Then use `dist/index.js` in your custom `/extensions/interfaces` directory or in whatever you want.
-

@@ -149,6 +149,10 @@ export default defineInterface({
 							value: 'raw',
 							text: 'Raw HTML',
 						},
+						{
+							value: 'testimonial',
+							text: 'Testimonial',
+						},
 					],
 				},
 			},
