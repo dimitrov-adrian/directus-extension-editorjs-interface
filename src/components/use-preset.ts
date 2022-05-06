@@ -1,8 +1,8 @@
-import {useStores} from '@directus/extensions-sdk';
-// import {translate} from '@/utils/translate-literal';
-import {Filter, Preset} from '@directus/shared/types';
-import {assign, debounce, isEqual} from 'lodash';
-import {computed, ComputedRef, ref, Ref, watch} from 'vue';
+import { useStores } from '@directus/extensions-sdk';
+// import { translate } from './translate-literal';
+import { Filter, Preset } from '@directus/shared/types';
+import { assign, debounce, isEqual } from 'lodash';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
 type UsablePreset = {
 	bookmarkExists: ComputedRef<boolean>;
@@ -102,8 +102,8 @@ export function usePreset(
 			return localPreset.value.layout_options?.[layout.value] || null;
 		},
 		set(options) {
-			const {layout_options} = localPreset.value;
-			updatePreset({layout_options: assign({}, layout_options, {[layout.value]: options})});
+			const { layout_options } = localPreset.value;
+			updatePreset({ layout_options: assign({}, layout_options, { [layout.value]: options }) });
 		},
 	});
 
@@ -112,34 +112,36 @@ export function usePreset(
 			return localPreset.value.layout_query?.[layout.value] || null;
 		},
 		set(query) {
-			const {layout_query} = localPreset.value;
-			updatePreset({layout_query: assign({}, layout_query, {[layout.value]: query})});
+			const { layout_query } = localPreset.value;
+			updatePreset({ layout_query: assign({}, layout_query, { [layout.value]: query }) });
 		},
 	});
 
 	const layout = computed<string>({
 		get: () => localPreset.value.layout || 'tabular',
-		set: (layout) => updatePreset({layout}),
+		set: (layout) => updatePreset({ layout }),
 	});
 
 	const filter = computed<Filter | null>({
 		get: () => localPreset.value.filter ?? null,
-		set: (filter) => updatePreset({filter}),
+		set: (filter) => updatePreset({ filter }),
 	});
 
 	const refreshInterval = computed<number | null>({
 		get: () => localPreset.value.refresh_interval || null,
-		set: (refresh_interval) => updatePreset({refresh_interval}),
+		set: (refresh_interval) => updatePreset({ refresh_interval }),
 	});
 
 	const search = computed<string | null>({
 		get: () => localPreset.value.search || null,
-		set: (search) => updatePreset({search}),
+		set: (search) => updatePreset({ search }),
 	});
 
 	const bookmarkTitle = computed<string | null>({
+		// TODO: add translate row
+		// get: () => translate(localPreset.value?.bookmark) || null,
 		get: () => null,
-		set: (bookmark) => updatePreset({bookmark}, true),
+		set: (bookmark) => updatePreset({ bookmark }, true),
 	});
 
 	return {
@@ -166,7 +168,7 @@ export function usePreset(
 	 */
 	function clearLocalSave() {
 		const defaultPreset = presetsStore.getBookmark(Number(bookmark.value));
-		if (defaultPreset) localPreset.value = {...defaultPreset};
+		if (defaultPreset) localPreset.value = { ...defaultPreset };
 		bookmarkSaved.value = true;
 	}
 
@@ -185,7 +187,7 @@ export function usePreset(
 	}
 
 	function initLocalPreset() {
-		const preset = {layout: 'tabular'};
+		const preset = { layout: 'tabular' };
 
 		if (bookmark.value === null) {
 			assign(preset, presetsStore.getPresetForCollection(collection.value));

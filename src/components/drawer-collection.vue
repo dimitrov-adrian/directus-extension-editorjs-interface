@@ -1,15 +1,15 @@
 <template>
 	<component
-			:is="layoutWrapper"
-			v-slot="{ layoutState }"
-			v-model:selection="layoutSelection"
-			v-model:layout-options="localOptions"
-			v-model:layout-query="localQuery"
-			:filter="layoutFilter"
-			:search="search"
-			:collection="collection"
-			select-mode
-			:show-select="multiple ? 'multiple' : 'one'"
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:selection="layoutSelection"
+		v-model:layout-options="localOptions"
+		v-model:layout-query="localQuery"
+		:filter="layoutFilter"
+		:search="search"
+		:collection="collection"
+		select-mode
+		:show-select="multiple ? 'multiple' : 'one'"
 	>
 		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
 			<template #subtitle>
@@ -25,7 +25,7 @@
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
-<!--				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />-->
+				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 					<v-icon name="check" />
@@ -49,12 +49,12 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@directus/shared/types';
-import { usePreset } from './use-presets';
+import { usePreset } from './use-preset';
 import { useCollection, useLayout } from '@directus/shared/composables';
-// import SearchInput from '@/views/private/components/search-input';
+import SearchInput from './search-input.vue';
 
 export default defineComponent({
-	components: { },
+	components: { SearchInput },
 	props: {
 		active: {
 			type: Boolean,
@@ -210,6 +210,6 @@ export default defineComponent({
 
 <style scoped>
 .layout {
-  --layout-offset-top: 0px;
+	--layout-offset-top: 0px;
 }
 </style>
