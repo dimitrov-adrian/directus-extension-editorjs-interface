@@ -1,4 +1,4 @@
-import { i18n } from '@/lang';
+import { i18n } from './lang';
 
 export function translate(literal: any): string {
 	let translated = literal;
