@@ -55,7 +55,17 @@ export default defineComponent({
 		},
 		tools: {
 			type: Array as PropType<string[]>,
-			default: () => ['header', 'list', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
+			default: () => [
+				'header',
+				'nestedlist',
+				'code',
+				'image',
+				'paragraph',
+				'delimiter',
+				'checklist',
+				'quote',
+				'underline',
+			],
 		},
 		font: {
 			type: String as PropType<'sans-serif' | 'monospace' | 'serif'>,

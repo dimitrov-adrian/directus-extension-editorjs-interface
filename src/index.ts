@@ -54,7 +54,7 @@ export default defineInterface({
 			name: '$t:interfaces.input-rich-text-html.toolbar',
 			type: 'json',
 			schema: {
-				default_value: ['header', 'list', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
+				default_value: ['header', 'nestedlist', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
 			},
 			meta: {
 				width: 'half',
