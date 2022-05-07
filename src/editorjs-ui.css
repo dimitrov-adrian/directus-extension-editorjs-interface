@@ -110,7 +110,7 @@
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
-	fill: var(--danger-10) !important;
+	fill: var(--foreground-normal-alt) !important;
 }
 
 /* Tooltips */
