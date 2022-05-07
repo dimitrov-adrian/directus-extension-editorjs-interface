@@ -110,7 +110,26 @@
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
-	fill: var(--danger-190) !important;
+	fill: var(--danger-10) !important;
+}
+
+/* Tooltips */
+.ct {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.ct:before,
+.ct:after {
+	background-color:  var(--background-inverted);
+}
+
+.ct__content {
+	background-color: var(--background-inverted);
+	color: var(--foreground-inverted);
+	border-radius: 4px;
+	padding: 8px;
+	font-size: inherit;
 }
 
 /* Button balloons */
