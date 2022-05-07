@@ -30,7 +30,7 @@ export type UploaderConfig = {
 	t: Record<string, string>;
 };
 
-export default function useTools(
+export default function getTools(
 	uploaderConfig: UploaderConfig,
 	selection: Array<string>,
 	haveFilesAccess: boolean
