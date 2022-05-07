@@ -35,7 +35,7 @@ import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import useDirectusToken from './use-directus-token';
 import useFileHandler from './use-filehandler';
-import useTools from './use-tools';
+import getTools from './get-tools';
 import getTranslations from './translations';
 import { wait } from './wait';
 
@@ -88,7 +88,7 @@ export default defineComponent({
 		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 		const isInternalChange = ref<boolean>(false);
 
-		const tools = useTools(
+		const tools = getTools(
 			{
 				addTokenToURL,
 				baseURL: api.defaults.baseURL,
@@ -185,8 +185,6 @@ export default defineComponent({
 					return;
 				}
 
-				if (isEqual(getBlockData(targetBlock.id, props.value), getBlockData(targetBlock.id, result))) return;
-
 				emit('input', result);
 			} catch (error) {
 				isInternalChange.value = false;
@@ -203,10 +201,6 @@ export default defineComponent({
 				blocks: value.blocks,
 			});
 		}
-
-		function getBlockData(blockId: string, context: any) {
-			return context?.blocks?.find((block: any) => blockId === block?.id)?.data;
-		}
 	},
 });
 </script>
@@ -220,7 +214,7 @@ export default defineComponent({
 }
 
 .bordered {
-	padding: var(--input-padding);
+	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);

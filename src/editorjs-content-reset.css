@@ -9,6 +9,10 @@
 	margin-left: 34px;
 }
 
+.codex-editor .ce-header {
+    padding: 0.4em 0;
+}
+
 .codex-editor .ce-block {
 	margin-top: 1.5em;
 	margin-bottom: 1.5em;

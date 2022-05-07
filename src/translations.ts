@@ -11,7 +11,9 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				},
 				toolbar: {
 					toolbox: {
+						Filter: t('filter'),
 						Add: t('create'),
+						'Nothing found': t('none'),
 					},
 				},
 			},

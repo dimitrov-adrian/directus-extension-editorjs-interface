@@ -4,18 +4,20 @@
 	--border-color: var(--border-normal) !important;
 }
 
-.codex-editor .ce-toolbar__plus {
+.codex-editor .ce-toolbar__plus,
+.codex-editor .ce-toolbar__settings-btn {
 	color: var(--foreground-normal);
+	background-color: var(--background-normal);
 }
 
-.codex-editor .ce-toolbar__settings-btn,
-.codex-editor .ce-toolbar .ce-toolbox__button:hover {
-	background: var(--background-normal-alt);
-	border-radius: var(--border-radius);
+.codex-editor .ce-toolbar__plus:hover,
+.codex-editor .ce-toolbar__settings-btn:hover {
+	background-color: var(--background-normal-alt);
 }
 
+.codex-editor .ce-toolbar__plus svg,
 .codex-editor .ce-toolbar__settings-btn svg {
-	fill: var(--background-inverted) !important;
+	fill: var(--foreground-normal) !important;
 }
 
 .codex-editor .cdx-settings-button svg,
@@ -26,8 +28,7 @@
 }
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
-.codex-editor .ce-settings .cdx-settings-button--active svg,
-.codex-editor .ce-toolbar__plus:hover svg {
+.codex-editor .ce-settings .cdx-settings-button--active svg {
 	fill: var(--primary) !important;
 }
 
@@ -39,6 +40,47 @@
 .codex-editor .cdx-loader::before {
 	border: 3px solid var(--background-normal-alt);
 	border-left-color: var(--primary);
+}
+
+.codex-editor .cdx-search-field {
+	border-radius: var(--border-radius) !important;
+    border: none;
+    background: var(--background-subdued);
+}
+
+.codex-editor .ce-popover {
+	background: var(--background-page);
+    border-color: var(--border-normal);
+    border-width: var(--border-width);
+    border-radius: var(--border-radius);
+}
+
+.codex-editor .ce-popover__item--focused {
+	--webkit-box-shadow: none;
+	box-shadow: none;
+	background: var(--v-list-background-color-active) !important;
+}
+
+.codex-editor .ce-popover__item:hover {
+	background: var(--v-list-background-color-hover) !important;
+}
+
+.codex-editor .ce-popover__item-icon {
+	background: var(--background-page);
+	border-color:  var(--background-normal-alt);
+}
+
+.codex-editor .ce-popover__item-icon svg {
+	fill: var(--foreground-normal);
+}
+
+.codex-editor .ce-popover__item-secondary-label {
+	color: var(--foreground-subdued);
+}
+
+.codex-editor .ce-popover__items:not(:first-child) {
+	border-top: var(--border-width) solid var(--border-normal);
+	padding-top: 8px;
 }
 
 .codex-editor .image-tool--loading .image-tool__image,
@@ -61,6 +103,14 @@
 
 .codex-editor .ce-inline-tool {
 	padding: 0 10px !important;
+}
+
+.codex-editor .ce-settings__button--confirm.ce-settings__button--confirm {
+	background-color: var(--danger-110) !important;
+}
+
+.codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
+	fill: var(--danger-190) !important;
 }
 
 /* Button balloons */
