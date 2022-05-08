@@ -14,6 +14,9 @@
 	padding: 0;
 	line-height: inherit;
 }
+.codex-editor .ce-paragraph[data-placeholder]:empty::before {
+	color: var(--foreground-subdued);
+}
 
 /* Quote block */
 
@@ -121,7 +124,7 @@
 .codex-editor .cdx-marker {
 	color: var(--warning-175);
 	background: var(--warning-alt);
-	outline:2px solid var(--warning-alt)
+	outline: 2px solid var(--warning-alt);
 }
 
 /* tc module */
@@ -145,11 +148,22 @@
 	background: var(--background-highlight);
 }
 
+.tc-toolbox {
+	--toggler-dots-color: var(--foreground-normal);
+	--toggler-dots-color-hovered: var(--foreground-normal-alt);
+}
+
 .tc-toolbox__toggler:hover {
 	fill: var(--background-normal-alt) !important;
 }
 
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
+	/* This is very ugly, but there no other way to set background of the element */
+	fill: var(--background-normal) !important;
+	border-radius: var(--border-radius);
+}
+
+.codex-editor .tc-toolbox__toggler:hover svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
 	fill: var(--background-normal-alt) !important;
 }
@@ -162,4 +176,3 @@
 .tc-add-row:hover::before {
 	background-color: var(--v-list-item-background-color-hover);
 }
-

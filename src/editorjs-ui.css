@@ -8,6 +8,7 @@
 .codex-editor .ce-toolbar__settings-btn {
 	color: var(--foreground-normal);
 	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
 }
 
 .codex-editor .ce-toolbar__plus:hover,
@@ -44,15 +45,15 @@
 
 .codex-editor .cdx-search-field {
 	border-radius: var(--border-radius) !important;
-    border: none;
-    background: var(--background-subdued);
+	border: none;
+	background: var(--background-subdued);
 }
 
 .codex-editor .ce-popover {
 	background: var(--background-page);
-    border-color: var(--border-normal);
-    border-width: var(--border-width);
-    border-radius: var(--border-radius);
+	border-color: var(--border-normal);
+	border-width: var(--border-width);
+	border-radius: var(--border-radius);
 }
 
 .codex-editor .ce-popover__item--focused {
@@ -67,7 +68,7 @@
 
 .codex-editor .ce-popover__item-icon {
 	background: var(--background-page);
-	border-color:  var(--background-normal-alt);
+	border-color: var(--background-normal-alt);
 }
 
 .codex-editor .ce-popover__item-icon svg {
@@ -121,7 +122,7 @@
 
 .ct:before,
 .ct:after {
-	background-color:  var(--background-inverted);
+	background-color: var(--background-inverted);
 }
 
 .ct__content {
