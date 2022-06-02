@@ -63,7 +63,7 @@
     "editorjs-list": "^2.1.4",
     "editorjs-text-alignment-blocktune": "^1.0.3",
     "lodash": "^4.17.21",
-    "typescript": "^4.6.4"
+    "typescript": "^4.7.2"
   },
   "prettier": "directus-codestyle/prettier",
   "stylelint": {

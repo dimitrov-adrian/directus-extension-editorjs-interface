@@ -26,8 +26,8 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted, watch, PropType } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, watch, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
 import EditorJS from '@editorjs/editorjs';
@@ -39,180 +39,149 @@ import getTools from './get-tools';
 import getTranslations from './translations';
 import { wait } from './wait';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Object,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		tools: {
-			type: Array as PropType<string[]>,
-			default: () => [
-				'header',
-				'nestedlist',
-				'code',
-				'image',
-				'paragraph',
-				'delimiter',
-				'checklist',
-				'quote',
-				'underline',
-			],
-		},
-		font: {
-			type: String as PropType<'sans-serif' | 'monospace' | 'serif'>,
-			default: 'sans-serif',
-		},
-		bordered: {
-			type: Boolean,
-			default: true,
-		},
-		folder: {
-			type: String,
-			default: undefined,
+const props = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+		nullable?: boolean;
+		autofocus?: boolean;
+		value?: Object;
+		bordered?: boolean;
+		placeholder: string;
+		tools: string[];
+		folder?: string;
+		font: 'sans-serif' | 'monospace' | 'serif';
+	}>(),
+	{
+		disabled: false,
+		nullable: false,
+		autofocus: false,
+		value: () => null,
+		bordered: true,
+		placeholder: null,
+		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
+		folder: null,
+		font: 'sans-serif',
+	}
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+const api = useApi();
+const { addTokenToURL } = useDirectusToken(api);
+const { useCollectionsStore } = useStores();
+const collectionStore = useCollectionsStore();
+const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
+	useFileHandler();
+
+const editorjsInstance = ref<EditorJS>();
+const uploaderComponentElement = ref<HTMLElement>();
+const editorElement = ref<HTMLElement>();
+const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
+const isInternalChange = ref<boolean>(false);
+
+const tools = getTools(
+	{
+		addTokenToURL,
+		baseURL: api.defaults.baseURL,
+		setFileHandler,
+		setCurrentPreview,
+		getUploadFieldElement: () => uploaderComponentElement,
+		t: {
+			no_file_selected: t('no_file_selected'),
 		},
 	},
+	props.tools,
+	haveFilesAccess
+);
 
-	emits: ['input'],
+onMounted(() => {
+	const initialValue = getSanitizedValue(props.value);
 
-	setup(props, { emit, attrs }) {
-		const { t } = useI18n();
-		const api = useApi();
-		const { addTokenToURL } = useDirectusToken(api);
-		const { useCollectionsStore } = useStores();
-		const collectionStore = useCollectionsStore();
-		const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
-			useFileHandler();
+	editorjsInstance.value = new EditorJS({
+		i18n: getTranslations(t),
+		logLevel: 'ERROR' as EditorJS.LogLevels,
+		holder: editorElement.value,
+		data: initialValue || undefined,
+		// Readonly makes troubles in some cases, also requires all plugins to implement it.
+		// https://github.com/codex-team/editor.js/issues/1669
+		readOnly: false,
+		placeholder: props.placeholder,
+		minHeight: 72,
+		onChange: (a, b) => emitValue(a, b),
+		tools: tools,
+	});
 
-		const editorjsInstance = ref<EditorJS>();
-		const uploaderComponentElement = ref<HTMLElement>();
-		const editorElement = ref<HTMLElement>();
-		const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
-		const isInternalChange = ref<boolean>(false);
-
-		const tools = getTools(
-			{
-				addTokenToURL,
-				baseURL: api.defaults.baseURL,
-				setFileHandler,
-				setCurrentPreview,
-				getUploadFieldElement: () => uploaderComponentElement,
-				t: {
-					no_file_selected: t('no_file_selected'),
-				},
-			},
-			props.tools,
-			haveFilesAccess
-		);
-
-		onMounted(() => {
-			const initialValue = getSanitizedValue(props.value);
-
-			editorjsInstance.value = new EditorJS({
-				i18n: getTranslations(t),
-				logLevel: 'ERROR' as EditorJS.LogLevels,
-				holder: editorElement.value,
-				data: initialValue || undefined,
-				// Readonly makes troubles in some cases, also requires all plugins to implement it.
-				// https://github.com/codex-team/editor.js/issues/1669
-				readOnly: false,
-				placeholder: props.placeholder,
-				minHeight: 72,
-				onChange: (a, b) => emitValue(a, b),
-				tools: tools,
-			});
-
-			if (attrs.autofocus) {
-				editorjsInstance.value.focus();
-			}
-		});
-
-		onUnmounted(() => {
-			if (!editorjsInstance.value) return;
-
-			editorjsInstance.value.destroy();
-		});
-
-		watch(
-			() => props.value,
-			async (newVal: any, oldVal: any) => {
-				if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
-
-				if (isInternalChange.value) {
-					isInternalChange.value = false;
-					return;
-				}
-
-				// Do not render if there is uploader active operation.
-				if (fileHandler.value !== null) return;
-
-				if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
-
-				try {
-					await editorjsInstance.value.isReady;
-					const value = getSanitizedValue(newVal);
-					if (value) {
-						editorjsInstance.value.render(value);
-					} else {
-						editorjsInstance.value.clear();
-					}
-				} catch (error) {
-					window.console.warn('editorjs-extension: %s', error);
-				}
-			}
-		);
-
-		return {
-			t,
-			editorElement,
-			uploaderComponentElement,
-			fileHandler,
-			currentPreview,
-			haveFilesAccess,
-			unsetFileHandler,
-			handleFile,
-		};
-
-		async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) {
-			if (props.disabled || !context || !context.saver) return;
-			isInternalChange.value = true;
-
-			try {
-				// Fixes deleting multiple blocks bug https://github.com/codex-team/editor.js/issues/1755#issuecomment-929550729
-				await wait(200);
-				const result: EditorJS.OutputData = await context.saver.save();
-
-				if (!result || result.blocks.length < 1) {
-					emit('input', null);
-					return;
-				}
-
-				emit('input', result);
-			} catch (error) {
-				isInternalChange.value = false;
-				window.console.warn('editorjs-extension: %s', error);
-			}
-		}
-
-		function getSanitizedValue(value: any): EditorJS.OutputData | null {
-			if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
-
-			return cloneDeep({
-				time: value?.time || Date.now(),
-				version: value?.version || '0.0.0',
-				blocks: value.blocks,
-			});
-		}
-	},
+	if (props.autofocus) {
+		editorjsInstance.value.focus();
+	}
 });
+
+onUnmounted(() => {
+	if (!editorjsInstance.value) return;
+
+	editorjsInstance.value.destroy();
+});
+
+watch(
+	() => props.value,
+	async (newVal: any, oldVal: any) => {
+		if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
+
+		if (isInternalChange.value) {
+			isInternalChange.value = false;
+			return;
+		}
+
+		// Do not render if there is uploader active operation.
+		if (fileHandler.value !== null) return;
+
+		if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
+
+		try {
+			await editorjsInstance.value.isReady;
+			const value = getSanitizedValue(newVal);
+			if (value) {
+				editorjsInstance.value.render(value);
+			} else {
+				editorjsInstance.value.clear();
+			}
+		} catch (error) {
+			window.console.warn('editorjs-extension: %s', error);
+		}
+	}
+);
+
+async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) {
+	if (props.disabled || !context || !context.saver) return;
+	isInternalChange.value = true;
+
+	try {
+		// Fixes deleting multiple blocks bug https://github.com/codex-team/editor.js/issues/1755#issuecomment-929550729
+		await wait(200);
+		const result: EditorJS.OutputData = await context.saver.save();
+
+		if (!result || result.blocks.length < 1) {
+			emit('input', props.nullable ? null : '{}');
+			return;
+		}
+
+		emit('input', result);
+	} catch (error) {
+		isInternalChange.value = false;
+		window.console.warn('editorjs-extension: %s', error);
+	}
+}
+
+function getSanitizedValue(value: any): EditorJS.OutputData | null {
+	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
+
+	return cloneDeep({
+		time: value?.time || Date.now(),
+		version: value?.version || '0.0.0',
+		blocks: value.blocks,
+	});
+}
 </script>
 
 <style lang="css" scoped>
