@@ -1,29 +1,29 @@
 <template>
-  <div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+	<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
 
-  <v-drawer
-      v-if="haveFilesAccess && !disabled"
-      :model-value="fileHandler !== null"
-      icon="image"
-      :title="t('upload_from_device')"
-      :cancelable="true"
-      @update:model-value="unsetFileHandler"
-      @cancel="unsetFileHandler"
-  >
-    <div class="uploader-drawer-content">
-      <div v-if="currentPreview" class="uploader-preview-image">
-        <img :src="currentPreview" />
-      </div>
-      <v-upload
-          :ref="uploaderComponentElement"
-          :multiple="false"
-          :folder="folder"
-          from-library
-          from-url
-          @input="handleFile"
-      />
-    </div>
-  </v-drawer>
+	<v-drawer
+		v-if="haveFilesAccess && !disabled"
+		:model-value="fileHandler !== null"
+		icon="image"
+		:title="t('upload_from_device')"
+		:cancelable="true"
+		@update:model-value="unsetFileHandler"
+		@cancel="unsetFileHandler"
+	>
+		<div class="uploader-drawer-content">
+			<div v-if="currentPreview" class="uploader-preview-image">
+				<img :src="currentPreview" />
+			</div>
+			<v-upload
+				:ref="uploaderComponentElement"
+				:multiple="false"
+				:folder="folder"
+				from-library
+				from-url
+				@input="handleFile"
+			/>
+		</div>
+	</v-drawer>
 </template>
 
 <script setup lang="ts">
@@ -200,10 +200,10 @@ function getSanitizedValue(value: any): EditorJS.OutputData | null {
 
 <style lang="css" scoped>
 .disabled {
-  color: var(--foreground-subdued);
-  background-color: var(--background-subdued);
-  border-color: var(--border-normal);
-  pointer-events: none;
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+	border-color: var(--border-normal);
+	pointer-events: none;
 }
 
 .bordered {
@@ -214,45 +214,45 @@ function getSanitizedValue(value: any): EditorJS.OutputData | null {
 }
 
 .bordered:hover {
-  border-color: var(--border-normal-alt);
+	border-color: var(--border-normal-alt);
 }
 
 .bordered:focus-within {
-  border-color: var(--primary);
+	border-color: var(--primary);
 }
 
 .monospace {
-  font-family: var(--family-monospace);
+	font-family: var(--family-monospace);
 }
 
 .serif {
-  font-family: var(--family-serif);
+	font-family: var(--family-serif);
 }
 
 .sans-serif {
-  font-family: var(--family-sans-serif);
+	font-family: var(--family-sans-serif);
 }
 
 .uploader-drawer-content {
-  padding: var(--content-padding);
-  padding-top: 0;
-  padding-bottom: var(--content-padding);
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
 }
 
 .uploader-preview-image {
-  margin-bottom: var(--form-vertical-gap);
-  background-color: var(--background-normal);
-  border-radius: var(--border-radius);
+	margin-bottom: var(--form-vertical-gap);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
 }
 
 .uploader-preview-image img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  max-height: 40vh;
-  margin: 0 auto;
-  object-fit: contain;
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 40vh;
+	margin: 0 auto;
+	object-fit: contain;
 }
 </style>
 

@@ -53,3 +53,4 @@ npm run build
 ```
 
 Then use `dist/index.js` in your custom `/extensions/interfaces` directory or in whatever you want.
+
