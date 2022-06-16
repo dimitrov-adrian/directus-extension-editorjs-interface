@@ -20,7 +20,6 @@ import ListTool from 'editorjs-list';
 import ImageTool from './custom-plugins/plugin-image-patch.js';
 import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
 import PersonalityTool from './custom-plugins/plugin-personality-patch.js';
-import TestimonialTool from './custom-plugins/plugin-testimonial.js';
 import { SelectionSaveHandler } from "./use-relation-selector";
 
 export type UploaderConfig = {
@@ -67,6 +66,12 @@ export default function getTools(
 		embed: {
 			class: EmbedTool,
 			inlineToolbar: true,
+			config: {
+				services: {
+					youtube: true,
+					vimeo: true,
+				},
+			},
 		},
 		paragraph: {
 			class: ParagraphTool,
@@ -140,12 +145,6 @@ export default function getTools(
 		},
 		alignmentTune: {
 			class: AlignmentTuneTool,
-		},
-		testimonial: {
-			class: TestimonialTool,
-			config: {
-				relationSelector: relationSelectorConfig,
-			},
 		},
 	};
 

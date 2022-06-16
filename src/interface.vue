@@ -1,15 +1,6 @@
 <template>
   <div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
 
-  <drawer-collection
-      ref="testComponent"
-      collection="testimonials"
-      :selection="currentSelection"
-      :active="drawerCollectionOpen"
-      @update:active="changeActiveState($event)"
-      @input="onInputChange($event)"
-  ></drawer-collection>
-
   <v-drawer
       v-if="haveFilesAccess && !disabled"
       :model-value="fileHandler !== null"
@@ -69,7 +60,7 @@ const props = withDefaults(
 		value: () => null,
 		bordered: true,
 		placeholder: null,
-		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
+		tools: () => ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed'],
 		folder: null,
 		font: 'sans-serif',
 	}
