@@ -107,12 +107,12 @@ const tools = getTools(
 		t: {
 			no_file_selected: t('no_file_selected'),
 		},
-		{
-			toggleSelector: toggleCollectionDrawer,
-				setCurrentSelection,
-				setSelectionSaveHandler,
-				api,
-		},
+	},
+	{
+		toggleSelector: toggleCollectionDrawer,
+		setCurrentSelection,
+		setSelectionSaveHandler,
+		api,
 	},
 	props.tools,
 	haveFilesAccess
