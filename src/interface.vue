@@ -60,7 +60,7 @@ const props = withDefaults(
 		value: () => null,
 		bordered: true,
 		placeholder: null,
-		tools: () => ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed'],
+		tools: () => ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall'],
 		folder: null,
 		font: 'sans-serif',
 	}
