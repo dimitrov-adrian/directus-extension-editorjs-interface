@@ -14,7 +14,6 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 						Filter: t('filter'),
 						Add: t('create'),
 						'Nothing found': t('none'),
-						'Inverted Delimiter': 'Invertierter Bereich',
 					},
 				},
 			},
@@ -38,6 +37,7 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				Inlinecode: t('interfaces.input-code.code'),
 				Inlinesmall: 'Small',
 				Strikethrough: t('wysiwyg_options.strikethrough'),
+				'Inverted Delimiter': 'Invertierter Bereich',
 			},
 			tools: {
 				header: {
