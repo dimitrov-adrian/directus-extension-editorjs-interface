@@ -156,7 +156,7 @@ export default defineInterface({
 						{
 							value: 'inverteddelimiter',
 							text: 'Inverted Delimiter',
-						}
+						},
 					],
 				},
 			},
