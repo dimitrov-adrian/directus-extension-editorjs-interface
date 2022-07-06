@@ -20,6 +20,7 @@ import ListTool from 'editorjs-list';
 import ImageTool from './custom-plugins/plugin-image-patch.js';
 import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
 import PersonalityTool from './custom-plugins/plugin-personality-patch.js';
+import InvertedDelimiterTool from '../../editorjs-inverted-delimiter/dist/bundle';
 import InlineSmallTool from '../../editorjs-inline-small/dist/bundle';
 import { SelectionSaveHandler } from "./use-relation-selector";
 
@@ -153,6 +154,9 @@ export default function getTools(
 		},
 		alignmentTune: {
 			class: AlignmentTuneTool,
+		},
+		inverteddelimiter: {
+			class: InvertedDelimiterTool,
 		},
 	};
 

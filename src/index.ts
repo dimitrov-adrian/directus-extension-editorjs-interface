@@ -54,7 +54,7 @@ export default defineInterface({
 			name: '$t:interfaces.input-rich-text-html.toolbar',
 			type: 'json',
 			schema: {
-				default_value: ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall'],
+				default_value: ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall', 'inverteddelimiter'],
 			},
 			meta: {
 				width: 'half',
@@ -153,6 +153,10 @@ export default defineInterface({
 							value: 'raw',
 							text: 'Raw HTML',
 						},
+						{
+							value: 'inverteddelimiter',
+							text: 'Inverted Delimiter',
+						}
 					],
 				},
 			},
