@@ -46,7 +46,7 @@ const props = withDefaults(
 		autofocus?: boolean;
 		value?: Object;
 		bordered?: boolean;
-		placeholder: string;
+		placeholder?: string;
 		tools: string[];
 		folder?: string;
 		font: 'sans-serif' | 'monospace' | 'serif';
@@ -57,9 +57,7 @@ const props = withDefaults(
 		autofocus: false,
 		value: () => null,
 		bordered: true,
-		placeholder: null,
 		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'delimiter', 'checklist', 'quote', 'underline'],
-		folder: null,
 		font: 'sans-serif',
 	}
 );
@@ -126,12 +124,7 @@ onUnmounted(() => {
 watch(
 	() => props.value,
 	async (newVal: any, oldVal: any) => {
-		if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
-
-		if (isInternalChange.value) {
-			isInternalChange.value = false;
-			return;
-		}
+		if (!editorjsInstance.value || !editorjsInstance.value.isReady || isInternalChange.value) return;
 
 		// Do not render if there is uploader active operation.
 		if (fileHandler.value !== null) return;
@@ -142,17 +135,19 @@ watch(
 			await editorjsInstance.value.isReady;
 			const value = getSanitizedValue(newVal);
 			if (value) {
-				editorjsInstance.value.render(value);
+				await editorjsInstance.value.render(value);
 			} else {
 				editorjsInstance.value.clear();
 			}
 		} catch (error) {
 			window.console.warn('editorjs-extension: %s', error);
 		}
+
+		isInternalChange.value = false;
 	}
 );
 
-async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) {
+async function emitValue(context: EditorJS.API, event: CustomEvent) {
 	if (props.disabled || !context || !context.saver) return;
 	isInternalChange.value = true;
 
@@ -166,9 +161,9 @@ async function emitValue(context: EditorJS.API, targetBlock: EditorJS.BlockAPI) 
 			return;
 		}
 
+		if (isEqual(result.blocks, props.value?.blocks)) return;
 		emit('input', result);
 	} catch (error) {
-		isInternalChange.value = false;
 		window.console.warn('editorjs-extension: %s', error);
 	}
 }
