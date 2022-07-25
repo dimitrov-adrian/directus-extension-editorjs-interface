@@ -76,6 +76,14 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				inverteddelimiter: {
 					'Inverted Delimiter': 'Invertierter Bereich',
 				},
+				button: {
+					'Url placeholder': 'Bitte eine URL eingeben',
+					'Url label': 'URL Link',
+					'Button placeholder': 'Bitte ein Button Label eingeben',
+					'Button label': 'Label',
+					'Checkbox label': 'In einem neuen Tab öffnen',
+					'EditorJs Button title': 'Button',
+				},
 			},
 			blockTunes: {
 				delete: {

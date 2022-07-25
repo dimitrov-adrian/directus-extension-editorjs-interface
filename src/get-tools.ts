@@ -22,6 +22,7 @@ import AttachesTool from './custom-plugins/plugin-attaches-patch.js';
 import PersonalityTool from './custom-plugins/plugin-personality-patch.js';
 import InvertedDelimiterTool from '../../editorjs-inverted-delimiter/dist/bundle';
 import InlineSmallTool from '../../editorjs-inline-small/dist/bundle';
+import ButtonTool from '../../editorjs-button/dist/bundle';
 import { SelectionSaveHandler } from "./use-relation-selector";
 
 export type UploaderConfig = {
@@ -157,6 +158,9 @@ export default function getTools(
 		},
 		inverteddelimiter: {
 			class: InvertedDelimiterTool,
+		},
+		button: {
+			class: ButtonTool,
 		},
 	};
 
