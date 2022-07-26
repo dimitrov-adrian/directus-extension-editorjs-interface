@@ -54,7 +54,7 @@ export default defineInterface({
 			name: '$t:interfaces.input-rich-text-html.toolbar',
 			type: 'json',
 			schema: {
-				default_value: ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall', 'inverteddelimiter', 'button'],
+				default_value: ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall', 'inverteddelimiter', 'button', 'iframe'],
 			},
 			meta: {
 				width: 'half',
@@ -160,6 +160,10 @@ export default defineInterface({
 						{
 							value: 'button',
 							text: 'Button',
+						},
+						{
+							value: 'iframe',
+							text: 'Iframe',
 						},
 					],
 				},

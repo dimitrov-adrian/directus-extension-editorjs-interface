@@ -84,6 +84,11 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 					'Checkbox label': 'In einem neuen Tab öffnen',
 					'EditorJs Button title': 'Button',
 				},
+				iframe: {
+					'Url placeholder': 'Bitte eine URL eingeben',
+					'Url label': 'URL Link',
+					'EditorJs Iframe title': 'Iframe',
+				},
 			},
 			blockTunes: {
 				delete: {
