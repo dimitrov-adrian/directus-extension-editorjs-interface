@@ -24,7 +24,6 @@ import InvertedDelimiterTool from '../../editorjs-inverted-delimiter/dist/bundle
 import InlineSmallTool from '../../editorjs-inline-small/dist/bundle';
 import ButtonTool from '../../editorjs-button/dist/bundle';
 import IframeTool from '../../editorjs-iframe/dist/bundle';
-import { SelectionSaveHandler } from "./use-relation-selector";
 
 export type UploaderConfig = {
 	addTokenToURL: (url: string, token: string) => string;
@@ -35,16 +34,8 @@ export type UploaderConfig = {
 	t: Record<string, string>;
 };
 
-export type RelationSelectorConfig = {
-	toggleSelector: () => void;
-	setCurrentSelection: (selection: number[] | undefined | null) => void;
-	setSelectionSaveHandler: (handler: SelectionSaveHandler) => void;
-	api: any;
-}
-
 export default function getTools(
 	uploaderConfig: UploaderConfig,
-	relationSelectorConfig: RelationSelectorConfig,
 	selection: Array<string>,
 	haveFilesAccess: boolean
 ): Record<string, object> {

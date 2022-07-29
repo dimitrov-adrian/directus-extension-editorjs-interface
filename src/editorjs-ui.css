@@ -238,14 +238,3 @@
 	background-color: var(--v-button-background-color-hover);
 	border-color: var(--v-button-background-color-hover);
 }
-
-.codex-editor .cdx-button.secondary {
-	background-color: var(--background-subdued);
-	border: var(--border-width) solid var(--foreground-normal);
-	color: var(--foreground-normal);
-}
-
-.codex-editor .cdx-button.secondary:hover {
-	background-color: var(--foreground-normal);
-	color: var(--background-subdued);
-}

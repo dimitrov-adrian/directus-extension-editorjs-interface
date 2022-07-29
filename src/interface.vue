@@ -38,8 +38,6 @@ import useFileHandler from './use-filehandler';
 import getTools from './get-tools';
 import getTranslations from './translations';
 import { wait } from './wait';
-import DrawerCollection from './components/drawer-collection.vue'
-import useRelationSelector from './use-relation-selector';
 
 const props = withDefaults(
 	defineProps<{
@@ -74,17 +72,11 @@ const collectionStore = useCollectionsStore();
 const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
 	useFileHandler();
 
-const { currentSelection, setCurrentSelection, open: drawerCollectionOpen, toggleOpen: toggleCollectionDrawer, handleSelectionSave, setSelectionSaveHandler } = useRelationSelector()
-
 const editorjsInstance = ref<EditorJS>();
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 const isInternalChange = ref<boolean>(false);
-
-const changeActiveState = (activeState) => {
-	drawerCollectionOpen.value = activeState
-}
 
 const tools = getTools(
 	{
@@ -96,12 +88,6 @@ const tools = getTools(
 		t: {
 			no_file_selected: t('no_file_selected'),
 		},
-	},
-	{
-		toggleSelector: toggleCollectionDrawer,
-		setCurrentSelection,
-		setSelectionSaveHandler,
-		api,
 	},
 	props.tools,
 	haveFilesAccess
