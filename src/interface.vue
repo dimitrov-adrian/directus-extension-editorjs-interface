@@ -59,7 +59,7 @@ const props = withDefaults(
 		autofocus: false,
 		value: () => null,
 		bordered: true,
-		tools: () => ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall', 'inverteddelimiter', 'button',
+		tools: () => ['header', 'paragraph', 'nestedlist', 'quote', 'image', 'embed', 'inlinesmall', 'inverteddelimiter', 'button', 'iframe'],
 		font: 'sans-serif',
 	}
 );
