@@ -71,6 +71,7 @@ export default class Uploader {
 					fileId: file.id,
 					fileURL: this.config.uploader.baseURL + 'files/' + file.id,
 					url: this.config.uploader.baseURL + 'assets/' + file.id,
+					rokka_hash: file.rokka_hash,
 				},
 			};
 
