@@ -49,7 +49,7 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 				},
 				image: {
 					Caption: t('title'),
-					'Select an Image': t('interfaces.file-image.description'),
+					'Select an Image': 'Bild auswählen',
 					'With border': t('displays.formatted-value.border_label'),
 					'Stretch image': t('full_width'),
 				},

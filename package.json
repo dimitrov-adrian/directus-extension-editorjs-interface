@@ -36,7 +36,7 @@
     "dist"
   ],
   "devDependencies": {
-    "@directus/extensions-sdk": "^9.10.0",
+    "@directus/extensions-sdk": "^9.17.4",
     "@editorjs/attaches": "^1.2.1",
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.7.0",
@@ -56,13 +56,15 @@
     "@editorjs/table": "^2.0.1",
     "@editorjs/underline": "^1.0.0",
     "@editorjs/warning": "^1.2.0",
-    "editorjs-undo": "^2.0.5",
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
+    "@types/lodash": "^4.14.184",
     "directus-codestyle": "dimitrov-adrian/directus-codestyle",
     "editorjs-alert": "^1.0.3",
     "editorjs-list": "^2.1.4",
     "editorjs-text-alignment-blocktune": "^1.0.3",
+    "editorjs-undo": "^2.0.5",
     "lodash": "^4.17.21",
+    "sass": "^1.54.9",
     "typescript": "^4.7.4"
   },
   "prettier": "directus-codestyle/prettier",

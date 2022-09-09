@@ -49,8 +49,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@directus/shared/types';
-import { useCollection, useLayout } from '@directus/shared/composables';
 import { usePreset } from './use-preset';
+import { useCollection, useLayout } from '@directus/shared/composables';
 import SearchInput from './search-input.vue';
 
 export default defineComponent({
