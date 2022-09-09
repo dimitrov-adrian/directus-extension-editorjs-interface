@@ -100,6 +100,7 @@ const tools = getTools(
 	haveFilesAccess
 );
 
+// Logic from v-upload (see: https://github.com/directus/directus/blob/main/app/src/components/v-upload.vue#L237)
 const setSelectedFile = async (selection: string[]) => {
 	if (selection[0]) {
 		const id = selection[0];
