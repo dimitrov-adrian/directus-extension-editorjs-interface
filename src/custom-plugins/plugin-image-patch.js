@@ -24,4 +24,9 @@ export default class extends ImageTool {
 			this.ui.fillImage(imageUrl);
 		}
 	}
+
+	// overwrite paste actions (copy/paste, drag&drop) that files can only be chosen in the file chooser of directus
+	static get pasteConfig() {
+		return {};
+	}
 }
