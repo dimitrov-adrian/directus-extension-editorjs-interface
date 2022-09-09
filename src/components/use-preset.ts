@@ -1,9 +1,7 @@
-import { useStores,  } from '@directus/extensions-sdk';
+import { useStores } from '@directus/extensions-sdk';
 import { Filter, Preset } from '@directus/shared/types';
 import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
-
-const { usePresetsStore, useUserStore } = useStores();
 
 type UsablePreset = {
 	bookmarkExists: ComputedRef<boolean>;
@@ -29,6 +27,7 @@ export function usePreset(
 	bookmark: Ref<number | null> = ref(null),
 	temporary = false
 ): UsablePreset {
+	const { usePresetsStore, useUserStore } = useStores();
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
