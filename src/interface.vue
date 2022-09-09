@@ -1,29 +1,20 @@
 <template>
 	<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
 
-	<v-drawer
+	<DrawerCollection
 		v-if="haveFilesAccess && !disabled"
-		:model-value="fileHandler !== null"
-		icon="image"
-		:title="t('upload_from_device')"
-		:cancelable="true"
-		@update:model-value="unsetFileHandler"
-		@cancel="unsetFileHandler"
-	>
-		<div class="uploader-drawer-content">
-			<div v-if="currentPreview" class="uploader-preview-image">
-				<img :src="currentPreview" />
-			</div>
-			<v-upload
-				:ref="uploaderComponentElement"
-				:multiple="false"
-				:folder="folder"
-				from-library
-				from-url
-				@input="handleFile"
-			/>
-		</div>
-	</v-drawer>
+		collection="directus_files"
+		:active="fileHandler !== null"
+		:multiple="false"
+		:filter="undefined"
+		@input="async (data) => {
+			isImageSaving = true;
+			await setSelectedFile(data);
+			isImageSaving = false; 
+			unsetFileHandler();
+		}"
+		@update:active="active => !active && !isImageSaving ? unsetFileHandler() : null"
+	/>
 </template>
 
 <script setup lang="ts">
@@ -38,6 +29,7 @@ import useFileHandler from './use-filehandler';
 import getTools from './get-tools';
 import getTranslations from './translations';
 import { wait } from './wait';
+import DrawerCollection from './components/drawer-collection.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -89,6 +81,7 @@ const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 const isInternalChange = ref<boolean>(false);
+const isImageSaving = ref<boolean>(false);
 
 const tools = getTools(
 	{
@@ -104,6 +97,14 @@ const tools = getTools(
 	props.tools,
 	haveFilesAccess
 );
+
+const setSelectedFile = async  (selection: string[]) => {
+	if (selection[0]) {
+		const id = selection[0];
+		const fileResponse = await api.get(`/files/${id}`);
+		handleFile(fileResponse.data.data);
+	}
+}
 
 onMounted(() => {
 	const initialValue = getSanitizedValue(props.value);
