@@ -7,13 +7,15 @@
 		:active="fileHandler !== null"
 		:multiple="false"
 		:filter="undefined"
-		@input="async (data) => {
-			isImageSaving = true;
-			await setSelectedFile(data);
-			isImageSaving = false; 
-			unsetFileHandler();
-		}"
-		@update:active="active => !active && !isImageSaving ? unsetFileHandler() : null"
+		@input="
+			async (data) => {
+				isImageSaving = true;
+				await setSelectedFile(data);
+				isImageSaving = false;
+				unsetFileHandler();
+			}
+		"
+		@update:active="(active) => (!active && !isImageSaving ? unsetFileHandler() : null)"
 	/>
 </template>
 
@@ -98,13 +100,13 @@ const tools = getTools(
 	haveFilesAccess
 );
 
-const setSelectedFile = async  (selection: string[]) => {
+const setSelectedFile = async (selection: string[]) => {
 	if (selection[0]) {
 		const id = selection[0];
 		const fileResponse = await api.get(`/files/${id}`);
 		handleFile(fileResponse.data.data);
 	}
-}
+};
 
 onMounted(() => {
 	const initialValue = getSanitizedValue(props.value);
