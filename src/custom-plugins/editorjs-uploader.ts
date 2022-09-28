@@ -23,45 +23,6 @@ export default class Uploader {
 	}
 
 	/**
-	 * Handle copy/paste and drag&drop
-	 * Fires ajax.post()
-	 *
-	 * @param {File} file - file pasted by drag-n-drop
-	 * @param {object} params - uploader module params
-	 * @param {Function} params.onPreview - ???
-	 */
-	uploadByFile(file, { onPreview }) {
-		// Right now the only option is to open the picker.
-		this.uploadSelectedFile({ onPreview });
-
-		onPreview();
-
-		// @TODO Very ugly, but until found better way.
-		setTimeout(() => {
-			if (!this.config.uploader.getUploadFieldElement) return;
-
-			try {
-				this.config.uploader.getUploadFieldElement().onBrowseSelect({
-					target: {
-						files: [file],
-					},
-				});
-			} catch (error) {
-				window.console.warn('editorjs-interface: Cannot get browsing component - %s', error);
-			}
-		}, 500);
-	}
-
-	uploadByUrl(url) {
-		this.onUpload({
-			success: 1,
-			file: {
-				url: url,
-			},
-		});
-	}
-
-	/**
 	 * Handle clicks on the upload file button
 	 * Fires ajax.transport()
 	 *

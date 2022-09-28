@@ -55,6 +55,11 @@ export default class extends ImageTool {
 		}
 	}
 
+	// overwrite paste actions (copy/paste, drag&drop) that files can only be chosen in the file chooser of directus
+	static get pasteConfig() {
+		return {};
+	}
+
 	renderSettings() {
 		const wrapper = document.createElement('div');
 

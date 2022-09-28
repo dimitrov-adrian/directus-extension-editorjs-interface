@@ -114,7 +114,6 @@ const {
 	getImagePreviewUrl,
 } = useImage(api.defaults.baseURL, addTokenToURL);
 const editorjsInstance = ref<EditorJS>();
-const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 const isInternalChange = ref<boolean>(false);

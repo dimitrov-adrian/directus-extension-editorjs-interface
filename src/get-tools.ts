@@ -30,7 +30,6 @@ export type UploaderConfig = {
 	baseURL: string | undefined;
 	setFileHandler: (handler: any) => void;
 	setCurrentPreview?: (url: string) => void;
-	getUploadFieldElement: () => any;
 	t: Record<string, string>;
 };
 
