@@ -2,27 +2,46 @@
 	<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
 
 	<v-drawer
-		v-if="haveFilesAccess && !disabled"
-		:model-value="fileHandler !== null"
-		icon="image"
+		v-model="imageDrawerOpen"
 		:title="t('upload_from_device')"
-		:cancelable="true"
-		@update:model-value="unsetFileHandler"
-		@cancel="unsetFileHandler"
+		:persistent="true"
+		icon="image"
+		@cancel="closeImageDrawer"
 	>
 		<div class="uploader-drawer-content">
-			<div v-if="currentPreview" class="uploader-preview-image">
-				<img :src="currentPreview" />
-			</div>
-			<v-upload
-				:ref="uploaderComponentElement"
-				:multiple="false"
-				:folder="folder"
-				from-library
-				from-url
-				@input="handleFile"
-			/>
+			<template v-if="selectedImage && selectedImagePreviewUrl">
+				<img :src="selectedImagePreviewUrl" class="uploader-preview-image" />
+				<div class="grid">
+					<div class="field">
+						<div class="type-label">{{ t('title') }}</div>
+						<v-input v-model="selectedImage.title" />
+					</div>
+					<div class="field">
+						<div class="type-label">{{ t('description') }}</div>
+						<v-input v-model="selectedImage.description" />
+					</div>
+					<div class="field half">
+						<div class="type-label">{{ t('width') }}</div>
+						<v-input v-model="selectedImage.width" />
+					</div>
+					<div class="field half-right">
+						<div class="type-label">{{ t('height') }}</div>
+						<v-input v-model="selectedImage.height" />
+					</div>
+					<div class="field">
+						<div class="type-label">{{ t('rokkaHash') }}</div>
+						<v-input v-model="selectedImage.rokkaHash" />
+					</div>
+				</div>
+			</template>
+			<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
 		</div>
+
+		<template #actions>
+			<v-button v-tooltip.bottom="t('save_image')" icon rounded @click="handleFile(selectedImage)">
+				<v-icon name="check" />
+			</v-button>
+		</template>
 	</v-drawer>
 </template>
 
@@ -30,11 +49,11 @@
 import { ref, onMounted, onUnmounted, watch, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useApi, useStores } from '@directus/extensions-sdk';
-import EditorJS from '@editorjs/editorjs';
+import EditorJS, { API, OutputData } from '@editorjs/editorjs';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import useDirectusToken from './use-directus-token';
-import useFileHandler from './use-filehandler';
+import useImage from './useImage';
 import getTools from './get-tools';
 import getTranslations from './translations';
 import { wait } from './wait';
@@ -44,7 +63,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		nullable?: boolean;
 		autofocus?: boolean;
-		value?: Object;
+		value?: object;
 		bordered?: boolean;
 		placeholder?: string;
 		tools: string[];
@@ -81,9 +100,19 @@ const api = useApi();
 const { addTokenToURL } = useDirectusToken(api);
 const { useCollectionsStore } = useStores();
 const collectionStore = useCollectionsStore();
-const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
-	useFileHandler();
-
+const {
+	imageDrawerOpen,
+	selectedImage,
+	selectedImagePreviewUrl,
+	closeImageDrawer,
+	openImageDrawer,
+	onImageSelect,
+	onImageEdit,
+	fileHandler,
+	setFileHandler,
+	handleFile,
+	getImagePreviewUrl,
+} = useImage(api.defaults.baseURL, addTokenToURL);
 const editorjsInstance = ref<EditorJS>();
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
@@ -95,11 +124,16 @@ const tools = getTools(
 		addTokenToURL,
 		baseURL: api.defaults.baseURL,
 		setFileHandler,
-		setCurrentPreview,
 		getUploadFieldElement: () => uploaderComponentElement,
 		t: {
 			no_file_selected: t('no_file_selected'),
 		},
+		selectedImage,
+		openImageDrawer,
+		closeImageDrawer,
+		onImageEdit,
+		onImageSelect,
+		getImagePreviewUrl,
 	},
 	props.tools,
 	haveFilesAccess
@@ -118,7 +152,7 @@ onMounted(() => {
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
-		onChange: (a, b) => emitValue(a, b),
+		onChange: (context: API, event: CustomEvent) => emitValue(context, event),
 		tools: tools,
 	});
 
@@ -159,14 +193,14 @@ watch(
 	}
 );
 
-async function emitValue(context: EditorJS.API, event: CustomEvent) {
+async function emitValue(context: API, event: CustomEvent) {
 	if (props.disabled || !context || !context.saver) return;
 	isInternalChange.value = true;
 
 	try {
 		// Fixes deleting multiple blocks bug https://github.com/codex-team/editor.js/issues/1755#issuecomment-929550729
 		await wait(200);
-		const result: EditorJS.OutputData = await context.saver.save();
+		const result: OutputData = await context.saver.save();
 
 		if (!result || result.blocks.length < 1) {
 			emit('input', props.nullable ? null : '{}');
@@ -180,7 +214,7 @@ async function emitValue(context: EditorJS.API, event: CustomEvent) {
 	}
 }
 
-function getSanitizedValue(value: any): EditorJS.OutputData | null {
+function getSanitizedValue(value: any): OutputData | null {
 	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
 
 	return cloneDeep({
@@ -191,7 +225,13 @@ function getSanitizedValue(value: any): EditorJS.OutputData | null {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
+@import './form-grid';
+
+.grid {
+	@include form-grid;
+}
+
 .disabled {
 	color: var(--foreground-subdued);
 	background-color: var(--background-subdued);
@@ -233,19 +273,12 @@ function getSanitizedValue(value: any): EditorJS.OutputData | null {
 }
 
 .uploader-preview-image {
-	margin-bottom: var(--form-vertical-gap);
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
-}
-
-.uploader-preview-image img {
-	display: block;
-	width: auto;
-	max-width: 100%;
+	width: 100%;
 	height: auto;
-	max-height: 40vh;
-	margin: 0 auto;
-	object-fit: contain;
+	max-height: 400px;
+	margin-bottom: 24px;
+	object-fit: cover;
+	border-radius: var(--border-radius);
 }
 </style>
 

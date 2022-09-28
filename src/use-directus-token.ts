@@ -2,8 +2,6 @@ import { AxiosInstance } from 'axios';
 
 export default function useDirectusToken(directusApi: AxiosInstance) {
 	return {
-		addQueryToPath,
-		getToken,
 		addTokenToURL,
 	};
 
@@ -25,7 +23,7 @@ export default function useDirectusToken(directusApi: AxiosInstance) {
 		);
 	}
 
-	function addTokenToURL(url: string, token: string) {
+	function addTokenToURL(url: string, token?: string) {
 		const accessToken = token || getToken();
 		if (!accessToken) return url;
 		return addQueryToPath(url, {
