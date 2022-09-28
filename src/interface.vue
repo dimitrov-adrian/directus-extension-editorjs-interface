@@ -112,7 +112,8 @@ const {
 	setFileHandler,
 	handleFile,
 	getImagePreviewUrl,
-} = useImage(api.defaults.baseURL, addTokenToURL);
+	getRokkaHash,
+} = useImage(api, addTokenToURL);
 const editorjsInstance = ref<EditorJS>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
@@ -123,7 +124,6 @@ const tools = getTools(
 		addTokenToURL,
 		baseURL: api.defaults.baseURL,
 		setFileHandler,
-		getUploadFieldElement: () => uploaderComponentElement,
 		t: {
 			no_file_selected: t('no_file_selected'),
 		},
@@ -133,6 +133,7 @@ const tools = getTools(
 		onImageEdit,
 		onImageSelect,
 		getImagePreviewUrl,
+		getRokkaHash,
 	},
 	props.tools,
 	haveFilesAccess

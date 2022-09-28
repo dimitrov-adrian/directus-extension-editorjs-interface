@@ -31,7 +31,7 @@ export default class Uploader {
 	uploadSelectedFile({ onPreview }) {
 		this.config.uploader.openImageDrawer();
 
-		this.config.uploader.setFileHandler((selectedImage: EditorJsImage) => {
+		this.config.uploader.setFileHandler(async (selectedImage: EditorJsImage) => {
 			console.log('in fileHandler / selectedImage:', selectedImage)
 			if (!selectedImage) {
 				this.onError({
@@ -43,7 +43,10 @@ export default class Uploader {
 
 			const response = {
 				success: 1,
-				file: selectedImage,
+				file: {
+					...selectedImage,
+					rokkaHash: selectedImage.rokkaHash || (await this.config.uploader.getRokkaHash(selectedImage.fileId)),
+				},
 			};
 
 			onPreview(this.config.uploader.getImagePreviewUrl(response.file.url));

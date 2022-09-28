@@ -1,4 +1,5 @@
 import { Ref, ref } from 'vue';
+import { AxiosInstance } from 'axios';
 
 export type UploaderHandler = (selectedImage: EditorJsImage) => void;
 
@@ -14,6 +15,7 @@ type UsableImage = {
 	setFileHandler: (handler: UploaderHandler) => void;
 	handleFile: (selectedImage: EditorJsImage) => void;
 	getImagePreviewUrl: (imageUrl: string) => string;
+	getRokkaHash: (imageId: string) => Promise<string>;
 };
 
 type DirectusFile = {
@@ -43,13 +45,14 @@ export type EditorJsImage = {
 };
 
 export default function useImage(
-	apiBaseUrl: string,
+	api: AxiosInstance,
 	addTokenToURL: (url: string, token?: string) => string
 ): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const selectedImage = ref<EditorJsImage | null>(null);
 	const selectedImagePreviewUrl = ref<string>('');
 	const fileHandler = ref<UploaderHandler | null>(null);
+	const apiBaseUrl = api.defaults.baseURL;
 
 	return {
 		imageDrawerOpen,
@@ -63,6 +66,7 @@ export default function useImage(
 		setFileHandler,
 		handleFile,
 		getImagePreviewUrl,
+		getRokkaHash,
 	};
 
 	function closeImageDrawer() {
@@ -93,6 +97,11 @@ export default function useImage(
 		selectedImagePreviewUrl.value = getImagePreviewUrl(image.url);
 	}
 
+	async function getRokkaHash(imageId: string) {
+		const image = await api.get(`/files/${imageId}?fields=rokka_hash`);
+		return image?.data?.data?.rokka_hash;
+	}
+
 	function getImagePreviewUrl(imageUrl: string): string {
 		return `${addTokenToURL(imageUrl)}&key=system-large-contain`;
 	}
@@ -105,9 +114,9 @@ export default function useImage(
 		fileHandler.value = handler;
 	}
 
-	function handleFile(newSelectedImage: EditorJsImage) {
+	async function handleFile(newSelectedImage: EditorJsImage) {
 		if (fileHandler.value) {
-			fileHandler.value(newSelectedImage);
+			await fileHandler.value(newSelectedImage);
 		}
 
 		closeImageDrawer();
