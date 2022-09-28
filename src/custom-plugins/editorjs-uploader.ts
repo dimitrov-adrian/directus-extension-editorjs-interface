@@ -32,7 +32,6 @@ export default class Uploader {
 		this.config.uploader.openImageDrawer();
 
 		this.config.uploader.setFileHandler(async (selectedImage: EditorJsImage) => {
-			console.log('in fileHandler / selectedImage:', selectedImage)
 			if (!selectedImage) {
 				this.onError({
 					success: 0,
