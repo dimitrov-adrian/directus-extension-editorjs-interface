@@ -10,23 +10,34 @@
 	>
 		<div class="uploader-drawer-content">
 			<template v-if="selectedImage && selectedImagePreviewUrl">
-				<img :src="selectedImagePreviewUrl" class="uploader-preview-image" />
 				<div class="grid">
+					<div class="field">
+						<div class="file-preview">
+							<div class="image">
+								<v-image
+									:src="selectedImagePreviewUrl"
+									:width="selectedImage.width"
+									:height="selectedImage.height"
+									:alt="selectedImage.title"
+								/>
+							</div>
+						</div>
+					</div>
 					<div class="field">
 						<div class="type-label">{{ t('title') }}</div>
 						<v-input v-model="selectedImage.title" />
 					</div>
 					<div class="field">
 						<div class="type-label">{{ t('description') }}</div>
-						<v-input v-model="selectedImage.description" />
+						<v-textarea v-model="selectedImage.description" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('width') }}</div>
-						<v-input v-model="selectedImage.width" />
+						<v-input v-model="selectedImage.width" type="number" />
 					</div>
 					<div class="field half-right">
 						<div class="type-label">{{ t('height') }}</div>
-						<v-input v-model="selectedImage.height" />
+						<v-input v-model="selectedImage.height" type="number" />
 					</div>
 					<div class="field">
 						<div class="type-label">{{ t('rokkaHash') }}</div>
@@ -272,13 +283,28 @@ function getSanitizedValue(value: any): OutputData | null {
 	padding-bottom: var(--content-padding);
 }
 
-.uploader-preview-image {
-	width: 100%;
-	height: auto;
-	max-height: 400px;
-	margin-bottom: 24px;
-	object-fit: cover;
-	border-radius: var(--border-radius);
+// Source: https://github.com/directus/directus/blob/main/app/src/views/private/components/file-preview.vue
+.file-preview {
+	position: relative;
+	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
+
+	img {
+		display: block;
+		z-index: 1;
+		margin: 0 auto;
+		width: auto;
+		height: auto;
+		max-width: 100%;
+		max-height: 400px;
+		object-fit: contain;
+		border-radius: var(--border-radius);
+		background-color: var(--background-normal);
+	}
+
+	.image {
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
+	}
 }
 </style>
 
