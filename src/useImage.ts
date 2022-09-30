@@ -6,7 +6,6 @@ export type UploaderHandler = (selectedImage: EditorJsImage) => void;
 type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
 	selectedImage: Ref<EditorJsImage | null>;
-	selectedImagePreviewUrl: Ref<string>;
 	closeImageDrawer: () => void;
 	openImageDrawer: () => void;
 	onImageSelect: (image: DirectusFile) => void;
@@ -53,14 +52,12 @@ export default function useImage(
 ): UsableImage {
 	const imageDrawerOpen = ref(false);
 	const selectedImage = ref<EditorJsImage | null>(null);
-	const selectedImagePreviewUrl = ref<string>('');
 	const fileHandler = ref<UploaderHandler | null>(null);
 	const apiBaseUrl = api.defaults.baseURL;
 
 	return {
 		imageDrawerOpen,
 		selectedImage,
-		selectedImagePreviewUrl,
 		closeImageDrawer,
 		openImageDrawer,
 		onImageSelect,
@@ -74,7 +71,6 @@ export default function useImage(
 
 	function closeImageDrawer() {
 		selectedImage.value = null;
-		selectedImagePreviewUrl.value = '';
 		imageDrawerOpen.value = false;
 		unsetFileHandler();
 	}
@@ -89,7 +85,6 @@ export default function useImage(
 	function onImageSelect(image: DirectusFile) {
 		const editorJsImage = directusFileToEditorJsImage(image);
 		selectedImage.value = editorJsImage;
-		selectedImagePreviewUrl.value = getImagePreviewUrl(editorJsImage.url);
 	}
 
 	/**
@@ -104,7 +99,6 @@ export default function useImage(
 			image.displayHeight = image.height;
 		}
 		selectedImage.value = image;
-		selectedImagePreviewUrl.value = getImagePreviewUrl(image.url);
 	}
 
 	async function getRokkaHash(imageId: string) {

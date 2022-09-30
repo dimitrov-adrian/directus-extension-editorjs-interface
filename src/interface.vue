@@ -9,13 +9,13 @@
 		@cancel="closeImageDrawer"
 	>
 		<div class="uploader-drawer-content">
-			<template v-if="selectedImage && selectedImagePreviewUrl">
+			<template v-if="selectedImage">
 				<div class="grid">
 					<div class="field">
 						<div class="file-preview">
 							<div class="image">
 								<v-image
-									:src="selectedImagePreviewUrl"
+									:src="`/assets/${selectedImage.fileId}?key=system-large-contain`"
 									:width="selectedImage.width"
 									:height="selectedImage.height"
 									:alt="selectedImage.title"
@@ -126,7 +126,6 @@ const collectionStore = useCollectionsStore();
 const {
 	imageDrawerOpen,
 	selectedImage,
-	selectedImagePreviewUrl,
 	closeImageDrawer,
 	openImageDrawer,
 	onImageSelect,

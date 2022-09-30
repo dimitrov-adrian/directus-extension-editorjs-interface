@@ -28,7 +28,6 @@ import { EditorJsImage } from './useImage';
 
 export type UploaderConfig = {
 	setFileHandler: (handler: any) => void;
-	setCurrentPreview?: (url: string) => void;
 	t: Record<string, string>;
 	openImageDrawer: () => void;
 	onImageEdit: (image: EditorJsImage) => void;
