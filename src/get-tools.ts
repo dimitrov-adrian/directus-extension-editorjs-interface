@@ -24,13 +24,16 @@ import InvertedDelimiterTool from '../../editorjs-inverted-delimiter/dist/bundle
 import InlineSmallTool from '../../editorjs-inline-small/dist/bundle';
 import ButtonTool from '../../editorjs-button/dist/bundle';
 import IframeTool from '../../editorjs-iframe/dist/bundle';
+import { EditorJsImage } from './useImage';
 
 export type UploaderConfig = {
-	addTokenToURL: (url: string, token: string) => string;
-	baseURL: string | undefined;
 	setFileHandler: (handler: any) => void;
 	setCurrentPreview?: (url: string) => void;
 	t: Record<string, string>;
+	openImageDrawer: () => void;
+	onImageEdit: (image: EditorJsImage) => void;
+	getImagePreviewUrl: (imageUrl: string) => string;
+	getRokkaHash: (imageId: string) => Promise<string>;
 };
 
 export default function getTools(

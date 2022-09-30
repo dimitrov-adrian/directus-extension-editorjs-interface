@@ -144,17 +144,12 @@ const isInternalChange = ref<boolean>(false);
 
 const tools = getTools(
 	{
-		addTokenToURL,
-		baseURL: api.defaults.baseURL,
 		setFileHandler,
 		t: {
 			no_file_selected: t('no_file_selected'),
 		},
-		selectedImage,
 		openImageDrawer,
-		closeImageDrawer,
 		onImageEdit,
-		onImageSelect,
 		getImagePreviewUrl,
 		getRokkaHash,
 	},

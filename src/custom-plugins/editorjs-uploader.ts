@@ -35,7 +35,7 @@ export default class Uploader {
 			if (!selectedImage) {
 				this.onError({
 					success: 0,
-					message: this.config.t.no_file_selected,
+					message: this.config.uploader.t.no_file_selected,
 				});
 				return;
 			}
@@ -44,7 +44,8 @@ export default class Uploader {
 				success: 1,
 				file: {
 					...selectedImage,
-					rokkaHash: selectedImage.rokkaHash || (await this.config.uploader.getRokkaHash(selectedImage.fileId)),
+					rokkaHash:
+						selectedImage.rokkaHash || (await this.config.uploader.getRokkaHash(selectedImage.fileId)),
 				},
 			};
 
