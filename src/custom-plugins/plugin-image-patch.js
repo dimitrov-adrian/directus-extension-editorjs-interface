@@ -17,6 +17,9 @@ export default class extends ImageTool {
 	constructor(params) {
 		super(params);
 
+		// hide unused caption element
+		this.ui.nodes.caption.hidden = true;
+
 		this.uploader = new Uploader({
 			config: this.config,
 			onUpload: (response) => this.onUpload(response),

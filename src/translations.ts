@@ -48,7 +48,7 @@ export default function getTranslations(t: (str: string) => string): I18nConfig 
 					'Add a link': t('field_options.directus_roles.fields.link_placeholder'),
 				},
 				image: {
-					Caption: t('title'),
+					Caption: 'Titel (Bitte Beschreibung in Bilddetail verwenden!)',
 					'Select an Image': t('interfaces.file-image.description'),
 					'With border': t('displays.formatted-value.border_label'),
 					'Stretch image': t('full_width'),
