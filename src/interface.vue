@@ -3,7 +3,7 @@
 
 	<v-drawer
 		v-model="imageDrawerOpen"
-		:title="t('upload_from_device')"
+		:title="t('interfaces.file-image.description')"
 		:persistent="true"
 		icon="image"
 		@cancel="closeImageDrawer"
@@ -31,6 +31,10 @@
 						<div class="type-label">{{ t('description') }}</div>
 						<v-textarea v-model="selectedImage.description" />
 					</div>
+					<div class="field">
+						<div class="type-label">Link zu folgender URL</div>
+						<v-input v-model="selectedImage.linkUrl" />
+					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('width') }}</div>
 						<v-input
@@ -49,7 +53,7 @@
 					</div>
 					<div class="field">
 						<div class="type-label">Rokka Hash</div>
-						<v-input v-model="selectedImage.rokkaHash" />
+						<v-input v-model="selectedImage.rokkaHash" disabled />
 					</div>
 				</div>
 			</template>

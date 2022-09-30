@@ -43,6 +43,7 @@ export type EditorJsImage = {
 	displayHeight: number;
 	fileURL: string;
 	url: string;
+	linkUrl: string;
 	rokkaHash: string;
 };
 
@@ -145,6 +146,7 @@ export default function useImage(
 			displayHeight: file.height,
 			fileURL: getFileUrl(file.id),
 			url: getImageUrl(file.id),
+			linkUrl: '',
 			rokkaHash: file.rokka_hash,
 		};
 	}
