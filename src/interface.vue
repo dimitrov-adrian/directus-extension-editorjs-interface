@@ -33,14 +33,22 @@
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('width') }}</div>
-						<v-input v-model="selectedImage.width" type="number" />
+						<v-input
+							v-model="selectedImage.displayWidth"
+							type="number"
+							@update:model-value="matchDisplayHeight"
+						/>
 					</div>
 					<div class="field half-right">
 						<div class="type-label">{{ t('height') }}</div>
-						<v-input v-model="selectedImage.height" type="number" />
+						<v-input
+							v-model="selectedImage.displayHeight"
+							type="number"
+							@update:model-value="matchDisplayWidth"
+						/>
 					</div>
 					<div class="field">
-						<div class="type-label">{{ t('rokkaHash') }}</div>
+						<div class="type-label">Rokka Hash</div>
 						<v-input v-model="selectedImage.rokkaHash" />
 					</div>
 				</div>
@@ -203,6 +211,20 @@ watch(
 		isInternalChange.value = false;
 	}
 );
+
+function matchDisplayHeight(width) {
+	if (!selectedImage.value || !selectedImage.value.width || !selectedImage.value.height) {
+		return;
+	}
+	selectedImage.value.displayHeight = Math.round((selectedImage.value.height / selectedImage.value.width) * width);
+}
+
+function matchDisplayWidth(height) {
+	if (!selectedImage.value || !selectedImage.value.width || !selectedImage.value.height) {
+		return;
+	}
+	selectedImage.value.displayWidth = Math.round((selectedImage.value.width / selectedImage.value.height) * height);
+}
 
 async function emitValue(context: API, event: CustomEvent) {
 	if (props.disabled || !context || !context.saver) return;

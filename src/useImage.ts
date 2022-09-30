@@ -39,6 +39,8 @@ export type EditorJsImage = {
 	size: number;
 	width: number;
 	height: number;
+	displayWidth: number;
+	displayHeight: number;
 	fileURL: string;
 	url: string;
 	rokkaHash: string;
@@ -93,6 +95,13 @@ export default function useImage(
 	 * When an image is edited
 	 */
 	function onImageEdit(image: EditorJsImage) {
+		// Fill new properties for backwards compatibility
+		if (!image.displayWidth) {
+			image.displayWidth = image.width;
+		}
+		if (!image.displayHeight) {
+			image.displayHeight = image.height;
+		}
 		selectedImage.value = image;
 		selectedImagePreviewUrl.value = getImagePreviewUrl(image.url);
 	}
@@ -132,6 +141,8 @@ export default function useImage(
 			size: file.filesize,
 			width: file.width,
 			height: file.height,
+			displayWidth: file.width,
+			displayHeight: file.height,
 			fileURL: getFileUrl(file.id),
 			url: getImageUrl(file.id),
 			rokkaHash: file.rokka_hash,
