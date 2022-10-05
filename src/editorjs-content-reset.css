@@ -13,6 +13,13 @@
     padding: 0.4em 0;
 }
 
+/* Firefox only - Fix font-weight because of inline bold selection */
+@supports (-moz-appearance:none) {
+	.codex-editor .ce-block__content {
+		font-weight: 400;
+	}
+}
+
 .codex-editor .ce-block {
 	margin-top: 1.5em;
 	margin-bottom: 1.5em;
