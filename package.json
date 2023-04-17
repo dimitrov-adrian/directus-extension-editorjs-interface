@@ -56,12 +56,12 @@
     "@editorjs/table": "^2.0.1",
     "@editorjs/underline": "^1.0.0",
     "@editorjs/warning": "^1.2.0",
-    "editorjs-undo": "^2.0.5",
     "@itech-indrustries/editorjs-strikethrough": "^1.0.0",
     "directus-codestyle": "dimitrov-adrian/directus-codestyle",
     "editorjs-alert": "^1.0.3",
     "editorjs-list": "^2.1.4",
     "editorjs-text-alignment-blocktune": "^1.0.3",
+    "editorjs-undo": "^2.0.5",
     "lodash": "^4.17.21",
     "typescript": "^4.7.4"
   },

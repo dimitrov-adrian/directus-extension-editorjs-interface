@@ -106,7 +106,7 @@ onMounted(() => {
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
-		onChange: (a, b) => emitValue(a, b),
+		onChange: (a, b) => emitValue(a, b).finally(() => { isInternalChange.value = false; }),
 		tools: tools,
 	});
 
@@ -124,7 +124,12 @@ onUnmounted(() => {
 watch(
 	() => props.value,
 	async (newVal: any, oldVal: any) => {
-		if (!editorjsInstance.value || !editorjsInstance.value.isReady || isInternalChange.value) return;
+		if (!editorjsInstance.value || !editorjsInstance.value.isReady) return;
+
+		if (isInternalChange.value) {
+			isInternalChange.value = false;
+			return;
+		}
 
 		// Do not render if there is uploader active operation.
 		if (fileHandler.value !== null) return;
